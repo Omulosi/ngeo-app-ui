@@ -27,11 +27,14 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",
+    "@material-ui/data-grid": "^4.0.0-alpha.19",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
+    "@material-ui/x-grid-data-generator": "^4.0.0-alpha.19",
     "chart.js": "^2.9.4",
     "clsx": "^1.1.1",
+    "final-form": "^4.20.1",
     "formik": "^2.1.5",
     "history": "^5.0.0",
     "lodash": "^4.17.19",
@@ -42,6 +45,7 @@
     "react-chartjs-2": "^2.10.0",
     "react-dom": "^16.13.1",
     "react-feather": "^2.0.8",
+    "react-final-form": "^6.5.2",
     "react-helmet": "^6.1.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router": "^6.0.0-beta.0",
@@ -59,6 +63,6 @@
     "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
-    "prettier": "^1.19.1"
+    "prettier": "^2.2.1"
   }
 }

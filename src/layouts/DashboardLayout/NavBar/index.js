@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import {
-  List,
-} from '@material-ui/core';
+import { List } from '@material-ui/core';
 import {
   AlertCircle as AlertCircleIcon,
   //   BarChart as BarChartIcon,
@@ -11,7 +9,7 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
+  UserPlus as UserPlusIcon
   //   Users as UsersIcon
 } from 'react-feather';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -29,11 +27,22 @@ import DrawerComponent from './Drawer';
 //   name: 'Katarina Smith'
 // };
 
+// Side menu items with as a map of their links and components
 const items = [
   {
     href: '/app/dashboard',
     icon: DashboardIcon,
     title: 'Dashboard'
+  },
+  {
+    href: '/app/agents',
+    icon: PeopleIcon,
+    title: 'Agents'
+  },
+  {
+    href: '/app/projects',
+    icon: PeopleIcon,
+    title: 'Projects'
   },
   {
     href: '/app/customers',
@@ -99,9 +108,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   return (
     <>
-      <DrawerComponent>
-        {content}
-      </DrawerComponent>
+      <DrawerComponent>{content}</DrawerComponent>
     </>
   );
 

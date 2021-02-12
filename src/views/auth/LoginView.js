@@ -6,15 +6,14 @@ import {
   Box,
   Button,
   Container,
-  Grid,
   Link,
-  TextField,
   Typography,
   makeStyles
 } from '@material-ui/core';
-import FacebookIcon from 'src/icons/Facebook';
-import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
+import RFTextField from 'src/components/TextField';
+import FormWrapper from 'src/components/FormWrapper';
+import Copyright from 'src/components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,32 +21,86 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
+  },
+  paper: {
+    padding: theme.spacing(4, 3),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(8, 6)
+    }
+  },
+  header: {
+    textTransform: 'uppercase',
+    marginBottom: '0.2em',
+    lineHeight: '1.7',
+    fontWeight: '700',
+    fontFamily: 'Roboto Condensed, sans-serif',
+    fontSize: '42px',
+    color: 'rgba(0,0,0,0.87)'
+  },
+  tagline: {
+    fontSize: '14px',
+    fontWeight: '400',
+    lineHeight: '1.4'
+  },
+  form: {
+    marginTop: '3em'
+  },
+  field: {
+    borderRadius: '0 !important'
+  },
+  btn: {
+    padding: '16px 40px',
+    boxShadow: 'none',
+    borderRadius: '0',
+    background: 'rgb(0,115,230)'
+  },
+  link: {
+    color: '#0073e6'
   }
 }));
 
+/* eslint-disable */
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   return (
-    <Page
-      className={classes.root}
-      title="Login"
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
-      >
+    <Page className={classes.root} title="Login">
+      <FormWrapper>
         <Container maxWidth="sm">
+          <>
+            <Typography
+              variant="h2"
+              gutterBottom
+              marked="center"
+              align="center"
+              className={classes.header}
+            >
+              Sign In
+            </Typography>
+            <Typography variant="body2" align="center">
+              {'Not a member yet? '}
+              <Link
+                component={RouterLink}
+                to="/register"
+                variant="h6"
+                underline="always"
+                className={classes.link}
+              >
+                {'Sign Up here'}
+              </Link>
+            </Typography>
+          </>
           <Formik
             initialValues={{
-              email: 'demo@devias.io',
-              password: 'Password123'
+              email: '',
+              password: ''
             }}
             validationSchema={Yup.object().shape({
-              email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+              email: Yup.string()
+                .email('Must be a valid email')
+                .max(255)
+                .required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
             onSubmit={() => {
@@ -63,71 +116,8 @@ const LoginView = () => {
               touched,
               values
             }) => (
-              <form onSubmit={handleSubmit}>
-                <Box mb={3}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
-                    Sign in
-                  </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Sign in on the internal platform
-                  </Typography>
-                </Box>
-                <Grid
-                  container
-                  spacing={3}
-                >
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                  >
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box
-                  mt={3}
-                  mb={1}
-                >
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    or login with email address
-                  </Typography>
-                </Box>
-                <TextField
+              <form onSubmit={handleSubmit} className={classes.form}>
+                <RFTextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
                   helperText={touched.email && errors.email}
@@ -138,9 +128,10 @@ const LoginView = () => {
                   onChange={handleChange}
                   type="email"
                   value={values.email}
-                  variant="outlined"
+                  size="large"
+                  required
                 />
-                <TextField
+                <RFTextField
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
                   helperText={touched.password && errors.password}
@@ -151,7 +142,9 @@ const LoginView = () => {
                   onChange={handleChange}
                   type="password"
                   value={values.password}
-                  variant="outlined"
+                  className={classes.field}
+                  size="large"
+                  required
                 />
                 <Box my={2}>
                   <Button
@@ -161,29 +154,28 @@ const LoginView = () => {
                     size="large"
                     type="submit"
                     variant="contained"
+                    className={classes.btn}
                   >
-                    Sign in now
+                    Sign in
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Don&apos;t have an account?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/register"
-                    variant="h6"
-                  >
-                    Sign up
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
+          <Typography align="center">
+            <Link
+              underline="always"
+              to="/forgot-password/"
+              component={RouterLink}
+              className={classes.link}
+            >
+              Forgot password?
+            </Link>
+          </Typography>
         </Container>
-      </Box>
+      </FormWrapper>
+
+      <Copyright />
     </Page>
   );
 };

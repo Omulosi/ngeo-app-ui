@@ -5,15 +5,17 @@ import { Formik } from 'formik';
 import {
   Box,
   Button,
-  Checkbox,
   Container,
   FormHelperText,
   Link,
-  TextField,
   Typography,
-  makeStyles
+  makeStyles,
+  Grid
 } from '@material-ui/core';
 import Page from 'src/components/Page';
+import TextField from 'src/components/TextField';
+import FormWrapper from 'src/components/FormWrapper';
+import Copyright from 'src/components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,25 +23,75 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3)
+  },
+  paper: {
+    padding: theme.spacing(4, 3),
+    [theme.breakpoints.up('md')]: {
+      padding: theme.spacing(8, 6)
+    }
+  },
+  header: {
+    textTransform: 'uppercase',
+    marginBottom: '0.2em',
+    lineHeight: '1.7',
+    fontWeight: '700',
+    fontFamily: 'Roboto Condensed, sans-serif',
+    fontSize: '42px',
+    color: 'rgba(0,0,0,0.87)'
+  },
+  tagline: {
+    fontSize: '14px',
+    fontWeight: '400',
+    lineHeight: '1.4'
+  },
+  form: {
+    marginTop: '3em'
+  },
+  field: {
+    borderRadius: '0 !important'
+  },
+  btn: {
+    padding: '16px 40px',
+    boxShadow: 'none',
+    borderRadius: '0',
+    background: 'rgb(0,115,230)'
+  },
+  link: {
+    color: '#0073e6'
   }
 }));
 
+/* eslint-disable */
 const RegisterView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   return (
-    <Page
-      className={classes.root}
-      title="Register"
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
-      >
+    <Page className={classes.root} title="Register">
+      <FormWrapper>
         <Container maxWidth="sm">
+          <>
+            <Typography
+              variant="h3"
+              gutterBottom
+              marked="center"
+              align="center"
+              className={classes.header}
+            >
+              Sign Up
+            </Typography>
+            <Typography variant="body2" align="center">
+              <Link
+                component={RouterLink}
+                to="/login"
+                variant="h6"
+                underline="always"
+                className={classes.link}
+              >
+                Already have an account?
+              </Link>
+            </Typography>
+          </>
           <Formik
             initialValues={{
               email: '',
@@ -48,15 +100,18 @@ const RegisterView = () => {
               password: '',
               policy: false
             }}
-            validationSchema={
-              Yup.object().shape({
-                email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
-                firstName: Yup.string().max(255).required('First name is required'),
-                lastName: Yup.string().max(255).required('Last name is required'),
-                password: Yup.string().max(255).required('password is required'),
-                policy: Yup.boolean().oneOf([true], 'This field must be checked')
-              })
-            }
+            validationSchema={Yup.object().shape({
+              email: Yup.string()
+                .email('Must be a valid email')
+                .max(255)
+                .required('Email is required'),
+              firstName: Yup.string()
+                .max(255)
+                .required('First name is required'),
+              lastName: Yup.string().max(255).required('Last name is required'),
+              password: Yup.string().max(255).required('password is required'),
+              policy: Yup.boolean().oneOf([true], 'This field must be checked')
+            })}
             onSubmit={() => {
               navigate('/app/dashboard', { replace: true });
             }}
@@ -71,45 +126,38 @@ const RegisterView = () => {
               values
             }) => (
               <form onSubmit={handleSubmit}>
-                <Box mb={3}>
-                  <Typography
-                    color="textPrimary"
-                    variant="h2"
-                  >
-                    Create new account
-                  </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Use your email to create new account
-                  </Typography>
-                </Box>
-                <TextField
-                  error={Boolean(touched.firstName && errors.firstName)}
-                  fullWidth
-                  helperText={touched.firstName && errors.firstName}
-                  label="First name"
-                  margin="normal"
-                  name="firstName"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.firstName}
-                  variant="outlined"
-                />
-                <TextField
-                  error={Boolean(touched.lastName && errors.lastName)}
-                  fullWidth
-                  helperText={touched.lastName && errors.lastName}
-                  label="Last name"
-                  margin="normal"
-                  name="lastName"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.lastName}
-                  variant="outlined"
-                />
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      error={Boolean(touched.firstName && errors.firstName)}
+                      fullWidth
+                      helperText={touched.firstName && errors.firstName}
+                      label="First name"
+                      margin="normal"
+                      name="firstName"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.firstName}
+                      required
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      error={Boolean(touched.lastName && errors.lastName)}
+                      fullWidth
+                      helperText={touched.lastName && errors.lastName}
+                      label="Last name"
+                      margin="normal"
+                      name="lastName"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.lastName}
+                      required
+                    />
+                  </Grid>
+                </Grid>
+
                 <TextField
                   error={Boolean(touched.email && errors.email)}
                   fullWidth
@@ -121,7 +169,7 @@ const RegisterView = () => {
                   onChange={handleChange}
                   type="email"
                   value={values.email}
-                  variant="outlined"
+                  required
                 />
                 <TextField
                   error={Boolean(touched.password && errors.password)}
@@ -134,39 +182,10 @@ const RegisterView = () => {
                   onChange={handleChange}
                   type="password"
                   value={values.password}
-                  variant="outlined"
+                  required
                 />
-                <Box
-                  alignItems="center"
-                  display="flex"
-                  ml={-1}
-                >
-                  <Checkbox
-                    checked={values.policy}
-                    name="policy"
-                    onChange={handleChange}
-                  />
-                  <Typography
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    I have read the
-                    {' '}
-                    <Link
-                      color="primary"
-                      component={RouterLink}
-                      to="#"
-                      underline="always"
-                      variant="h6"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </Typography>
-                </Box>
                 {Boolean(touched.policy && errors.policy) && (
-                  <FormHelperText error>
-                    {errors.policy}
-                  </FormHelperText>
+                  <FormHelperText error>{errors.policy}</FormHelperText>
                 )}
                 <Box my={2}>
                   <Button
@@ -176,29 +195,17 @@ const RegisterView = () => {
                     size="large"
                     type="submit"
                     variant="contained"
+                    className={classes.btn}
                   >
-                    Sign up now
+                    Sign Up
                   </Button>
                 </Box>
-                <Typography
-                  color="textSecondary"
-                  variant="body1"
-                >
-                  Have an account?
-                  {' '}
-                  <Link
-                    component={RouterLink}
-                    to="/login"
-                    variant="h6"
-                  >
-                    Sign in
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
         </Container>
-      </Box>
+      </FormWrapper>
+      <Copyright />
     </Page>
   );
 };
