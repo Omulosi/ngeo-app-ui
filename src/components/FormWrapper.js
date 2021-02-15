@@ -6,11 +6,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from './Paper';
 
 const styles = (theme) => ({
-  root: {
-    display: 'flex',
-    backgroundImage: 'url(/static/onepirate/appCurvyLines.png)',
-    backgroundRepeat: 'no-repeat'
-  },
   paper: {
     padding: theme.spacing(4, 3),
     [theme.breakpoints.up('md')]: {
@@ -23,13 +18,11 @@ function FormWrapper(props) {
   const { children, classes } = props;
 
   return (
-    <div className={classes.root}>
-      <Container maxWidth="sm">
-        <Box mt={7} mb={12}>
-          <Paper className={classes.paper}>{children}</Paper>
-        </Box>
-      </Container>
-    </div>
+    <Container maxWidth="sm">
+      <Box mt={7} mb={12}>
+        <Paper className={classes.paper} elevation={2}>{children}</Paper>
+      </Box>
+    </Container>
   );
 }
 

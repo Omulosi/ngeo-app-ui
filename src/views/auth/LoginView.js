@@ -17,9 +17,8 @@ import Copyright from 'src/components/Copyright';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
-    height: '100%',
-    paddingBottom: theme.spacing(3),
+    height: '100vh',
+    paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(3)
   },
   paper: {

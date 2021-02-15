@@ -2,10 +2,11 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import TopBar from './TopBar';
+// import HomeBar from './HomeBar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.dark,
     display: 'flex',
     height: '100%',
     overflow: 'hidden',

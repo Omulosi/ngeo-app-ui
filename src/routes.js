@@ -12,6 +12,7 @@ import RegisterView from 'src/views/auth/RegisterView';
 import SettingsView from 'src/views/settings/SettingsView';
 import AgentsView from 'src/views/agent';
 import ProjectsView from 'src/views/project';
+import HomeView from 'src/views/home';
 
 const routes = [
   {
@@ -35,7 +36,7 @@ const routes = [
       { path: 'login', element: <LoginView /> },
       { path: 'register', element: <RegisterView /> },
       { path: '404', element: <NotFoundView /> },
-      { path: '/', element: <Navigate to="/app/dashboard" /> },
+      { path: '/', element: <HomeView /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   }
