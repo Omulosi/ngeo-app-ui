@@ -13,6 +13,7 @@ import SettingsView from 'src/views/settings/SettingsView';
 import AgentsView from 'src/views/agent';
 import ProjectsView from 'src/views/project';
 import HomeView from 'src/views/home';
+import MapView from 'src/views/map';
 
 const routes = [
   {
@@ -24,9 +25,10 @@ const routes = [
       { path: 'dashboard', element: <DashboardView /> },
       { path: 'products', element: <ProductListView /> },
       { path: 'settings', element: <SettingsView /> },
-      { path: '*', element: <Navigate to="/404" /> },
       { path: 'agents', element: <AgentsView /> },
-      { path: 'projects', element: <ProjectsView /> }
+      { path: 'projects', element: <ProjectsView /> },
+      { path: 'map', element: <MapView /> },
+      { path: '*', element: <Navigate to="/404" /> }
     ]
   },
   {

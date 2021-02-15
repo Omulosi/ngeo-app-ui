@@ -1698,6 +1698,50 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
+"@turf/area@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/area/-/area-5.1.5.tgz#efd899bfd260cdbd1541b2a3c155f8a5d2eefa1d"
+  integrity sha1-79iZv9Jgzb0VQbKjwVX4pdLu+h0=
+  dependencies:
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
+
+"@turf/distance@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/distance/-/distance-5.1.5.tgz#39cf18204bbf87587d707e609a60118909156409"
+  integrity sha1-Oc8YIEu/h1h9cH5gmmARiQkVZAk=
+  dependencies:
+    "@turf/helpers" "^5.1.5"
+    "@turf/invariant" "^5.1.5"
+
+"@turf/helpers@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/helpers/-/helpers-5.1.5.tgz#153405227ab933d004a5bb9641a9ed999fcbe0cf"
+  integrity sha1-FTQFInq5M9AEpbuWQantmZ/L4M8=
+
+"@turf/invariant@^5.1.5":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@turf/invariant/-/invariant-5.2.0.tgz#f0150ff7290b38577b73d088b7932c1ee0aa90a7"
+  integrity sha1-8BUP9ykLOFd7c9CIt5MsHuCqkKc=
+  dependencies:
+    "@turf/helpers" "^5.1.5"
+
+"@turf/length@^5.1.5":
+  version "5.1.5"
+  resolved "https://registry.yarnpkg.com/@turf/length/-/length-5.1.5.tgz#f3a5f864c2b996a8bb471794535a1faf12eebefb"
+  integrity sha1-86X4ZMK5lqi7RxeUU1ofrxLuvvs=
+  dependencies:
+    "@turf/distance" "^5.1.5"
+    "@turf/helpers" "^5.1.5"
+    "@turf/meta" "^5.1.5"
+
+"@turf/meta@^5.1.5":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@turf/meta/-/meta-5.2.0.tgz#3b1ad485ee0c3b0b1775132a32c384d53e4ba53d"
+  integrity sha1-OxrUhe4MOwsXdRMqMsOE1T5LpT0=
+  dependencies:
+    "@turf/helpers" "^5.1.5"
+
 "@types/anymatch@*":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
@@ -3333,7 +3377,7 @@ cliui@^6.0.0:
     strip-ansi "^6.0.0"
     wrap-ansi "^6.2.0"
 
-clsx@^1.0.4, clsx@^1.1.1:
+clsx@^1.0.4, clsx@^1.1.0, clsx@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
   integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
@@ -7065,6 +7109,15 @@ last-call-webpack-plugin@^3.0.0:
     lodash "^4.17.5"
     webpack-sources "^1.1.0"
 
+leaflet-measure@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/leaflet-measure/-/leaflet-measure-3.1.0.tgz#97777c206a1f8e1ee5a260ffb4128db18fce9cd0"
+  integrity sha512-ln5c9UNaWDEd24tIzDt9hwnpb8OaCPBfSWNBg2H8rb9SA3cbXW9+NqohA6/8TdsNDGJZr36woXMrqRq07Pcl3w==
+  dependencies:
+    "@turf/area" "^5.1.5"
+    "@turf/length" "^5.1.5"
+    lodash "^4.17.5"
+
 leaflet@^1.7.1:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.7.1.tgz#10d684916edfe1bf41d688a3b97127c0322a2a19"
@@ -7161,7 +7214,7 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash-es@^4.17.11, lodash-es@^4.17.14:
+lodash-es@^4.17.10, lodash-es@^4.17.11, lodash-es@^4.17.14:
   version "4.17.20"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.20.tgz#29f6332eefc60e849f869c264bc71126ad61e8f7"
   integrity sha512-JD1COMZsq8maT6mnuz1UMV0jvYD0E0aUsSOdrr1/nAG3dhqQXwRRgeW0cSqH1U43INKcqxaiVIQNOUDld7gRDA==
@@ -9053,7 +9106,7 @@ prompts@2.4.0, prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
 
-prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@^15.5.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -9325,6 +9378,25 @@ react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-leaflet-draw@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/react-leaflet-draw/-/react-leaflet-draw-0.19.0.tgz#95de33054016db27e171f8f8f646f6bad17106f3"
+  integrity sha512-aOB7Nqgl79l62L7vHxhdyKJD6ep+1Q+qTfnrYfmcgF+yK0A1lQA2fUv9N4C0HCbejcyiqx1XYchSCw9Q+Vtc3A==
+  dependencies:
+    lodash-es "^4.17.10"
+
+react-leaflet-measure@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-leaflet-measure/-/react-leaflet-measure-2.1.1.tgz#a18b4cdd08fe0a0978380a5bd5bf5b2ad9c20141"
+  integrity sha512-IT2Km7onLRE4ojxhdkg+csOxmtjIbM+b0oFVoUodLOdriJh8nfJfK5n5T3bgxskzNkaWRnAVPEJayGbOq1Y1Gw==
+  dependencies:
+    leaflet-measure "^3.1.0"
+
+react-leaflet-search@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-leaflet-search/-/react-leaflet-search-2.0.1.tgz#73d29114648ed92b7936c1a9fc0326f0ab7e435b"
+  integrity sha512-doOcPPUgQVO2CJrO5kg0o14qCC/iD4gQwIclZt4xfvO353yUVRGkBAt5LOhjFLgLzxWjI54VkBKK3EK1ps6clA==
+
 react-leaflet@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/react-leaflet/-/react-leaflet-3.1.0.tgz#42deb5e454518016eff8bc85511ae58812f910f5"
@@ -9431,6 +9503,14 @@ react-side-effect@^2.1.0:
   resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-2.1.1.tgz#66c5701c3e7560ab4822a4ee2742dee215d72eb3"
   integrity sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==
 
+react-tabs@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-tabs/-/react-tabs-3.2.0.tgz#0fd8d595ef26d3684da876c27a3cc90392dffb40"
+  integrity sha512-q7oNapNRoYTQq8gDhApXwdBheuuN5qQ4YvUaQUAkb6OSSttJulBAvxJ0FS6W5uojvMxbbIZKu1f2I+GXISoLjw==
+  dependencies:
+    clsx "^1.1.0"
+    prop-types "^15.5.0"
+
 react-transition-group@^4.4.0:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.1.tgz#63868f9325a38ea5ee9535d828327f85773345c9"
@@ -9440,6 +9520,11 @@ react-transition-group@^4.4.0:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-uuid@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-uuid/-/react-uuid-1.0.2.tgz#c77cea91cf38eafb1aaa7910f92621b2ed91b969"
+  integrity sha512-5e0GM16uuQj9MdRJlZ0GdLC8LKMwpU9PIqYmF27s3fIV2z+rLyASTaiW4aKzSY4DyGanz+ImzsECkftwGWfAwA==
 
 react@^17.0.1:
   version "17.0.1"

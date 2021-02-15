@@ -9,7 +9,8 @@ import {
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon
+  UserPlus as UserPlusIcon,
+  MapPin as MapIcon
   //   Users as UsersIcon
 } from 'react-feather';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -29,6 +30,11 @@ import DrawerComponent from './Drawer';
 
 // Side menu items with as a map of their links and components
 const items = [
+  {
+    href: '/app/map',
+    icon: MapIcon,
+    title: 'Map'
+  },
   {
     href: '/app/dashboard',
     icon: DashboardIcon,

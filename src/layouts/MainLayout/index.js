@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     display: 'flex',
-    height: '100%',
+    height: '100vh',
     overflow: 'hidden',
     width: '100%'
   },
