@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  makeStyles
+  makeStyles,
+  Tooltip
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -19,21 +21,26 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NavItem = ({ href, icon: Icon, title }) => {
+const NavItem = ({
+  href, icon: Icon, title, className
+}) => {
   const classes = useStyles();
   const navigate = useNavigate();
   return (
-    <ListItem onClick={() => navigate(href)} className={classes.item}>
-      <ListItemIcon>{Icon && <Icon />}</ListItemIcon>
-      <ListItemText primary={title} />
-    </ListItem>
+    <Tooltip title={`${title}`} placement="right">
+      <ListItem onClick={() => navigate(href)} className={clsx(classes.item, className)}>
+        <ListItemIcon>{Icon && <Icon />}</ListItemIcon>
+        <ListItemText primary={title} />
+      </ListItem>
+    </Tooltip>
   );
 };
 
 NavItem.propTypes = {
   icon: PropTypes.elementType,
   title: PropTypes.string,
-  href: PropTypes.string
+  href: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default NavItem;

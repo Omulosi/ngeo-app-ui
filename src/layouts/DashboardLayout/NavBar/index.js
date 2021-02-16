@@ -1,15 +1,9 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { List } from '@material-ui/core';
+import { List, makeStyles } from '@material-ui/core';
 import {
-  AlertCircle as AlertCircleIcon,
-  //   BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
   MapPin as MapIcon
   //   Users as UsersIcon
 } from 'react-feather';
@@ -22,72 +16,63 @@ import PeopleIcon from '@material-ui/icons/People';
 import NavItem from './Item';
 import DrawerComponent from './Drawer';
 
-// const user = {
-//   avatar: '/static/images/avatars/avatar_6.png',
-//   jobTitle: 'Senior Developer',
-//   name: 'Katarina Smith'
-// };
+const useStyles = makeStyles(() => ({
+  hide: {
+    display: 'none'
+  }
+}));
+
+const authData = {
+  avatar: '/static/images/avatars/avatar_6.png',
+  email: 'mulongojohnpaul@gmail.com',
+  name: 'John Paul Mulongo',
+  role: 'Field Officer',
+  isAuthenticated: true
+};
 
 // Side menu items with as a map of their links and components
-const items = [
-  {
-    href: '/app/map',
-    icon: MapIcon,
-    title: 'Map'
-  },
-  {
-    href: '/app/dashboard',
-    icon: DashboardIcon,
-    title: 'Dashboard'
-  },
-  {
-    href: '/app/agents',
-    icon: PeopleIcon,
-    title: 'Agents'
-  },
-  {
-    href: '/app/projects',
-    icon: PeopleIcon,
-    title: 'Projects'
-  },
-  {
-    href: '/app/customers',
-    icon: PeopleIcon,
-    title: 'Customers'
-  },
-  {
-    href: '/app/products',
-    icon: ShoppingBagIcon,
-    title: 'Products'
-  },
-  {
-    href: '/app/account',
-    icon: UserIcon,
-    title: 'Account'
-  },
-  {
-    href: '/app/settings',
-    icon: SettingsIcon,
-    title: 'Settings'
-  },
-  {
-    href: '/login',
-    icon: LockIcon,
-    title: 'Login'
-  },
-  {
-    href: '/register',
-    icon: UserPlusIcon,
-    title: 'Register'
-  },
-  {
-    href: '/404',
-    icon: AlertCircleIcon,
-    title: 'Error'
-  }
-];
+const getMenuItems = (user) => {
+  const isAuthorized = user.isAuthenticated;
+
+  const items = [
+    {
+      href: '/app/map',
+      icon: MapIcon,
+      title: 'Map',
+      visible: true
+    },
+    {
+      href: '/app/dashboard',
+      icon: DashboardIcon,
+      title: 'Dashboard',
+      visible: isAuthorized
+    },
+    {
+      href: '/app/agents',
+      icon: PeopleIcon,
+      title: 'Agents',
+      visible: isAuthorized
+    },
+    {
+      href: '/app/projects',
+      icon: PeopleIcon,
+      title: 'Projects',
+      visible: isAuthorized
+    },
+    {
+      href: '/app/account',
+      icon: UserIcon,
+      title: 'Account',
+      visible: isAuthorized
+    },
+  ];
+
+  return items;
+};
 
 const NavBar = ({ onMobileClose, openMobile }) => {
+  const classes = useStyles();
+
   const location = useLocation();
 
   useEffect(() => {
@@ -96,6 +81,8 @@ const NavBar = ({ onMobileClose, openMobile }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
+
+  const items = getMenuItems(authData);
 
   const content = (
     <div>
@@ -106,6 +93,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
             key={item.title}
             title={item.title}
             icon={item.icon}
+            className={item.visible ? null : classes.hide}
           />
         ))}
       </List>
@@ -114,7 +102,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   return (
     <>
-      <DrawerComponent>{content}</DrawerComponent>
+      <DrawerComponent user={authData}>{content}</DrawerComponent>
     </>
   );
 

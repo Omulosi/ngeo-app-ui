@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import
 {
   Typography,
-  makeStyles
+  makeStyles,
+  Avatar
 } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -15,7 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PropTypes from 'prop-types';
 
-const drawerWidth = 320;
+const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
   toolbarIcon: {
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     height: '10vh',
-    padding: '0 8px',
+    padding: '0 24px',
     ...theme.mixins.toolbar
   },
   appBar: {
@@ -100,18 +101,18 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     display: 'flex',
     flexDirection: 'column',
-    flexWrap: 'wrap',
+  },
+  gutter: {
+    paddingTop: '0.1em'
+  },
+  logo: {
+    fontWeight: 'bold',
+    letterSpacing: '1px',
+    fontSize: '1.2rem'
   }
 }));
 
-const user = {
-  avatar: '/static/images/avatars/avatar_6.png',
-  email: 'mulongojohnpaul@gmail.com',
-  name: 'John Paul Mulongo',
-  role: 'Field Officer'
-};
-
-export default function DrawerComponent({ children }) {
+export default function DrawerComponent({ user, children }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -121,16 +122,28 @@ export default function DrawerComponent({ children }) {
     setOpen(false);
   };
 
-  const userBox = (
+  const userBox = user.isAuthenticated ? (
     <div className={clsx(classes.profile,)}>
-      <Typography color="textPrimary" variant="h5">
+      <Avatar>
+        {user.name.charAt(0)}
+      </Avatar>
+      <Typography color="textSecondary" variant="body2" className={classes.gutter}>
         {user.name}
       </Typography>
-      <Typography color="textSecondary" variant="body2">
+      <Typography color="textSecondary" variant="body2" className={classes.gutter}>
         {user.email}
       </Typography>
-      <Typography color="textSecondary" variant="body2">
+      <Typography color="textSecondary" variant="body2" className={classes.gutter}>
         {user.role}
+      </Typography>
+      <Typography style={{ color: '#1a73e8', paddingTop: '0.3em' }} variant="body2" className={classes.gutter}>
+        sign out
+      </Typography>
+    </div>
+  ) : (
+    <div className={classes.profile}>
+      <Typography style={{ color: '#1a73e8', paddingTop: '0.3em' }} variant="body2" className={classes.gutter}>
+        sign in
       </Typography>
     </div>
   );
@@ -165,19 +178,20 @@ export default function DrawerComponent({ children }) {
         open={open}
       >
         <div className={classes.toolbarIcon}>
-          {userBox}
+          <div className={classes.logo}>Ngeo</div>
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
+        { open ? userBox : null }
         <Divider />
         {children}
-        <Divider />
       </Drawer>
     </div>
   );
 }
 
 DrawerComponent.propTypes = {
-  children: PropTypes.any
+  children: PropTypes.any,
+  user: PropTypes.object
 };
