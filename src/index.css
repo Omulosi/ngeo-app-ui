@@ -4,7 +4,7 @@ body {
 
 /* Map styles for react leaflet */
 .map {
-  height: calc(100vh - 65px);
+  height: 100vh;
   padding: 0;
   margin: 0;
 }

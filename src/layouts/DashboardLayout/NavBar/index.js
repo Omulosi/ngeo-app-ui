@@ -4,15 +4,16 @@ import PropTypes from 'prop-types';
 import { List, makeStyles } from '@material-ui/core';
 import {
   User as UserIcon,
-  MapPin as MapIcon
+  MapPin
   //   Users as UsersIcon
 } from 'react-feather';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import MapIcon from '@material-ui/icons/Map';
 import PeopleIcon from '@material-ui/icons/People';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 // import BarChartIcon from '@material-ui/icons/BarChart';
 // import LayersIcon from '@material-ui/icons/Layers';
-// import AssignmentIcon from '@material-ui/icons/Assignment';
 import NavItem from './Item';
 import DrawerComponent from './Drawer';
 
@@ -33,6 +34,10 @@ const authData = {
 // Side menu items with as a map of their links and components
 const getMenuItems = (user) => {
   const isAuthorized = user.isAuthenticated;
+  const isFieldOfficer = !!user.role && user.role === 'Field Officer';
+  // const isRegionalManager = !!user.role && user.role === 'Regional Manager';
+  // const isCountyManager = !!user.role && user.role === 'County Manager';
+  // const isCEO = !!user.role && user.role === 'CEO';
 
   const items = [
     {
@@ -48,23 +53,52 @@ const getMenuItems = (user) => {
       visible: isAuthorized
     },
     {
-      href: '/app/agents',
+      // href: '/app/agents',
       icon: PeopleIcon,
       title: 'Agents',
-      visible: isAuthorized
+      visible: isAuthorized && isFieldOfficer,
+      items: [
+        {
+          href: '/app/agents',
+          title: 'Agent List',
+          visible: isAuthorized
+        },
+        {
+          href: '/app/agent-profile',
+          title: 'Agent Profile',
+          visible: isAuthorized
+        }
+      ]
     },
     {
       href: '/app/projects',
-      icon: PeopleIcon,
+      icon: AssignmentIcon,
       title: 'Projects',
-      visible: isAuthorized
+      visible: isAuthorized && isFieldOfficer
+    },
+    {
+      icon: MapPin,
+      title: 'Incidences',
+      visible: isAuthorized,
+      items: [
+        {
+          href: '/app/incidences',
+          title: 'Incidence List',
+          visible: isAuthorized
+        },
+        {
+          href: '/app/incidences',
+          title: 'Incidence Detail',
+          visible: isAuthorized
+        }
+      ]
     },
     {
       href: '/app/account',
       icon: UserIcon,
       title: 'Account',
       visible: isAuthorized
-    },
+    }
   ];
 
   return items;
@@ -89,10 +123,11 @@ const NavBar = ({ onMobileClose, openMobile }) => {
       <List>
         {items.map((item) => (
           <NavItem
-            href={item.href}
+            href={item.href || '#'}
             key={item.title}
             title={item.title}
             icon={item.icon}
+            items={item.items}
             className={item.visible ? null : classes.hide}
           />
         ))}

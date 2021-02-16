@@ -22,10 +22,11 @@ L.Icon.Default.mergeOptions({
 });
 
 const Map = () => {
+  const center = [0.69960492000038, 37.9210640870001];
   return (
     <MapContainer
-      center={[51.505, -0.09]}
-      zoom={13}
+      center={center}
+      zoom={7}
       scrollWheelZoom={false}
       className="map"
     >

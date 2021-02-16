@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import {
   Box,
   Button,
@@ -13,39 +13,42 @@ import {
   makeStyles
 } from '@material-ui/core';
 
-
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
-const AgentDetails = (props) => {
+const projects = [
+  {
+    name: 'Project A',
+    theme: 'Education',
+    location: 'Isiolo'
+  },
+  {
+    name: 'Project B',
+    theme: 'Health',
+    location: 'Isiolo'
+  },
+  {
+    name: 'Project C',
+    theme: 'Sanitation',
+    location: 'Isiolo'
+  }
+];
 
-  
+const AgentDetails = () => {
   const classes = useStyles();
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      className={clsx(classes.root,)}
-     
-    >
+    <form autoComplete="off" noValidate className={clsx(classes.root)}>
       <Card>
         <CardHeader
-          subheader="The information can be edited"
+          subheader="This information can be edited"
           title="Profile"
         />
         <Divider />
         <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+          <Grid container spacing={3}>
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 helperText="Please specify the first name"
@@ -55,11 +58,7 @@ const AgentDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Last name"
@@ -68,11 +67,7 @@ const AgentDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Email Address"
@@ -81,11 +76,7 @@ const AgentDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Phone Number"
@@ -94,11 +85,7 @@ const AgentDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
                 label="Country"
@@ -107,56 +94,35 @@ const AgentDetails = (props) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
+            <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
-                label="Assign Project"
+                label="Assign project"
                 name="project"
                 required
                 select
                 SelectProps={{ native: true }}
                 variant="outlined"
               >
-                {
-                //     counties.map((option) => (
-                //   <option
-                //     key={option.value}
-                //     value={option.value}
-                //   >
-                //     {option.label}
-                //   </option>
-                // ))
-            
-                 }
+                <option key="1232" value="" />
+                {projects.map((option) => (
+                  <option key={option.name} value={option.name}>
+                    {option.name}
+                  </option>
+                ))}
               </TextField>
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          p={2}
-        >
-          <Button
-            color="primary"
-            variant="contained"
-            type="submit"
-          >
+        <Box display="flex" justifyContent="flex-end" p={2}>
+          <Button color="primary" variant="contained" type="submit">
             Save details
           </Button>
         </Box>
       </Card>
     </form>
   );
-};
-
-AgentDetails.propTypes = {
-  className: PropTypes.string
 };
 
 export default AgentDetails;

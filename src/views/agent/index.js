@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Container, makeStyles } from '@material-ui/core';
 // import ResultGrid from 'src/components/ResultGrid';
-// import DataGridToolbar from 'src/components/DataGridToolbar';
+import DataGridToolbar from 'src/components/DataGridToolbar';
 import Page from 'src/components/Page';
 import { DataGrid, GridToolbar } from '@material-ui/data-grid';
-import { useDemoData } from '@material-ui/x-grid-data-generator';
 import { axiosWithAuth } from 'src/utils/axios';
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
+  root: {
+    backgroundColor: theme.palette.background.dark,
+    minHeight: '100%',
+    paddingBottom: theme.spacing(3),
+    paddingTop: theme.spacing(3)
+  },
   gridWrapper: {
-    height: '60vh',
+    height: '75vh',
     width: 'auto'
   },
   grid: {
@@ -21,72 +25,81 @@ const useStyles = makeStyles((theme) => ({
 const Agents = () => {
   const classes = useStyles();
 
-  const { data } = useDemoData({
-    dataSet: 'Commodity',
-    rowLength: 100,
-    maxColumns: 6
-  });
-
   const [agents, setAgents] = useState([]);
 
   useEffect(() => {
     axiosWithAuth()
-    .get('http://127.0.0.1:8000/api/v1/agents')
-    .then(({ data }) => {
-      let res = data.data.length > 0? data.data: [];
-      setAgents(res);
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }, [])
+      .get('http://127.0.0.1:8000/api/v1/agents')
+      .then(({ respData }) => {
+        const res = respData.data.length > 0 ? respData.data : [];
+        setAgents(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   let agentRows = [];
 
+  // create a list of all agents with an added id field.
+  // This field is requried by Datagrid component
   if (agents && agents.length > 0) {
-    agentRows = agents.map(agent => {
-      return {id: agent.id, ...agent.attributes}
-    })
+    agentRows = agents.map((agent) => {
+      return { id: agent.id, ...agent.attributes };
+    });
   }
 
-  let agentColumns = [];
+  const agentColumns = [];
 
+  // Make each header name readable
   if (agentRows.length > 0) {
-    let colFields = Object.keys(agentRows[0]);
-    for (let elem of colFields) {
-      let header = "";
-      switch (elem) {
-        case "first_name":
-          header = "First Name";
+    const colFields = Object.keys(agentRows[0]);
+
+    colFields.forEach((fieldKey) => {
+      let header = '';
+      switch (fieldKey) {
+        case 'first_name':
+          header = 'First Name';
           break;
-        case "last_name":
-            header = "Last Name";
-            break;
-        case "rating":
-              header = "Rating";
-              break;
-        case "id_number":
-          header = "ID Number";
+        case 'last_name':
+          header = 'Last Name';
           break;
-        case "phone_number":
-          header = "Phone Number";
+        case 'rating':
+          header = 'Rating';
+          break;
+        case 'id_number':
+          header = 'ID Number';
+          break;
+        case 'phone_number':
+          header = 'Phone Number';
+          break;
+        case 'email':
+          header = 'Email';
+          break;
+        case 'status':
+          header = 'Status';
+          break;
+        case 'terms':
+          header = 'Terms';
           break;
         default:
-          header = elem;
+          header = fieldKey;
       }
 
-      agentColumns.push({field: elem, headerName: header })
-    }
+      // Each column field must match corresponding field name in row
+      agentColumns.push({ field: fieldKey, headerName: header, flex: 1 });
+    });
   }
 
-  let agentData = { columns: agentColumns, rows: agentRows };
+  const agentData = { columns: agentColumns, rows: agentRows };
 
   return (
     <Page title="Agents" className={classes.root}>
       <Container maxWidth={false}>
+        <DataGridToolbar title="Add Agent" />
         <div className={classes.gridWrapper}>
           <DataGrid
-            {...data}
+            {...agentData}
             components={{
               Toolbar: GridToolbar
             }}

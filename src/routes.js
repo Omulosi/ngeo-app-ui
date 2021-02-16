@@ -14,6 +14,8 @@ import AgentsView from 'src/views/agent';
 import ProjectsView from 'src/views/project';
 import HomeView from 'src/views/home';
 import MapView from 'src/views/map';
+import AgentDetails from 'src/views/agent/AgentDetails';
+import AgentProfile from 'src/views/agent/AgentProfile';
 
 const routes = [
   {
@@ -28,6 +30,8 @@ const routes = [
       { path: 'agents', element: <AgentsView /> },
       { path: 'projects', element: <ProjectsView /> },
       { path: 'map', element: <MapView /> },
+      { path: 'agent-details', element: <AgentDetails /> },
+      { path: 'agent-profile', element: <AgentProfile /> },
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

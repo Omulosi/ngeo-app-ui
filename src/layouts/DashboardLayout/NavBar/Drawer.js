@@ -1,20 +1,24 @@
 import React from 'react';
 import clsx from 'clsx';
-import
-{
+/* eslint-disable */
+import {
   Typography,
   makeStyles,
-  Avatar
+  Avatar,
+  Tooltip,
+  ListItem,
+  ListItemIcon
 } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
+// import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -29,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: '10vh',
+    height: '65px',
     padding: '0 24px',
     ...theme.mixins.toolbar
   },
@@ -47,9 +51,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
     })
-  },
-  menuButton: {
-    marginRight: 36
   },
   menuButtonHidden: {
     display: 'none'
@@ -100,21 +101,39 @@ const useStyles = makeStyles((theme) => ({
     padding: '12px 24px',
     fontSize: '14px',
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column'
   },
   gutter: {
-    paddingTop: '0.1em'
+    paddingTop: '16px',
+    paddingBottom: '8px'
   },
   logo: {
     fontWeight: 'bold',
     letterSpacing: '1px',
     fontSize: '1.2rem'
+  },
+  authBtn: {
+    fontSize: '0.9em',
+    cursor: 'pointer',
+    fontWeight: 600
+  },
+  menuButton: {
+    transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+    cursor: 'pointer',
+    paddingBottom: '8px',
+    paddingTop: '16px',
+    marginBottom: 0,
+    '&:hover': {
+      textDecoration: 'none',
+      backgroundColor: 'rgba(0,0,0,0.04)'
+    }
   }
 }));
 
 export default function DrawerComponent({ user, children }) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -123,53 +142,71 @@ export default function DrawerComponent({ user, children }) {
   };
 
   const userBox = user.isAuthenticated ? (
-    <div className={clsx(classes.profile,)}>
-      <Avatar>
-        {user.name.charAt(0)}
-      </Avatar>
-      <Typography color="textSecondary" variant="body2" className={classes.gutter}>
+    <div className={clsx(classes.profile)}>
+      <Avatar>{user.name.charAt(0)}</Avatar>
+      <Typography
+        color="textSecondary"
+        variant="body2"
+        className={classes.gutter}
+      >
         {user.name}
       </Typography>
-      <Typography color="textSecondary" variant="body2" className={classes.gutter}>
+      <Typography
+        color="textSecondary"
+        variant="body2"
+        style={{ paddingBottom: '4px' }}
+      >
         {user.email}
       </Typography>
-      <Typography color="textSecondary" variant="body2" className={classes.gutter}>
+      <Typography color="textSecondary" variant="body2">
         {user.role}
       </Typography>
-      <Typography style={{ color: '#1a73e8', paddingTop: '0.3em' }} variant="body2" className={classes.gutter}>
-        sign out
+      <Typography
+        style={{ color: '#1a73e8', paddingTop: '0.3em' }}
+        variant="body2"
+        className={classes.authBtn}
+      >
+        <span>Sign out</span>
       </Typography>
     </div>
   ) : (
     <div className={classes.profile}>
-      <Typography style={{ color: '#1a73e8', paddingTop: '0.3em' }} variant="body2" className={classes.gutter}>
-        sign in
+      <Typography
+        style={{ color: '#1a73e8', paddingTop: '0.3em' }}
+        variant="body2"
+        className={classes.authBtn}
+      >
+        <span onClick={() => navigate('/login')}>Sign in</span>
       </Typography>
+    </div>
+  );
+
+  const menuButton = (
+    <Tooltip title="menu" placement="right">
+      <ListItem className={classes.menuButton}>
+        <ListItemIcon
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          className={clsx(open && classes.menuButtonHidden)}
+        >
+          <MenuIcon />
+        </ListItemIcon>
+      </ListItem>
+    </Tooltip>
+  );
+
+  const menuToolbar = (
+    <div className={classes.toolbarIcon}>
+      <div className={classes.logo}>Ngeo</div>
+      <IconButton onClick={handleDrawerClose}>
+        <ChevronLeftIcon />
+      </IconButton>
     </div>
   );
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
-      >
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
       <Drawer
         variant="permanent"
         classes={{
@@ -177,14 +214,10 @@ export default function DrawerComponent({ user, children }) {
         }}
         open={open}
       >
-        <div className={classes.toolbarIcon}>
-          <div className={classes.logo}>Ngeo</div>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        { open ? userBox : null }
-        <Divider />
+        {open ? null : menuButton}
+        {open ? menuToolbar : null}
+        {open ? userBox : null}
+        {open ? <Divider /> : null}
         {children}
       </Drawer>
     </div>

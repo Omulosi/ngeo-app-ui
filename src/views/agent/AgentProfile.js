@@ -1,62 +1,55 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Container,
-  Grid,
-  makeStyles
-} from '@material-ui/core';
-import { useIntl } from 'react-intl';
+import { Container, Grid, makeStyles } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+
+import Page from 'src/components/Page';
+
+import { axiosWithAuth } from 'src/utils/axios';
+
 import TabPanel from '../../components/TabPanel';
-import AgentDetails from "./AgentDetails";
-
-
-import Page from 'material-ui-shell/lib/containers/Page/Page';
-
-import { axiosWithAuth } from 'utils/axios';
-
-
+import AgentDetails from './AgentDetails';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
     minHeight: '100%',
     paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(5)
+    paddingTop: theme.spacing(3)
   },
   tab: {
     color: 'rgb(33, 150, 243)'
+  },
+  padTop: {
+    paddingTop: '2em'
   }
 }));
 
 const a11yProps = (index) => {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`
   };
-}
+};
 
-const MyAccount = (props) => {
+const MyAccount = () => {
   const classes = useStyles();
-  const intl = useIntl();
 
-  const {
-    profileData
-  } = props;
+  // const { profileData } = props;
 
   const [user, setUser] = useState({});
+  console.log(user);
 
   useEffect(() => {
     axiosWithAuth()
-    .get('/auth/me')
-    .then(({data}) => {
-      debugger
-      setUser(data.data.attributes);
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }, [])
+      .get('/auth/me')
+      .then(({ data }) => {
+        setUser(data.data.attributes);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const [value, setValue] = React.useState(0);
 
@@ -64,53 +57,47 @@ const MyAccount = (props) => {
     setValue(newValue);
   };
 
-
   return (
-    <Page
-      pageTitle={intl.formatMessage({
-        id: 'agent_info',
-        defaultMessage: 'Agent Profile',
-      })}
-      className={classes.root}
-    >
-
-    <div className={classes.root}>
-      <Container maxWidth="lg">
-        <Grid container spacing={3}>
-          <Tabs value={value} onChange={handleChange} aria-label="simple tabs example"
-          variant="fullWidth"
-          textColor="primary"
-          >
-            <Tab label="Details" {...a11yProps(0)} />
-            <Tab label="Projects" {...a11yProps(1)} />
-            <Tab label="Performance" {...a11yProps(1)} />
-          </Tabs>
-        </Grid>
-
-        <TabPanel value={value} index={0}>
-          <Grid
-            container
-            spacing={3}
+    <Page title="Agent Profile" maxWidth={false}>
+      <div className={classes.root}>
+        <Container maxWidth="lg">
+          <Grid container spacing={3}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="simple tabs example"
+              variant="fullWidth"
+              textColor="primary"
             >
-            <AgentDetails />
+              <Tab label="Details" {...a11yProps(0)} />
+              <Tab label="Projects" {...a11yProps(1)} />
+              <Tab label="Performance" {...a11yProps(1)} />
+            </Tabs>
           </Grid>
-        </TabPanel>
 
-        <TabPanel value={value} index={1}>
-          <Grid
-            container
-            spacing={3}>
-            <Grid item lg={12} md={12} xs={12}>
-            
+          <TabPanel value={value} index={0}>
+            <Grid container spacing={3} className={classes.padTop}>
+              <AgentDetails />
             </Grid>
-          </Grid>
-        </TabPanel>
+          </TabPanel>
 
+          <TabPanel value={value} index={1}>
+            <Grid container spacing={3} className={classes.padTop}>
+              <Grid item lg={12} md={12} xs={12}>
+                <div>Agent Projects</div>
+              </Grid>
+            </Grid>
+          </TabPanel>
 
-      </Container>
-    
-    </div>
-   
+          <TabPanel value={value} index={2}>
+            <Grid container spacing={3} className={classes.padTop}>
+              <Grid item lg={12} md={12} xs={12}>
+                <div>Agent Performance</div>
+              </Grid>
+            </Grid>
+          </TabPanel>
+        </Container>
+      </div>
     </Page>
   );
 };
