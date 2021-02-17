@@ -10,6 +10,8 @@ import {
   Typography,
   makeStyles
 } from '@material-ui/core';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { login } from 'src/redux/actions/authActions';
 import Page from 'src/components/Page';
 import RFTextField from 'src/components/TextField';
 import FormWrapper from 'src/components/FormWrapper';
@@ -61,7 +63,15 @@ const useStyles = makeStyles((theme) => ({
 /* eslint-disable */
 const LoginView = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    dispatch({type: 'CLEAR_ERRORS'});
+  },[dispatch])
+
+  const error = useSelector(state => state.auth.authError, shallowEqual);
 
   return (
     <Page className={classes.root} title="Login">
@@ -102,8 +112,9 @@ const LoginView = () => {
                 .required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
+            onSubmit={(values) => {
+              dispatch(login(values))
+              navigate('/app/map', { replace: true });
             }}
           >
             {({

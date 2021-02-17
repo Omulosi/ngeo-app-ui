@@ -8,7 +8,7 @@ import {
   
   const initialState = {
     authError: null,
-    authenticated: false
+    isAuthenticated: false
   };
   
   export const authReducer = (state = initialState, action) => {
@@ -16,7 +16,7 @@ import {
       case SIGNUP:
         return {
           ...state,
-          authenticated: true,
+          isAuthenticated: true,
         }
         
       case SIGNIN:

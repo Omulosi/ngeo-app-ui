@@ -10,7 +10,7 @@ import {
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import MapIcon from '@material-ui/icons/Map';
 import PeopleIcon from '@material-ui/icons/People';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import FolderIcon from '@material-ui/icons/Folder';
 // import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 // import BarChartIcon from '@material-ui/icons/BarChart';
 // import LayersIcon from '@material-ui/icons/Layers';
@@ -72,7 +72,7 @@ const getMenuItems = (user) => {
     },
     {
       href: '/app/projects',
-      icon: AssignmentIcon,
+      icon: FolderIcon,
       title: 'Projects',
       visible: isAuthorized && isFieldOfficer
     },

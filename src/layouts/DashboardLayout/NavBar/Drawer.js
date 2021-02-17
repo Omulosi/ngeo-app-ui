@@ -19,6 +19,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { logout } from 'src/redux/actions/authActions';
 
 const drawerWidth = 240;
 
@@ -134,6 +136,7 @@ export default function DrawerComponent({ user, children }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -166,7 +169,7 @@ export default function DrawerComponent({ user, children }) {
         variant="body2"
         className={classes.authBtn}
       >
-        <span>Sign out</span>
+        <span onClick={() => dispatch(logout())}>Sign out</span>
       </Typography>
     </div>
   ) : (
