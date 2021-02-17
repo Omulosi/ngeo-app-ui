@@ -3,9 +3,11 @@ import { Container, Grid, makeStyles } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import PropTypes from 'prop-types';
+import { useSnackbar } from 'notistack';
 import Page from 'src/components/Page';
 import TabPanel from 'src/components/TabPanel';
-import ProfileDetails from './ProfileDetails';
+import LineProgress from 'src/components/LineProgress';
+import useUser from 'src/data';
 import Password from './Password';
 import Profile from './Profile';
 
@@ -28,14 +30,22 @@ const a11yProps = (index) => {
   };
 };
 
-const MyAccount = (props) => {
+const MyAccount = () => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { profileData } = props;
+  const { data, loading, error } = useUser();
 
-  const firstName = 'John';
-  const lastName = 'Mulongo';
-  const role = 'Field Outreach Officer';
+  if (error) {
+    enqueueSnackbar('Error loading profile data', {
+      variant: 'error'
+    });
+  }
+
+  let user = {};
+  if (data) {
+    user = data.attributes;
+  }
 
   const [value, setValue] = React.useState(0);
 
@@ -45,6 +55,7 @@ const MyAccount = (props) => {
 
   return (
     <Page title="My Account" className={classes.root}>
+      <>{loading && <LineProgress />}</>
       <Container maxWidth="lg">
         <div className={classes.root}>
           <Grid container spacing={3}>
@@ -61,14 +72,7 @@ const MyAccount = (props) => {
           </Grid>
 
           <TabPanel value={value} index={0}>
-            <Grid container spacing={3}>
-              <Grid item lg={4} md={6} xs={12}>
-                <Profile role={role} fullName={`${firstName} ${lastName}`} />
-              </Grid>
-              <Grid item lg={8} md={6} xs={12}>
-                <ProfileDetails profileDetails={profileData} />
-              </Grid>
-            </Grid>
+            <Profile user={user} />
           </TabPanel>
 
           <TabPanel value={value} index={1}>

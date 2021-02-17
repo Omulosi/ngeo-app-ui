@@ -21,6 +21,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from 'src/redux/actions/authActions';
+import { roleNames } from 'src/config';
 
 const drawerWidth = 240;
 
@@ -132,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function DrawerComponent({ user, children }) {
+export default function DrawerComponent({ profileData = {}, children }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
@@ -144,9 +145,19 @@ export default function DrawerComponent({ user, children }) {
     setOpen(false);
   };
 
+  let user = {};
+  if (profileData) {
+    user = {
+      ...profileData,
+      name: `${profileData.first_name} ${profileData.last_name}`,
+      role: roleNames[profileData.role],
+      isAuthenticated: !!profileData.pk
+    };
+  }
+
   const userBox = user.isAuthenticated ? (
     <div className={clsx(classes.profile)}>
-      <Avatar>{user.name.charAt(0)}</Avatar>
+      <Avatar>{user && user.name ? user.name.charAt(0) : 'A'}</Avatar>
       <Typography
         color="textSecondary"
         variant="body2"
@@ -169,7 +180,7 @@ export default function DrawerComponent({ user, children }) {
         variant="body2"
         className={classes.authBtn}
       >
-        <span onClick={() => dispatch(logout())}>Sign out</span>
+        <span onClick={() => dispatch(logout(navigate))}>Sign out</span>
       </Typography>
     </div>
   ) : (

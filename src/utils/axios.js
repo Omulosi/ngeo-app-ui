@@ -1,6 +1,7 @@
 import axios from 'axios';
-// import { BASE_URL } from "http://127.0.0.1/api/v1";
-const BASE_URL = 'http://127.0.0.1/api/v1';
+import { makeUseAxios } from 'axios-hooks';
+import BASE_URL from 'src/config';
+// const BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
 export const axiosWithAuth = () => {
   const token = localStorage.getItem('token');
@@ -20,5 +21,19 @@ export const axiosWithoutAuth = () => {
     headers: {
       'Content-Type': 'application/json'
     }
+  });
+};
+
+export const useAxios = () => {
+  const token = localStorage.getItem('token');
+
+  return makeUseAxios({
+    axios: axios.create({
+      baseURL: `${BASE_URL}`,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`
+      }
+    })
   });
 };

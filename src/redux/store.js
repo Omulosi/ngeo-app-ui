@@ -1,13 +1,13 @@
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware, compose } from 'redux';
 
-import thunk from "redux-thunk";
+import thunk from 'redux-thunk';
 
 // import { userReducer } from "./reducers/userReducer";
 // import { featureReducer } from './reducers/featureReducer';
-import rootReducer from "./reducers/rootReducer";
+import rootReducer from './reducers/rootReducer';
 
-const persistedState = localStorage.getItem("reduxState")
-  ? JSON.parse(localStorage.getItem("reduxState"))
+const persistedState = localStorage.getItem('reduxState')
+  ? JSON.parse(localStorage.getItem('reduxState'))
   : {};
 
 // const rootReducer = combineReducers({
@@ -28,7 +28,7 @@ const store = createStore(
 
 // store redux state to localStorage everytime a state update occurs
 store.subscribe(() => {
-  localStorage.setItem("reduxState", JSON.stringify(store.getState()));
+  localStorage.setItem('reduxState', JSON.stringify(store.getState()));
 });
 
 export default store;

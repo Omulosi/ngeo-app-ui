@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import {
   Box,
   Button,
@@ -12,10 +12,18 @@ import {
   makeStyles,
   Grid
 } from '@material-ui/core';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { signUp } from 'src/redux/actions/authActions';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
 import Page from 'src/components/Page';
 import TextField from 'src/components/TextField';
 import FormWrapper from 'src/components/FormWrapper';
 import Copyright from 'src/components/Copyright';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,6 +66,15 @@ const useStyles = makeStyles((theme) => ({
   },
   link: {
     color: '#0073e6'
+  },
+  formControl: {
+    marginTop: theme.spacing(1),
+    minWidth: 120,
+    background: '#fff',
+    color: 'inherit'
+  },
+  error: {
+    textAlign: 'center'
   }
 }));
 
@@ -65,6 +82,35 @@ const useStyles = makeStyles((theme) => ({
 const RegisterView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const error = useSelector((state) => state.auth.authError, shallowEqual);
+
+  // const [role, setRole] = React.useState('');
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      firstName: '',
+      lastName: '',
+      password: '',
+      role: ''
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string()
+        .email('Must be a valid email')
+        .max(255)
+        .required('Email is required'),
+      firstName: Yup.string().max(255).required('First name is required'),
+      lastName: Yup.string().max(255).required('Last name is required'),
+      password: Yup.string().max(255).required('password is required'),
+      role: Yup.string().required('Select a role')
+    }),
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(signUp(values, navigate, enqueueSnackbar, setSubmitting));
+    }
+  });
 
   return (
     <Page className={classes.root} title="Register">
@@ -92,117 +138,111 @@ const RegisterView = () => {
               </Link>
             </Typography>
           </>
-          <Formik
-            initialValues={{
-              email: '',
-              firstName: '',
-              lastName: '',
-              password: '',
-              policy: false
-            }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email('Must be a valid email')
-                .max(255)
-                .required('Email is required'),
-              firstName: Yup.string()
-                .max(255)
-                .required('First name is required'),
-              lastName: Yup.string().max(255).required('Last name is required'),
-              password: Yup.string().max(255).required('password is required'),
-              policy: Yup.boolean().oneOf([true], 'This field must be checked')
-            })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
-            }}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values
-            }) => (
-              <form onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      error={Boolean(touched.firstName && errors.firstName)}
-                      fullWidth
-                      helperText={touched.firstName && errors.firstName}
-                      label="First name"
-                      margin="normal"
-                      name="firstName"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.firstName}
-                      required
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      error={Boolean(touched.lastName && errors.lastName)}
-                      fullWidth
-                      helperText={touched.lastName && errors.lastName}
-                      label="Last name"
-                      margin="normal"
-                      name="lastName"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.lastName}
-                      required
-                    />
-                  </Grid>
-                </Grid>
-
+          <form onSubmit={formik.handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
                 <TextField
-                  error={Boolean(touched.email && errors.email)}
+                  error={Boolean(
+                    formik.touched.firstName && formik.errors.firstName
+                  )}
                   fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email Address"
+                  helperText={
+                    formik.touched.firstName && formik.errors.firstName
+                  }
+                  label="First name"
                   margin="normal"
-                  name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="email"
-                  value={values.email}
+                  name="firstName"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.firstName}
                   required
                 />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
                 <TextField
-                  error={Boolean(touched.password && errors.password)}
+                  error={Boolean(
+                    formik.touched.lastName && formik.errors.lastName
+                  )}
                   fullWidth
-                  helperText={touched.password && errors.password}
-                  label="Password"
+                  helperText={formik.touched.lastName && formik.errors.lastName}
+                  label="Last name"
                   margin="normal"
-                  name="password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="password"
-                  value={values.password}
+                  name="lastName"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  value={formik.values.lastName}
                   required
                 />
-                {Boolean(touched.policy && errors.policy) && (
-                  <FormHelperText error>{errors.policy}</FormHelperText>
-                )}
-                <Box my={2}>
-                  <Button
-                    color="primary"
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    className={classes.btn}
-                  >
-                    Sign Up
-                  </Button>
-                </Box>
-              </form>
-            )}
-          </Formik>
+              </Grid>
+            </Grid>
+
+            <TextField
+              error={Boolean(formik.touched.email && formik.errors.email)}
+              fullWidth
+              helperText={formik.touched.email && formik.errors.email}
+              label="Email Address"
+              margin="normal"
+              name="email"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="email"
+              value={formik.values.email}
+              required
+            />
+            <TextField
+              error={Boolean(formik.touched.password && formik.errors.password)}
+              fullWidth
+              helperText={formik.touched.password && formik.errors.password}
+              label="Password"
+              margin="normal"
+              name="password"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="password"
+              value={formik.values.password}
+              required
+            />
+
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel id="demo-simple-select-filled-label">Role</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                name="role"
+                value={formik.values.role}
+                onChange={formik.handleChange}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={2}>CEO</MenuItem>
+                <MenuItem value={3}>Audit</MenuItem>
+                <MenuItem value={4}>Finace</MenuItem>
+                <MenuItem value={5}>Regional Manager</MenuItem>
+                <MenuItem value={6}>County Manager</MenuItem>
+                <MenuItem value={7}>Field Outreach Officer</MenuItem>
+              </Select>
+            </FormControl>
+            <Box my={2}>
+              <Button
+                color="primary"
+                disabled={formik.isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                className={classes.btn}
+              >
+                {formik.isSubmitting && <CircularProgress size={14} />}
+                {!formik.isSubmitting && 'Sign Up'}
+              </Button>
+            </Box>
+            <FormHelperText className={classes.error} error>
+              {' '}
+              {error && error}
+            </FormHelperText>
+          </form>
         </Container>
       </FormWrapper>
       <Copyright />

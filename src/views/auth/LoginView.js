@@ -1,21 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import {
   Box,
   Button,
   Container,
   Link,
   Typography,
-  makeStyles
+  makeStyles,
+  FormHelperText
 } from '@material-ui/core';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useSnackbar } from 'notistack';
 import { login } from 'src/redux/actions/authActions';
 import Page from 'src/components/Page';
 import RFTextField from 'src/components/TextField';
 import FormWrapper from 'src/components/FormWrapper';
 import Copyright from 'src/components/Copyright';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,6 +60,17 @@ const useStyles = makeStyles((theme) => ({
   },
   link: {
     color: '#0073e6'
+  },
+  error: {
+    textAlign: 'center'
+  },
+  title: {
+    marginBottom: '0.2em',
+    fontWeight: '500',
+    fontFamily: 'Roboto Condensed, sans-serif',
+    fontSize: '1.6rem',
+    color: 'rgba(0,0,0,0.8)',
+    cursor: 'pointer'
   }
 }));
 
@@ -65,16 +79,45 @@ const LoginView = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    dispatch({type: 'CLEAR_ERRORS'});
-  },[dispatch])
+    dispatch({ type: 'CLEAR_ERRORS' });
+  }, [dispatch]);
 
-  const error = useSelector(state => state.auth.authError, shallowEqual);
+  const error = useSelector((state) => state.auth.authError, shallowEqual);
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+      errors: ''
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email('Invalid email address')
+        .required('Please provide an email'),
+      password: Yup.string()
+        .required('Please provide a password')
+        .min(6, 'Password too short')
+    }),
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(login(values, navigate, enqueueSnackbar, setSubmitting));
+    }
+  });
 
   return (
     <Page className={classes.root} title="Login">
+      <Typography
+        variant="h5"
+        gutterBottom
+        marked="center"
+        align="center"
+        className={classes.title}
+        onClick={() => navigate('/')}
+      >
+        Ngeo
+      </Typography>
       <FormWrapper>
         <Container maxWidth="sm">
           <>
@@ -100,78 +143,51 @@ const LoginView = () => {
               </Link>
             </Typography>
           </>
-          <Formik
-            initialValues={{
-              email: '',
-              password: ''
-            }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email('Must be a valid email')
-                .max(255)
-                .required('Email is required'),
-              password: Yup.string().max(255).required('Password is required')
-            })}
-            onSubmit={(values) => {
-              dispatch(login(values))
-              navigate('/app/map', { replace: true });
-            }}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values
-            }) => (
-              <form onSubmit={handleSubmit} className={classes.form}>
-                <RFTextField
-                  error={Boolean(touched.email && errors.email)}
-                  fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email Address"
-                  margin="normal"
-                  name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="email"
-                  value={values.email}
-                  size="large"
-                  required
-                />
-                <RFTextField
-                  error={Boolean(touched.password && errors.password)}
-                  fullWidth
-                  helperText={touched.password && errors.password}
-                  label="Password"
-                  margin="normal"
-                  name="password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="password"
-                  value={values.password}
-                  className={classes.field}
-                  size="large"
-                  required
-                />
-                <Box my={2}>
-                  <Button
-                    color="primary"
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                    className={classes.btn}
-                  >
-                    Sign in
-                  </Button>
-                </Box>
-              </form>
-            )}
-          </Formik>
+          <form onSubmit={formik.handleSubmit} className={classes.form}>
+            <RFTextField
+              error={Boolean(formik.touched.email && formik.errors.email)}
+              fullWidth
+              helperText={formik.touched.email && formik.errors.email}
+              label="Email Address"
+              margin="normal"
+              name="email"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="email"
+              value={formik.values.email}
+              size="large"
+              required
+            />
+            <RFTextField
+              error={Boolean(formik.touched.password && formik.errors.password)}
+              fullWidth
+              helperText={formik.touched.password && formik.errors.password}
+              label="Password"
+              margin="normal"
+              name="password"
+              onBlur={formik.handleBlur}
+              onChange={formik.handleChange}
+              type="password"
+              value={formik.values.password}
+              className={classes.field}
+              size="large"
+              required
+            />
+            <Box my={2}>
+              <Button
+                color="primary"
+                disabled={formik.isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+                className={classes.btn}
+              >
+                {formik.isSubmitting && <CircularProgress size={14} />}
+                {!formik.isSubmitting && 'Sign in'}
+              </Button>
+            </Box>
+          </form>
           <Typography align="center">
             <Link
               underline="always"
@@ -182,6 +198,10 @@ const LoginView = () => {
               Forgot password?
             </Link>
           </Typography>
+          <FormHelperText className={classes.error} error>
+            {' '}
+            {error && error}
+          </FormHelperText>
         </Container>
       </FormWrapper>
 

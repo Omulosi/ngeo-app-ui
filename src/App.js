@@ -1,7 +1,8 @@
 import 'react-perfect-scrollbar/dist/css/styles.css';
 import React from 'react';
 import { useRoutes } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/core';
+import { ThemeProvider, Button } from '@material-ui/core';
+import { SnackbarProvider } from 'notistack';
 import GlobalStyles from 'src/components/GlobalStyles';
 import 'src/mixins/chartjs';
 import theme from 'src/theme';
@@ -9,11 +10,21 @@ import routes from 'src/routes';
 
 const App = () => {
   const routing = useRoutes(routes);
+  const notistackRef = React.createRef();
+  const onClickDismiss = (key) => () => {
+    notistackRef.current.closeSnackbar(key);
+  };
 
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      {routing}
+      <SnackbarProvider
+        ref={notistackRef}
+        action={(key) => <Button onClick={onClickDismiss(key)}>Dismiss</Button>}
+        maxSnack={3}
+      >
+        <GlobalStyles />
+        {routing}
+      </SnackbarProvider>
     </ThemeProvider>
   );
 };

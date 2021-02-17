@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { DataGrid, GridToolbar } from '@material-ui/data-grid';
-import { axiosWithAuth } from 'src/utils/axios';
+import { useSnackbar } from 'notistack';
+import { useAxios } from 'src/utils/axios';
+import LineProgress from 'src/components/LineProgress';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -12,24 +14,34 @@ const useStyles = makeStyles((theme) => ({
   },
   grid: {
     marginTop: theme.spacing(5)
+  },
+  progress: {
+    marginTop: '0.3em'
   }
 }));
 
 const Projects = () => {
   const classes = useStyles();
-  const [projects, setProjects] = useState([]);
+  // const [projects, setProjects] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    axiosWithAuth()
-      .get('http://127.0.0.1:8000/api/v1/isiolo_projects')
-      .then(({ data }) => {
-        data = data.data.results ? data.data.results.features : [];
-        setProjects(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const [{ data, loading, error }] = useAxios()('/isiolo_projects');
+
+  // if (loading) {
+  //   return <Loading />;
+  // }
+
+  if (error) {
+    console.log(`Error => ${error}`);
+    enqueueSnackbar('Unable to fetch profile data', {
+      variant: 'info'
+    });
+  }
+
+  let projects = [];
+  if (data) {
+    projects = data.data.results ? data.data.results.features : [];
+  }
 
   /* eslint-disable */
   const rows = projects
@@ -98,7 +110,7 @@ const Projects = () => {
         default:
           header = field;
       }
-      columns.push({ field, headerName: header });
+      columns.push({ field, headerName: header, flex: 1 });
     });
   }
 
@@ -106,6 +118,7 @@ const Projects = () => {
 
   return (
     <Page title="Projects" className={classes.root}>
+      <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
         <div className={classes.gridWrapper}>
           <DataGrid
