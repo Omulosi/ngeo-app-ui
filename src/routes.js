@@ -16,6 +16,7 @@ import HomeView from 'src/views/home';
 import MapView from 'src/views/map';
 import AgentDetails from 'src/views/agent/AgentDetails';
 import AgentProfile from 'src/views/agent/AgentProfile';
+import IncidentsView from 'src/views/incident';
 
 const routes = [
   {
@@ -29,6 +30,7 @@ const routes = [
       { path: 'settings', element: <SettingsView /> },
       { path: 'agents', element: <AgentsView /> },
       { path: 'projects', element: <ProjectsView /> },
+      { path: 'incidents', element: <IncidentsView /> },
       { path: 'map', element: <MapView /> },
       { path: 'agent-details', element: <AgentDetails /> },
       { path: 'agent-profile', element: <AgentProfile /> },

@@ -39,7 +39,7 @@ const getMenuItems = (user) => {
       items: [
         {
           href: '/app/agents',
-          title: 'Agent List',
+          title: 'Agents',
           visible: isAuthorized
         },
         {
@@ -57,17 +57,17 @@ const getMenuItems = (user) => {
     },
     {
       icon: MapPin,
-      title: 'Incidences',
+      title: 'Incidents',
       visible: isAuthorized,
       items: [
         {
-          href: '/app/incidences',
-          title: 'Incidence List',
+          href: '/app/incidents',
+          title: 'Incidents List',
           visible: isAuthorized
         },
         {
-          href: '/app/incidences',
-          title: 'Incidence Detail',
+          href: '/app/incident',
+          title: 'IncidentDetail',
           visible: isAuthorized
         }
       ]

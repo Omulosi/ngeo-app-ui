@@ -10,11 +10,16 @@ const LocationMarkers = ({ markers, icon }) => {
     features = markers.features;
   }
 
-  const iconMarkers = features.map((property) => (
-    <Marker key={uuid()} position={property.geometry.coordinates} icon={icon}>
-      <CustomPopup property={property} />
-    </Marker>
-  ));
+  const iconMarkers = features.map((property) => {
+    const [latLng] = property.geometry.coordinates;
+    const lat = latLng[1];
+    const lng = latLng[0];
+    return (
+      <Marker key={uuid()} position={[lat, lng]} icon={icon}>
+        <CustomPopup property={property} latLng={[lat, lng]} />
+      </Marker>
+    );
+  });
 
   return <>{iconMarkers}</>;
 };

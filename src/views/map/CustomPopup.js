@@ -42,15 +42,15 @@ const useStyles = makeStyles({
   }
 });
 
-const CustomPopup = ({ property }) => {
+const CustomPopup = ({ property, latLng }) => {
   let info = property ? property.properties : {};
   let coords = {};
 
   if (property) {
     coords = {
       ...coords,
-      latitude: property.geometry.coordinates[0],
-      longitude: property.geometry.coordinates[1]
+      latitude: latLng[0],
+      longitude: latLng[1]
     };
   }
 
@@ -87,7 +87,8 @@ const CustomPopup = ({ property }) => {
 };
 
 CustomPopup.propTypes = {
-  property: PropTypes.object
+  property: PropTypes.object,
+  latLng: PropTypes.array
 };
 
 export default CustomPopup;

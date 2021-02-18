@@ -1,27 +1,28 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 /* eslint-disable */
 import {
-  MapContainer,
+  Map as MapContainer,
   LayersControl,
   LayerGroup,
   TileLayer
 } from 'react-leaflet';
 import L from 'leaflet';
+import { GeneralLayer, LocationMarkers } from './layers';
+import baseMaps from './layers/baseMap';
 import {
-  OSMTileLayer,
-  GeneralLayer,
-  LocationMarkers
-  // RegionLayer
-} from './layers';
+  EditControlComponent,
+  MeasureControlComponent,
+  SearchControl,
+  PrintControl
+} from './controls';
+import { CoordinatesControl } from 'react-leaflet-coordinates';
+import {
+  useIsioloProjects,
+  useIsioloInstallations,
+  useJurisdiction
+} from 'src/data';
 
 import { greenIcon, blueIcon } from './icons';
-
-import kenya_counties from 'src/dummy_data/counties';
-import ngare_mara from 'src/dummy_data/ngare_mara';
-import isiolo_projects from 'src/dummy_data/isiolo_projects';
-import foo_projects from 'src/dummy_data/projects';
-// import isiolo_installations from 'src/dummy_data/isiolo_key_installations';
-import foo_installations from 'src/dummy_data/installations';
 
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 delete L.Icon.Default.prototype._getIconUrl;
@@ -39,70 +40,102 @@ L.Icon.Default.mergeOptions({
 const Map = () => {
   const center = [0.69960492000038, 37.9210640870001];
 
+  let printControl = null;
+  const mapControl = useRef(null);
+  let areaLayer = React.createRef();
+
+  const [mapElement, setMapElement] = useState(null);
+  const [areaElement, setAreaELement] = useState(null);
+
+  const print = () => {
+    printControl.printMap('A4Portrait', 'MyFileName');
+  };
+
   const defaultGeoJsonData = {
     type: 'FeatureCollection',
     features: []
   };
 
-  // const [counties, setCounties] = useState(defaultGeoJsonData);
-  const [area, setArea] = useState(defaultGeoJsonData);
-  const [projects, setProjects] = useState(defaultGeoJsonData);
-  const [installations, setInstallations] = useState(defaultGeoJsonData);
-  // const [markers, setMarkers] = useState(defaultGeoJsonData);
+  let {
+    projects,
+    loading: projectLoading,
+    error: projectError
+  } = useIsioloProjects();
+  let {
+    installations,
+    loading: installationLoading,
+    error: installationError
+  } = useIsioloInstallations();
+  const { area, loading, error } = useJurisdiction('ngare mara');
 
-  // const fetchCounties = useCallback(() => {
-  //   setCounties(kenya_counties);
-  // }, []);
-
-  const fetchArea = useCallback(() => {
-    setArea(ngare_mara);
-  }, []);
-
-  const fetchProjects = useCallback(() => {
-    setProjects(foo_projects);
-  }, []);
-
-  const fetchInstallations = useCallback(() => {
-    // setInstallations(isiolo_installations);
-    setInstallations(foo_installations);
-  }, []);
-
-  // const fetchMarkers = useCallback(() => {
-  //   // setMarkers(sample_markers);
-  //   setMarkers(foo_projects);
-  // }, []);
+  const regionStyles = (feature) => {
+    return {
+      color: 'rgb(238, 153, 0)',
+      fillColor: 'rgb(238, 153, 0)',
+      opacity: '0.4'
+    };
+  };
 
   useEffect(() => {
-    fetchArea();
-    fetchProjects();
-    fetchInstallations();
-  }, [fetchArea, fetchProjects, fetchInstallations]);
+    try {
+      if (mapControl.current && areaLayer.current) {
+        setMapElement(mapControl.current.leafletElement);
+        setAreaELement(areaLayer.current.leafletElement);
+        mapControl.current.leafletElement.fitBounds(
+          areaLayer.current.leafletElement.getBounds()
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [areaLayer, area]);
 
-  const regionStyles = () => {
-    return { color: '#000', fillColor: '#ffe338' };
-  };
+  try {
+    if (mapControl.current && areaLayer.current) {
+      setMapElement(mapControl.current.leafletElement);
+      setAreaELement(areaLayer.current.leafletElement);
+      mapControl.current.leafletElement.fitBounds(
+        areaLayer.current.leafletElement.getBounds()
+      );
+    }
+  } catch (error) {
+    console.log(error);
+  }
+
+  console.log('=========================================================>');
+  console.log(mapControl);
+  console.log(areaLayer);
 
   return (
     <MapContainer
       center={center}
       zoom={7}
-      scrollWheelZoom={false}
+      maxZoom={20}
+      minZoom={5}
       className="map"
+      ref={mapControl}
     >
       <LayersControl position="topright">
-        <LayersControl.BaseLayer checked name="OpenStreetMap">
-          <OSMTileLayer />,
-        </LayersControl.BaseLayer>
-
-        <LayersControl.BaseLayer name="OpenStreetMap.BlackAndWhite">
-          <TileLayer
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-            url="https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
-          />
-        </LayersControl.BaseLayer>
+        {baseMaps.map(
+          ({
+            name,
+            url,
+            attribution,
+            type,
+            layer,
+            format,
+            checked = false
+          }) => {
+            return (
+              <LayersControl.BaseLayer key={name} name={name} checked={checked}>
+                <TileLayer attribution={attribution} url={url} />
+              </LayersControl.BaseLayer>
+            );
+          }
+        )}
 
         <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer data={area} styles={regionStyles} />
+          <GeneralLayer data={area} styles={regionStyles} ref={areaLayer} />
         </LayersControl.Overlay>
 
         <LayersControl.Overlay name="Projects">
@@ -121,6 +154,26 @@ const Map = () => {
           </LayerGroup>
         </LayersControl.Overlay>
       </LayersControl>
+
+      <EditControlComponent />
+      <MeasureControlComponent />
+      <SearchControl />
+      <PrintControl
+        ref={(ref) => {
+          printControl = ref;
+        }}
+        position="topleft"
+        sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
+        hideControlContainer={false}
+      />
+      <PrintControl
+        position="topleft"
+        sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
+        hideControlContainer={false}
+        title="Export as PNG"
+        exportOnly
+      />
+      <CoordinatesControl coordinates="decimal" position="bottomleft" />
     </MapContainer>
   );
 };

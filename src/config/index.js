@@ -1,7 +1,7 @@
 export const REMOTE_BASE_URL = 'https://ngeo-api.herokuapp.com/api/v1';
 export const LOCAL_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
-export default REMOTE_BASE_URL;
+export default LOCAL_BASE_URL;
 
 export const roles = {
   admin: 1,
@@ -24,4 +24,10 @@ export const roleNames = {
   5: 'Regional Manager',
   6: 'County Manager',
   7: 'Field Outreach Officer'
+};
+
+export const terms = {
+  1: 'Permanent',
+  2: 'Temporary',
+  3: 'Casual'
 };

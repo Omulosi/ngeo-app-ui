@@ -8,6 +8,7 @@ import store from './redux/store';
 
 // loads leaflet CSS
 import 'leaflet/dist/leaflet.css';
+import 'leaflet-draw/dist/leaflet.draw.css';
 import './index.css';
 
 ReactDOM.render(

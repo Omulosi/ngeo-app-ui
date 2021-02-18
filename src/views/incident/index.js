@@ -3,11 +3,10 @@ import { Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import DataGridToolbar from 'src/components/DataGridToolbar';
-// import { ArrowRight } from 'react-feather';
+import { ArrowRight } from 'react-feather';
 import { useSnackbar } from 'notistack';
-import { useAgents } from 'src/data';
+import { useIncidents } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
-import { terms } from 'src/config';
 // import { Scrollbars } from 'react-custom-scrollbars';
 
 const useStyles = makeStyles((theme) => ({
@@ -26,33 +25,29 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Agents = () => {
+const Incidents = () => {
   const classes = useStyles();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data, loading, error } = useAgents();
+  const { data, loading, error } = useIncidents();
 
   if (error) {
     console.log(`Error => ${error}`);
-    enqueueSnackbar('Error fetching agents', {
+    enqueueSnackbar('Unable to fetch incidents', {
       variant: 'error'
     });
   }
 
-  let agents = [];
+  let incidents = [];
   if (data) {
-    agents = data;
+    incidents = data.features;
   }
 
   /* eslint-disable */
-  const rows = agents
-    ? agents.map((agent) => {
-        return {
-          id: agent.id,
-          ...agent.attributes,
-          terms: terms[agent.attributes.terms]
-        };
+  const rows = incidents
+    ? incidents.map((p) => {
+        return { id: p.id, ...p.properties, Actions: <ArrowRight /> };
       })
     : [];
 
@@ -65,23 +60,14 @@ const Agents = () => {
         case 'id':
           header = 'ID';
           break;
-        case 'first_name':
-          header = 'First Name';
+        case 'title':
+          header = 'Title';
           break;
-        case 'last_name':
-          header = 'Last Name';
+        case 'description':
+          header = 'Description';
           break;
-        case 'id_number':
-          header = 'ID Number';
-          break;
-        case 'phone_number':
-          header = 'Phone Number';
-          break;
-        case 'rating':
-          header = 'Rating';
-          break;
-        case 'terms':
-          header = 'Terms';
+        case 'date_reported':
+          header = 'Date Reported';
           break;
         default:
           header = field;
@@ -90,16 +76,16 @@ const Agents = () => {
     });
   }
 
-  const agentData = { columns, rows };
+  const incidentData = { columns, rows };
 
   return (
-    <Page title="Agents" className={classes.root}>
+    <Page title="Incidents" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <DataGridToolbar title="Add Agent" />
+        <DataGridToolbar title="Add Incident" />
         <div className={classes.gridWrapper}>
           <DataGrid
-            {...agentData}
+            {...incidentData}
             components={{
               Toolbar: GridToolbar
             }}
@@ -116,4 +102,4 @@ const Agents = () => {
   );
 };
 
-export default Agents;
+export default Incidents;

@@ -22,7 +22,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const { data, loading, error } = useUser();
 
   if (error) {
-    enqueueSnackbar('Unable to fetch profile data. Try loggin in.', {
+    enqueueSnackbar('Problem fetching profile data', {
       variant: 'info'
     });
   }
