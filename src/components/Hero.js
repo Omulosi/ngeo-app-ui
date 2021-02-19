@@ -5,10 +5,7 @@ import clsx from 'clsx';
 import Button from './Button';
 import Typography from './Typography';
 import HeroLayout from './HeroLayout';
-import bgImage from '../assets/images/map_kenya_2.png';
-
-// const backgroundImage =
-//   'https://images.unsplash.com/photo-1534854638093-bada1813ca19?auto=format&fit=crop&w=1400&q=80';
+import bgImage from '../assets/images/Basemap_1.png';
 
 const backgroundImage = bgImage;
 

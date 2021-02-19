@@ -75,3 +75,13 @@ export const useAgents = () => {
     error
   };
 };
+
+export const useAgent = (id) => {
+  const { data, error } = useSWR(`/agents/${id}`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};

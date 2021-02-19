@@ -43,7 +43,7 @@ const getMenuItems = (user) => {
           visible: isAuthorized
         },
         {
-          href: '/app/agent-profile',
+          href: '/app/agents/1',
           title: 'Agent Profile',
           visible: isAuthorized
         }
@@ -66,7 +66,7 @@ const getMenuItems = (user) => {
           visible: isAuthorized
         },
         {
-          href: '/app/incident',
+          href: '/app/incidents/1',
           title: 'IncidentDetail',
           visible: isAuthorized
         }
