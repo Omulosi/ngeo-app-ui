@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
+import { Container } from '@material-ui/core';
+import ScrollBar from 'react-perfect-scrollbar';
 import customCheckbox from '../theme/customCheckbox';
 import CustomPagination from './CustomPagination';
+import DataGridToolbar from './DataGridToolbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     border: 0,
+    backgroundColor: '#fff',
     color:
-      theme.palette.type === 'light'
+      theme.palette.type === 'dark'
         ? 'rgba(0,0,0,.85)'
         : 'rgba(255,255,255,0.85)',
     fontFamily: [
@@ -26,8 +30,11 @@ const useStyles = makeStyles((theme) => ({
     ].join(','),
     WebkitFontSmoothing: 'auto',
     letterSpacing: 'normal',
+    '& .MuiIconButton-root': {
+      color: '#fff'
+    },
     '& .MuiDataGrid-columnsContainer': {
-      backgroundColor: theme.palette.type === 'light' ? '#fafafa' : '#1d1d1d'
+      backgroundColor: theme.palette.type === 'dark' ? '#fafafa' : '#1d1d1d'
     },
     '& .MuiDataGrid-iconSeparator': {
       display: 'none'
@@ -52,28 +59,57 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: 0
     },
     ...customCheckbox(theme)
+  },
+  gridWrapper: {
+    height: '75vh',
+    width: 'auto'
+  },
+  toolbar: {
+    marginBottom: theme.spacing(3)
+  },
+  gridToolbar: {
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2)
   }
 }));
 
-/* eslint-disable */
-const ResultGrid = ({ data }) => {
+const CustomToolbar = () => {
   const classes = useStyles();
 
   return (
-    <div style={{ width: '100%', minHeight: '60vh', color: 'blue' }}>
-      <DataGrid
-        {...data}
-        showToolbar
-        pageSize={10}
-        rowsPerPageOptions={[5, 10, 20, 25]}
-        pagination
-        checkboxSelection={true}
-        className={classes.root}
-        components={{
-          Pagination: CustomPagination
-        }}
-      />
+    <div className={classes.gridToolbar}>
+      <GridToolbar />
     </div>
+  );
+};
+
+/* eslint-disable */
+const ResultGrid = ({ data, title = 'Add Item' }) => {
+  const classes = useStyles();
+
+  return (
+    <Container maxWidth={false}>
+      <div className={classes.toolbar}>
+        <DataGridToolbar title={title} />
+      </div>
+      <ScrollBar>
+        <div className={classes.gridWrapper}>
+          <DataGrid
+            {...data}
+            pageSize={10}
+            rowsPerPageOptions={[5, 10, 20]}
+            pagination
+            checkboxSelection={true}
+            className={classes.root}
+            showToolbar
+            components={{
+              Toolbar: CustomToolbar,
+              Pagination: CustomPagination
+            }}
+          />
+        </div>
+      </ScrollBar>
+    </Container>
   );
 };
 

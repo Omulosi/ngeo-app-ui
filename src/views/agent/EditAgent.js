@@ -15,8 +15,12 @@ import {
 } from '@material-ui/core';
 import { terms as termsDict } from 'src/config';
 
-const useStyles = makeStyles(() => ({
-  root: {}
+const useStyles = makeStyles((theme) => ({
+  root: {},
+  formControl: {
+    marginTop: theme.spacing(2),
+    minWidth: 120
+  }
 }));
 
 /* eslint-disable */
@@ -123,12 +127,16 @@ const EditAgent = ({ agentDetails }) => {
                 onChange={formik.handleChange}
                 value={formik.values.terms}
               >
-                <option key="1232" value="" />
-                {Object.entries(termsDict).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value}
-                  </option>
-                ))}
+                <option key="#default" value={terms}>
+                  {defaultTerm}
+                </option>
+                {Object.entries(termsDict).map(([key, value]) =>
+                  value !== 'Casual' ? (
+                    <option key={key} value={key}>
+                      {value}
+                    </option>
+                  ) : null
+                )}
               </TextField>
             </Grid>
           </Grid>

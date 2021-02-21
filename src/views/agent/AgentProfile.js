@@ -109,14 +109,11 @@ const AgentProfile = () => {
 
         <TabPanel value={value} index={0}>
           <Grid container spacing={3} className={classes.padTop}>
-            <Grid item xl={3} lg={4} md={6} xs={12}>
+            <Grid item xl={6} lg={6} md={6} xs={12}>
               <AgentInfo />
             </Grid>
-            <Grid item xl={3} lg={4} md={6} xs={12}>
+            <Grid item xl={6} lg={6} md={6} xs={12}>
               <AssignProject agentDetails={agentDetails} />
-            </Grid>
-            <Grid item xl={3} lg={4} md={6} xs={12}>
-              <AssignRating agentDetails={agentDetails} />
             </Grid>
           </Grid>
         </TabPanel>
