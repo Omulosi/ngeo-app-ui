@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 /* eslint-disable */
 import {
   Map as MapContainer,
@@ -44,9 +44,6 @@ const Map = () => {
   const mapControl = useRef(null);
   let areaLayer = React.createRef();
 
-  const [mapElement, setMapElement] = useState(null);
-  const [areaElement, setAreaELement] = useState(null);
-
   const print = () => {
     printControl.printMap('A4Portrait', 'MyFileName');
   };
@@ -79,32 +76,20 @@ const Map = () => {
   useEffect(() => {
     try {
       if (mapControl.current && areaLayer.current) {
-        setMapElement(mapControl.current.leafletElement);
-        setAreaELement(areaLayer.current.leafletElement);
         mapControl.current.leafletElement.fitBounds(
           areaLayer.current.leafletElement.getBounds()
         );
+
+        console.log(
+          '=========================================================>'
+        );
+        console.log(mapControl.current);
+        console.log(areaLayer.current);
       }
     } catch (error) {
       console.log(error);
     }
-  }, [areaLayer, area]);
-
-  try {
-    if (mapControl.current && areaLayer.current) {
-      setMapElement(mapControl.current.leafletElement);
-      setAreaELement(areaLayer.current.leafletElement);
-      mapControl.current.leafletElement.fitBounds(
-        areaLayer.current.leafletElement.getBounds()
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
-  console.log('=========================================================>');
-  console.log(mapControl);
-  console.log(areaLayer);
+  }, []);
 
   return (
     <MapContainer

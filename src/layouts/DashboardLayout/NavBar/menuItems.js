@@ -33,21 +33,22 @@ const getMenuItems = (user) => {
       visible: isAuthorized
     },
     {
+      href: '/app/agents',
       icon: PeopleIcon,
       title: 'Agents',
-      visible: isAuthorized && isFieldOfficer,
-      items: [
-        {
-          href: '/app/agents',
-          title: 'Agents',
-          visible: isAuthorized
-        },
-        {
-          href: '/app/agents/1',
-          title: 'Agent Profile',
-          visible: isAuthorized
-        }
-      ]
+      visible: isAuthorized && isFieldOfficer
+      // items: [
+      //   {
+      //     href: '/app/agents',
+      //     title: 'Agents',
+      //     visible: isAuthorized
+      //   },
+      //   {
+      //     href: '/app/agents/1',
+      //     title: 'Agent Profile',
+      //     visible: isAuthorized
+      //   }
+      // ]
     },
     {
       href: '/app/projects',

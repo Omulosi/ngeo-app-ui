@@ -14,22 +14,38 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { terms as termsDict } from 'src/config';
+// import { useIsioloProjects } from 'src/data';
+import { useProjects } from 'src/data';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
 /* eslint-disable */
-const EditAgent = ({ agentDetails }) => {
+const AssignProject = ({ agentDetails, agentData }) => {
   const { terms } = agentDetails;
 
   const defaultTerm = termsDict[terms];
+
+  const { data: projects } = useProjects();
+  // const {
+  //   data: isioloProjects,
+  //   loading: isioloLoading,
+  //   error: isioloErr
+  // } = useIsioloProjects();
+
+  let projectList = [];
+  if (projects) {
+    projectList = projects.map((project) => {
+      return { id: project.id, name: project.attributes.name };
+    });
+  }
 
   const classes = useStyles();
 
   const formik = useFormik({
     initialValues: {
-      terms: defaultTerm || ''
+      projectName: ''
     },
     onSubmit: (values, { setSubmitting }) => {
       // dispatch(login(values, navigate, enqueueSnackbar, setSubmitting));
@@ -60,12 +76,12 @@ const EditAgent = ({ agentDetails }) => {
                 variant="outlined"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.terms}
+                value=""
               >
-                <option key="1232" value="" />
-                {Object.entries(termsDict).map(([key, value]) => (
-                  <option key={key} value={key}>
-                    {value}
+                <option key="#" value="" />
+                {projectList.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
                   </option>
                 ))}
               </TextField>
@@ -83,4 +99,4 @@ const EditAgent = ({ agentDetails }) => {
   );
 };
 
-export default EditAgent;
+export default AssignProject;

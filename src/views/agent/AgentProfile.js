@@ -52,18 +52,18 @@ const AgentProfile = () => {
   const { data, loading, error } = useAgent(id);
 
   if (error) {
-    if (error) {
-      console.log(`Error => ${error}`);
-      enqueueSnackbar('Unable to fetch profile data', {
-        variant: 'info'
-      });
-    }
+    console.log(`Error => ${error}`);
+    enqueueSnackbar('Unable to fetch agent profile data', {
+      variant: 'info'
+    });
   }
 
   let agentDetails = {};
+  let agentData = {};
   // let agentRelationships = {};
   if (data) {
     agentDetails = data.attributes;
+    agentData = data;
     // agentRelationships = data.relationships;
   }
 
@@ -110,10 +110,13 @@ const AgentProfile = () => {
         <TabPanel value={value} index={0}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item xl={6} lg={6} md={6} xs={12}>
-              <AgentInfo />
+              <AgentInfo agentDetails={agentDetails} />
             </Grid>
             <Grid item xl={6} lg={6} md={6} xs={12}>
-              <AssignProject agentDetails={agentDetails} />
+              <AssignProject
+                agentDetails={agentDetails}
+                agentData={agentData}
+              />
             </Grid>
           </Grid>
         </TabPanel>

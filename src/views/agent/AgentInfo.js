@@ -10,6 +10,8 @@ import {
   TableRow,
   makeStyles
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { terms as termsDict } from 'src/config';
 
 const useStyles = makeStyles({
   table: {},
@@ -23,29 +25,40 @@ const useStyles = makeStyles({
     fontWeight: 400
   }
 });
-const AgentInfo = () => {
+
+/*eslint-disable */
+const AgentInfo = ({ agentDetails }) => {
+  const {
+    email,
+    first_name: firstName,
+    id_number: idNumber,
+    last_name: lastName,
+    phone_number: phoneNumber,
+    terms
+  } = agentDetails;
+
   const classes = useStyles();
 
   const rows = [
     {
       name: 'Email',
-      value: 'adam.denisov@devias.io'
+      value: email || ''
     },
     {
       name: 'First Name',
-      value: 'David'
+      value: firstName || ''
     },
     {
       name: 'Last Name',
-      value: 'Hume'
+      value: lastName || ''
     },
     {
       name: 'Employment terms',
-      value: 'Casual'
+      value: termsDict[terms]
     },
-    { name: 'Phone', value: '+254 748 327 439' },
-    { name: 'Country', value: 'Kenya' },
-    { name: 'County', value: 'Isiolo' }
+    { name: 'Phone', value: phoneNumber || '' },
+    { name: 'ID Number', value: idNumber || '' },
+    { name: 'County', value: '' }
   ];
 
   return (
@@ -78,6 +91,10 @@ const AgentInfo = () => {
       </TableContainer>
     </Paper>
   );
+};
+
+AgentInfo.propTypes = {
+  agentDetails: PropTypes.object
 };
 
 export default AgentInfo;

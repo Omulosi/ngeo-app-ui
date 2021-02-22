@@ -15,6 +15,7 @@ import CustomDialog from 'src/components/CustomDialog';
 import { terms } from 'src/config';
 import EditAgent from './EditAgent';
 // import { Scrollbars } from 'react-custom-scrollbars';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Agents = () => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -149,7 +151,9 @@ const Agents = () => {
           </Tooltip>
           <Tooltip title="View" placement="bottom">
             <Avatar className={clsx(classes.dark, classes.viewAction)}>
-              <ArrowRight />
+              <ArrowRight
+                onClick={() => navigate(`/app/agents/${params.row.id}`)}
+              />
             </Avatar>
           </Tooltip>
         </Box>
