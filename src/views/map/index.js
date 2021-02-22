@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 /* eslint-disable */
 import {
   Map as MapContainer,
@@ -44,8 +44,6 @@ const Map = () => {
   const mapRef = useRef(null);
   const areaRef = useRef(null);
 
-  const [mapElement, setMapElement] = useState(null);
-  const [areaElement, setAreaElement] = useState(null);
   const [count, setCount] = React.useState(0);
 
   function onClick() {
@@ -84,8 +82,6 @@ const Map = () => {
 
   useEffect(() => {
     if (mapRef.current && areaRef.current) {
-      setMapElement(mapRef);
-      setAreaElement(areaRef);
       mapRef.current.leafletElement.fitBounds(
         areaRef.current.leafletElement.getBounds()
       );

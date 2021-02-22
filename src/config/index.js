@@ -1,7 +1,9 @@
-export const REMOTE_BASE_URL = 'https://ngeo-api.herokuapp.com/api/v1';
-export const LOCAL_BASE_URL = 'http://127.0.0.1:8000/api/v1';
+// export const REMOTE_BASE_URL = 'https://ngeo-api.herokuapp.com/api/v1';
+// export const LOCAL_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
-export default LOCAL_BASE_URL;
+const BASE_URL = process.env.REACT_APP_API_HOST;
+
+export default BASE_URL;
 
 export const roles = {
   admin: 1,
