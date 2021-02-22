@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 /* eslint-disable */
 import {
   Map as MapContainer,
@@ -41,8 +41,16 @@ const Map = () => {
   const center = [0.69960492000038, 37.9210640870001];
 
   let printControl = null;
-  const mapControl = useRef(null);
-  let areaLayer = React.createRef();
+  const mapRef = useRef(null);
+  const areaRef = useRef(null);
+
+  const [mapElement, setMapElement] = useState(null);
+  const [areaElement, setAreaElement] = useState(null);
+  const [count, setCount] = React.useState(0);
+
+  function onClick() {
+    setCount(count + 1);
+  }
 
   const print = () => {
     printControl.printMap('A4Portrait', 'MyFileName');
@@ -58,6 +66,7 @@ const Map = () => {
     loading: projectLoading,
     error: projectError
   } = useIsioloProjects();
+
   let {
     installations,
     loading: installationLoading,
@@ -74,22 +83,14 @@ const Map = () => {
   };
 
   useEffect(() => {
-    try {
-      if (mapControl.current && areaLayer.current) {
-        mapControl.current.leafletElement.fitBounds(
-          areaLayer.current.leafletElement.getBounds()
-        );
-
-        console.log(
-          '=========================================================>'
-        );
-        console.log(mapControl.current);
-        console.log(areaLayer.current);
-      }
-    } catch (error) {
-      console.log(error);
+    if (mapRef.current && areaRef.current) {
+      setMapElement(mapRef);
+      setAreaElement(areaRef);
+      mapRef.current.leafletElement.fitBounds(
+        areaRef.current.leafletElement.getBounds()
+      );
     }
-  }, []);
+  });
 
   return (
     <MapContainer
@@ -98,7 +99,8 @@ const Map = () => {
       maxZoom={20}
       minZoom={5}
       className="map"
-      ref={mapControl}
+      ref={mapRef}
+      onClick={onClick}
     >
       <LayersControl position="topright">
         {baseMaps.map(
@@ -120,7 +122,7 @@ const Map = () => {
         )}
 
         <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer data={area} styles={regionStyles} ref={areaLayer} />
+          <GeneralLayer data={area} styles={regionStyles} ref={areaRef} />
         </LayersControl.Overlay>
 
         <LayersControl.Overlay name="Projects">

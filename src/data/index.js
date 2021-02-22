@@ -50,7 +50,7 @@ export const useIsioloProjects = () => {
   const { data, error } = useSWR('/isiolo_projects', fetcher);
 
   return {
-    projects: data ? data.data.results : data,
+    projects: data ? data.data : data,
     loading: !error && !data,
     error
   };
@@ -90,7 +90,7 @@ export const useProjects = () => {
   const { data, error } = useSWR('/projects', fetcher);
 
   return {
-    data: data ? data.data : data,
+    data: data ? data.data.results : data,
     loading: !error && !data,
     error
   };

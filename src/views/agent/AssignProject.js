@@ -14,8 +14,7 @@ import {
   makeStyles
 } from '@material-ui/core';
 import { terms as termsDict } from 'src/config';
-// import { useIsioloProjects } from 'src/data';
-import { useProjects } from 'src/data';
+import { useIsioloProjects, useProjects } from 'src/data';
 
 const useStyles = makeStyles(() => ({
   root: {}
@@ -28,17 +27,26 @@ const AssignProject = ({ agentDetails, agentData }) => {
   const defaultTerm = termsDict[terms];
 
   const { data: projects } = useProjects();
-  // const {
-  //   data: isioloProjects,
-  //   loading: isioloLoading,
-  //   error: isioloErr
-  // } = useIsioloProjects();
+  const {
+    data: isioloProjects,
+    loading: isioloLoading,
+    error: isioloErr
+  } = useIsioloProjects();
 
   let projectList = [];
   if (projects) {
     projectList = projects.map((project) => {
       return { id: project.id, name: project.attributes.name };
     });
+  }
+
+  if (isioloProjects) {
+    projectList = [
+      ...projectList,
+      (projectList = projects.map((project) => {
+        return { id: project.id, name: project.attributes.name };
+      }))
+    ];
   }
 
   const classes = useStyles();
