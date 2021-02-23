@@ -66,7 +66,12 @@ export const login = (
       let errorMsg = 'Error logging in';
       // Get the first error message
       /* eslint-ignore */
-      if (err.response.status !== 404 && err.response && err.response.data) {
+      if (
+        err.response &&
+        err.response.status !== 404 &&
+        err.response &&
+        err.response.data
+      ) {
         for (let k in err.response.data) {
           errorMsg = err.response.data[k];
           break;

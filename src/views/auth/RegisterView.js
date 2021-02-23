@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
@@ -75,6 +75,14 @@ const useStyles = makeStyles((theme) => ({
   },
   error: {
     textAlign: 'center'
+  },
+  title: {
+    marginBottom: '0.2em',
+    fontWeight: '500',
+    fontFamily: 'Roboto Condensed, sans-serif',
+    fontSize: '1.6rem',
+    color: 'rgba(0,0,0,0.8)',
+    cursor: 'pointer'
   }
 }));
 
@@ -84,6 +92,10 @@ const RegisterView = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+
+  useEffect(() => {
+    dispatch({ type: 'CLEAR_ERRORS' });
+  }, [dispatch]);
 
   const error = useSelector((state) => state.auth.authError, shallowEqual);
 
@@ -114,6 +126,16 @@ const RegisterView = () => {
 
   return (
     <Page className={classes.root} title="Register">
+      <Typography
+        variant="h5"
+        gutterBottom
+        marked="center"
+        align="center"
+        className={classes.title}
+        onClick={() => navigate('/')}
+      >
+        Ngeo
+      </Typography>
       <FormWrapper>
         <Container maxWidth="sm">
           <>
