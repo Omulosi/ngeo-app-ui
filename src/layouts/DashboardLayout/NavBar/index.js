@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { List, makeStyles } from '@material-ui/core';
-import { useSnackbar } from 'notistack';
+// import { useSnackbar } from 'notistack';
 import useUser from 'src/data';
 import LineProgress from 'src/components/LineProgress';
 import NavItem from './Item';
@@ -18,13 +18,17 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
   const { data, loading, error } = useUser();
 
   if (error) {
-    enqueueSnackbar('Problem fetching profile data', {
-      variant: 'info'
-    });
+    // enqueueSnackbar(
+    //   'You are using the application as a general user. Log in to access more features',
+    //   {
+    //     variant: 'info'
+    //   }
+    // );
+    console.log(error);
   }
 
   let profileData = null;
