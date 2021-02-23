@@ -81,10 +81,14 @@ const Map = () => {
   };
 
   useEffect(() => {
-    if (mapRef.current && areaRef.current) {
-      mapRef.current.leafletElement.fitBounds(
-        areaRef.current.leafletElement.getBounds()
-      );
+    try {
+      if (mapRef.current && areaRef.current) {
+        mapRef.current.leafletElement.fitBounds(
+          areaRef.current.leafletElement.getBounds()
+        );
+      }
+    } catch (err) {
+      console.log(err);
     }
   });
 
