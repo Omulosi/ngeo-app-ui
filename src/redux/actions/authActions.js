@@ -25,14 +25,16 @@ export const signUp = (
     })
     .catch((err) => {
       let errorMsg = 'Error signing up.';
+
       // Get the first error message
-      if (err.response && err.response.data) {
+      if (err.response.status !== 404 && err.response && err.response.data) {
         for (let k in err.response.data) {
           errorMsg = err.response.data[k];
           break;
         }
         errorMsg = errorMsg[0].detail;
       }
+
       errorMsg = errorMsg.toLocaleLowerCase();
       dispatch({ type: SET_ERRORS, payload: errorMsg });
       setSubmitting(false);
@@ -64,7 +66,7 @@ export const login = (
       let errorMsg = 'Error logging in';
       // Get the first error message
       /* eslint-ignore */
-      if (err.response && err.response.data) {
+      if (err.response.status !== 404 && err.response && err.response.data) {
         for (let k in err.response.data) {
           errorMsg = err.response.data[k];
           break;

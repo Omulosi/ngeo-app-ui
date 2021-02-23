@@ -111,7 +111,22 @@ const Projects = () => {
         default:
           header = field;
       }
-      columns.push({ field, headerName: header, flex: 1 });
+      columns.push({
+        field,
+        headerName: header,
+        flex: 1,
+        hide:
+          field == 'id' ||
+          field == 'objectid' ||
+          field == 'altitude' ||
+          field == 'latitude' ||
+          field == 'longitude' ||
+          field == 'wardname' ||
+          field == 'villname' ||
+          field == 'foo' ||
+          field == 'constname' ||
+          field == 'slname'
+      });
     });
   }
 

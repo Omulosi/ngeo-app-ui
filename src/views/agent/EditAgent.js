@@ -31,7 +31,8 @@ const EditAgent = ({ agentDetails }) => {
     id_number,
     phone_number,
     rating,
-    terms
+    terms,
+    email
   } = agentDetails;
 
   const defaultTerm = termsDict[terms];
@@ -45,7 +46,8 @@ const EditAgent = ({ agentDetails }) => {
       idNumber: id_number || '',
       phoneNumber: phone_number || '',
       rating: rating || '',
-      terms: defaultTerm || ''
+      terms: defaultTerm || '',
+      email: email || ''
     },
     onSubmit: (values, { setSubmitting }) => {
       // dispatch(login(values, navigate, enqueueSnackbar, setSubmitting));
@@ -110,6 +112,18 @@ const EditAgent = ({ agentDetails }) => {
                 type="number"
                 variant="outlined"
                 value={formik.values.idNumber}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+              />
+            </Grid>
+            <Grid item md={6} xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                variant="outlined"
+                value={formik.values.email}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
               />

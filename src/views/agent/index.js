@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Avatar, Box, Container, makeStyles, Tooltip } from '@material-ui/core';
 import Page from 'src/components/Page';
-// import { DataGrid, GridToolbar } from '@material-ui/data-grid';
-// import DataGridToolbar from 'src/components/DataGridToolbar';
-import DataGrid from 'src/components/DataGrid';
+import { DataGrid, GridToolbar } from '@material-ui/data-grid';
+import DataGridToolbar from 'src/components/DataGridToolbar';
+// import DataGrid from 'src/components/DataGrid';
 import { ArrowRight, Edit } from 'react-feather';
 // import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useSnackbar } from 'notistack';
@@ -129,7 +129,12 @@ const Agents = () => {
         default:
           header = field;
       }
-      columns.push({ field, headerName: header, flex: 1 });
+      columns.push({
+        field,
+        headerName: header,
+        flex: 1,
+        hide: field == 'id' || field == 'projects' || field == 'returns'
+      });
     });
 
     const editField = {
@@ -167,7 +172,23 @@ const Agents = () => {
   return (
     <Page title="Agents" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
-      <DataGrid data={agentData} />
+      <Container maxWidth={false}>
+        <DataGridToolbar title="Add Agent" />
+        <div className={classes.gridWrapper}>
+          <DataGrid
+            {...agentData}
+            components={{
+              Toolbar: GridToolbar
+            }}
+            showToolbar
+            pageSize={10}
+            rowsPerPageOptions={[5, 10, 20]}
+            pagination
+            checkboxSelection
+            className={classes.grid}
+          />
+        </div>
+      </Container>
     </Page>
   );
 };

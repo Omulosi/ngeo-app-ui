@@ -14,8 +14,9 @@ import TabPanel from '../../components/TabPanel';
 // import AgentDetails from './AgentDetails';
 import AgentInfo from './AgentInfo';
 import AssignProject from './AssignProject';
-import AssignRating from './AssignRating';
+// import AssignRating from './AssignRating';
 import AgentProjects from './AgentProjects';
+import Returns from './Returns';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,6 +118,7 @@ const AgentProfile = () => {
               <AssignProject
                 agentDetails={agentDetails}
                 agentData={agentData}
+                projects=""
               />
             </Grid>
           </Grid>
@@ -125,7 +127,7 @@ const AgentProfile = () => {
         <TabPanel value={value} index={1}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <AgentProjects />
+              <AgentProjects agentDetails={agentDetails} />
             </Grid>
           </Grid>
         </TabPanel>
@@ -133,7 +135,7 @@ const AgentProfile = () => {
         <TabPanel value={value} index={2}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <div>{`Rating: ${agentDetails.rating}`}</div>
+              <Returns agentDetails={agentDetails} />
             </Grid>
           </Grid>
         </TabPanel>
