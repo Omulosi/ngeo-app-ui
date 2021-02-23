@@ -2,18 +2,11 @@ import { createStore, applyMiddleware, compose } from 'redux';
 
 import thunk from 'redux-thunk';
 
-// import { userReducer } from "./reducers/userReducer";
-// import { featureReducer } from './reducers/featureReducer';
 import rootReducer from './reducers/rootReducer';
 
 const persistedState = localStorage.getItem('reduxState')
   ? JSON.parse(localStorage.getItem('reduxState'))
   : {};
-
-// const rootReducer = combineReducers({
-//   user: userReducer,
-//   feature: featureReducer
-// });
 
 const store = createStore(
   rootReducer,

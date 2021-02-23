@@ -8,6 +8,8 @@ import DataGridToolbar from 'src/components/DataGridToolbar';
 // import DataGrid from 'src/components/DataGrid';
 import { ArrowRight, Edit } from 'react-feather';
 // import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useAgents } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
@@ -15,7 +17,6 @@ import CustomDialog from 'src/components/CustomDialog';
 import { terms } from 'src/config';
 import EditAgent from './EditAgent';
 // import { Scrollbars } from 'react-custom-scrollbars';
-import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
   actionItem: {
     display: 'flex',
-    justifyContent: 'space-betweeb',
+    justifyContent: 'space-between',
     alignItems: 'center'
   },
   viewAction: {
@@ -89,7 +90,7 @@ const Agents = () => {
           id: agent.id,
           ...agent.attributes,
           terms: terms[agent.attributes.terms],
-          agent: agent.attributes
+          agent: { ...agent.attributes, id: agent.id }
         };
       })
     : [];
@@ -120,8 +121,8 @@ const Agents = () => {
         case 'phone_number':
           header = 'Phone Number';
           break;
-        case 'rating':
-          header = 'Rating';
+        case 'email':
+          header = 'Email';
           break;
         case 'terms':
           header = 'Terms';
@@ -145,13 +146,9 @@ const Agents = () => {
         <Box className={classes.actionItem}>
           <Tooltip title="Edit" placement="bottom">
             <Avatar className={classes.dark}>
-              <Edit onClick={handleOpenEditDialog} />
-              <CustomDialog
-                open={editDialogOpen}
-                handleClose={handleCloseEditDialog}
-              >
-                <EditAgent agentDetails={params.value} />
-              </CustomDialog>
+              <Edit
+                onClick={() => navigate(`/app/agents/edit/${params.row.id}`)}
+              />
             </Avatar>
           </Tooltip>
           <Tooltip title="View" placement="bottom">
@@ -164,6 +161,7 @@ const Agents = () => {
         </Box>
       )
     };
+
     columns.push(editField);
   }
 
@@ -173,7 +171,7 @@ const Agents = () => {
     <Page title="Agents" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <DataGridToolbar title="Add Agent" />
+        <DataGridToolbar title="Add Agent" navLink="/app/agents/add" />
         <div className={classes.gridWrapper}>
           <DataGrid
             {...agentData}

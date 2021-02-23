@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, Container, Grid, Box, makeStyles } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import Page from 'src/components/Page';
@@ -47,7 +47,7 @@ const a11yProps = (index) => {
 const AgentProfile = () => {
   const classes = useStyles();
 
-  // const { profileData } = props;
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
 
@@ -88,7 +88,11 @@ const AgentProfile = () => {
         <Grid container spacing={3}>
           <Grid item xs={12} md={12} lg={12}>
             <Box display="flex" justifyContent="flex-start">
-              <Button color="primary" variant="contained">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => navigate(`/app/agents/edit/${id}`)}
+              >
                 Edit Agent
               </Button>
             </Box>

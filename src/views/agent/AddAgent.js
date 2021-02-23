@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import * as Yup from 'yup';
 import clsx from 'clsx';
+import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import {
   Box,
   Button,
@@ -13,21 +13,18 @@ import {
   Grid,
   TextField,
   makeStyles,
-  FormHelperText,
   Container,
-  Typography
+  Typography,
+  FormHelperText
 } from '@material-ui/core';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { terms as termsDict } from 'src/config';
-import { useAgent } from 'src/data';
-import { editAgent } from 'src/redux/actions/agentActions';
 import Page from 'src/components/Page';
+import { createAgent } from 'src/redux/actions/agentActions';
 
-/* eslint-disable */
 const useStyles = makeStyles((theme) => ({
-  root: {},
   root: {
     marginTop: theme.spacing(4)
   },
@@ -47,100 +44,56 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const EditAgent = () => {
-  const { id } = useParams();
+const AddAgent = () => {
   const classes = useStyles();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data, loading, error } = useAgent(id);
-
-  if (error) {
-    enqueueSnackbar('Error loading agent info', { variant: 'error' });
-  }
-
-  let agentDetails = {};
-  if (data) {
-    agentDetails = data.attributes;
-  }
-
-  const {
-    first_name,
-    last_name,
-    id_number,
-    phone_number,
-    terms,
-    email
-  } = agentDetails;
-
-  const defaultTerm = termsDict[terms];
-
-  const updateError = useSelector(
-    (state) => state.agent.agentError,
-    shallowEqual
-  );
-
-  const formik = useFormik({
-    initialValues: {
-      firstName: first_name || '',
-      lastName: last_name || '',
-      idNumber: id_number || '',
-      phoneNumber: phone_number || '',
-      terms: defaultTerm || '',
-      email: email || ''
-    },
-    validationSchema: Yup.object().shape({
-      email: Yup.string().email('Must be a valid email').max(255),
-      firstName: Yup.string().max(255),
-      lastName: Yup.string().max(255),
-      terms: Yup.string(),
-      phoneNumber: Yup.string(),
-      idNumber: Yup.string()
-    }),
-    onSubmit: (values, { setSubmitting }) => {
-      let { initialValues } = formik;
-
-      const temp = Object.entries(values).map(([key, value]) => {
-        if (initialValues[key] == values[key]) {
-          return [];
-        }
-        return [key, value];
-      });
-
-      const valuesToUpdate = Object.fromEntries(temp);
-
-      dispatch(
-        editAgent(
-          { id, ...valuesToUpdate },
-          navigate,
-          enqueueSnackbar,
-          setSubmitting
-        )
-      );
-    }
-  });
-
   useEffect(() => {
     dispatch({ type: 'CLEAR_ERRORS' });
   }, [dispatch]);
 
+  const error = useSelector((state) => state.agent.agentError, shallowEqual);
+
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      idNumber: '',
+      phoneNumber: '',
+      terms: '',
+      email: ''
+    },
+    validationSchema: Yup.object().shape({
+      email: Yup.string().email('Must be a valid email').max(255),
+      firstName: Yup.string().max(255).required('First name is required'),
+      lastName: Yup.string().max(255).required('Last name is required'),
+      terms: Yup.string().required('Select employment terms'),
+      phoneNumber: Yup.string(),
+      idNumber: Yup.string()
+    }),
+    onSubmit: (values, { setSubmitting }) => {
+      dispatch(createAgent(values, navigate, enqueueSnackbar, setSubmitting));
+    }
+  });
+
   return (
-    <Page className={classes.root} title="Edit Agent">
+    <Page className={classes.root} title="Add new Agent">
       <Container maxWidth="lg">
         <Typography variant="h1" component="h1" className={classes.header}>
-          Edit agent
+          Add new agent
         </Typography>
-        <Box>
+        <Box className={classes.content}>
           <form
             autoComplete="off"
             noValidate
-            className={clsx(classes.root)}
+            className={clsx(classes.content)}
             onSubmit={formik.handleSubmit}
           >
             <Card>
-              <CardHeader title="Edit agent info" />
+              <CardHeader title="Add a new Agent" />
               <Divider />
               <CardContent>
                 <Grid container spacing={3}>
@@ -172,7 +125,7 @@ const EditAgent = () => {
                     <TextField
                       fullWidth
                       label="Phone Number"
-                      name="phone"
+                      name="phoneNumber"
                       variant="outlined"
                       value={formik.values.phoneNumber}
                       onBlur={formik.handleBlur}
@@ -215,16 +168,11 @@ const EditAgent = () => {
                       onChange={formik.handleChange}
                       value={formik.values.terms}
                     >
-                      <option key="#default" value={terms}>
-                        {defaultTerm}
-                      </option>
-                      {Object.entries(termsDict).map(([key, value]) => {
-                        return value !== 'Casual' ? (
-                          <option key={key} value={key}>
-                            {value}
-                          </option>
-                        ) : null;
-                      })}
+                      {Object.entries(termsDict).map(([key, value]) => (
+                        <option key={key} value={key}>
+                          {value}
+                        </option>
+                      ))}
                     </TextField>
                   </Grid>
                 </Grid>
@@ -232,12 +180,12 @@ const EditAgent = () => {
               <Divider />
               <Box display="flex" justifyContent="flex-end" p={2}>
                 <Button color="primary" variant="contained" type="submit">
-                  Save details
+                  Add Agent
                 </Button>
               </Box>
               <FormHelperText className={classes.error} error>
                 {' '}
-                {updateError && updateError}
+                {error && error}
               </FormHelperText>
             </Card>
           </form>
@@ -247,8 +195,4 @@ const EditAgent = () => {
   );
 };
 
-EditAgent.propTypes = {
-  agentDetails: PropTypes.object
-};
-
-export default EditAgent;
+export default AddAgent;
