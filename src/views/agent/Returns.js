@@ -12,7 +12,8 @@ import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 // import { useAxios } from 'src/utils/axios';
 import { projectThemes } from 'src/config';
 import CustomDialog from 'src/components/CustomDialog';
-import ProjectDetails from './ProjectDetails';
+// import ProjectDetails from './ProjectDetails';
+import ReturnDetails from './ReturnDetails';
 // import { Scrollbars } from 'react-custom-scrollbars';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AgentProjects = ({ agentDetails }) => {
+const Returns = ({ agentDetails }) => {
   const classes = useStyles();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -59,7 +60,7 @@ const AgentProjects = ({ agentDetails }) => {
     setEditDialogOpen(false);
   };
 
-  const { projects } = agentDetails;
+  const { returns } = agentDetails;
   // const [projects, setProjects] = useState([]);
   // const { enqueueSnackbar } = useSnackbar();
 
@@ -82,15 +83,15 @@ const AgentProjects = ({ agentDetails }) => {
   // }
 
   /* eslint-disable */
-  const rows = projects
-    ? projects.map((p) => {
+  const rows = returns
+    ? returns.map((p) => {
         return {
           id: p.id,
-          name: p.name,
-          description: p.description,
-          theme: projectThemes[p.theme],
-          // will be passed to modal
-          project: p
+          project: p.project,
+          dateSubmitted: p.date_submitted,
+          rating: p.rating,
+          progress: p.progress_report,
+          return: p
         };
       })
     : [];
@@ -100,21 +101,24 @@ const AgentProjects = ({ agentDetails }) => {
     const fields = Object.keys(rows[0]);
     fields.forEach((field) => {
       let header = '';
-      if (field === 'project') {
+      if (field === 'return') {
         return;
       }
       switch (field) {
         case 'id':
           header = 'ID';
           break;
-        case 'name':
-          header = 'Name';
+        case 'projet':
+          header = 'Project';
           break;
-        case 'description':
-          header = 'Description';
+        case 'dateSubmitted':
+          header = 'Date Submitted';
           break;
-        case 'theme':
-          header = 'Theme';
+        case 'rating':
+          header = 'Rating';
+          break;
+        case 'progress':
+          header = 'Progress Report';
           break;
         default:
           header = field;
@@ -122,20 +126,20 @@ const AgentProjects = ({ agentDetails }) => {
       columns.push({ field, headerName: header, flex: 1 });
     });
 
-    const projectInfoField = {
-      field: 'project',
+    const returnInfoField = {
+      field: 'return',
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => (
         <Box className={classes.actionItem}>
-          <Tooltip title="View project" placement="bottom">
+          <Tooltip title="View return" placement="bottom">
             <Avatar className={clsx(classes.dark, classes.viewAction)}>
               <ArrowRight onClick={handleOpenEditDialog} />
               <CustomDialog
                 open={editDialogOpen}
                 handleClose={handleCloseEditDialog}
               >
-                <ProjectDetails projectDetails={params.value} />
+                <ReturnDetails returnDetails={params.value} />
               </CustomDialog>
             </Avatar>
           </Tooltip>
@@ -143,17 +147,17 @@ const AgentProjects = ({ agentDetails }) => {
       )
     };
 
-    columns.push(projectInfoField);
+    columns.push(returnInfoField);
   }
 
-  const projectData = { columns, rows };
+  const returnData = { columns, rows };
 
   return (
     <Page title="Projects" className={classes.root}>
       <Container maxWidth={false}>
         <div className={classes.gridWrapper}>
           <DataGrid
-            {...projectData}
+            {...returnData}
             components={{
               Toolbar: GridToolbar
             }}
@@ -170,8 +174,8 @@ const AgentProjects = ({ agentDetails }) => {
   );
 };
 
-AgentProjects.propTypes = {
+Returns.propTypes = {
   agentDetails: PropTypes.object
 };
 
-export default AgentProjects;
+export default Returns;

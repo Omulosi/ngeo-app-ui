@@ -33,3 +33,9 @@ export const terms = {
   2: 'Temporary',
   3: 'Casual'
 };
+
+export const projectThemes = {
+  1: 'Business Incubation',
+  2: 'Agri-business',
+  3: 'Water sanitation'
+};

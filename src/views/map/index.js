@@ -7,6 +7,7 @@ import {
   TileLayer
 } from 'react-leaflet';
 import L from 'leaflet';
+import { useSelector } from 'react-redux';
 import { GeneralLayer, LocationMarkers } from './layers';
 import baseMaps from './layers/baseMap';
 import {
@@ -39,6 +40,8 @@ L.Icon.Default.mergeOptions({
 
 const Map = () => {
   const center = [0.69960492000038, 37.9210640870001];
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   let printControl = null;
   const mapRef = useRef(null);
@@ -81,11 +84,17 @@ const Map = () => {
   };
 
   useEffect(() => {
-    if (mapRef.current && areaRef.current) {
-      mapRef.current.leafletElement.fitBounds(
-        areaRef.current.leafletElement.getBounds()
-      );
+    try {
+      if (mapRef.current && areaRef.current) {
+        mapRef.current.leafletElement.fitBounds(
+          areaRef.current.leafletElement.getBounds()
+        );
+      }
+    } catch (err) {
+      console.log(err);
     }
+    // Will force a rerender of the map to fit screen
+    setCount(count + 1);
   });
 
   return (
@@ -141,21 +150,27 @@ const Map = () => {
       <EditControlComponent />
       <MeasureControlComponent />
       <SearchControl />
-      <PrintControl
-        ref={(ref) => {
-          printControl = ref;
-        }}
-        position="topleft"
-        sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
-        hideControlContainer={false}
-      />
-      <PrintControl
-        position="topleft"
-        sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
-        hideControlContainer={false}
-        title="Export as PNG"
-        exportOnly
-      />
+      {!isAuthenticated && (
+        <PrintControl
+          ref={(ref) => {
+            printControl = ref;
+          }}
+          position="topleft"
+          sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
+          hideControlContainer={false}
+        />
+      )}
+
+      {!isAuthenticated && (
+        <PrintControl
+          position="topleft"
+          sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
+          hideControlContainer={false}
+          title="Export as PNG"
+          exportOnly
+        />
+      )}
+
       <CoordinatesControl coordinates="decimal" position="bottomleft" />
     </MapContainer>
   );
