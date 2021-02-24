@@ -61,12 +61,8 @@ const AgentProfile = () => {
   }
 
   let agentDetails = {};
-  let agentData = {};
-  // let agentRelationships = {};
   if (data) {
-    agentDetails = data.attributes;
-    agentData = data;
-    // agentRelationships = data.relationships;
+    agentDetails = { ...data.attributes, agentId: data.id };
   }
 
   // useAgent - agent details + returns
@@ -119,11 +115,7 @@ const AgentProfile = () => {
               <AgentInfo agentDetails={agentDetails} />
             </Grid>
             <Grid item xl={6} lg={6} md={6} xs={12}>
-              <AssignProject
-                agentDetails={agentDetails}
-                agentData={agentData}
-                projects=""
-              />
+              <AssignProject agentDetails={agentDetails} />
             </Grid>
           </Grid>
         </TabPanel>

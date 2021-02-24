@@ -17,10 +17,11 @@ import {
   PrintControl
 } from './controls';
 import { CoordinatesControl } from 'react-leaflet-coordinates';
-import {
+import useUser, {
   useIsioloProjects,
   useIsioloInstallations,
-  useJurisdiction
+  useJurisdiction,
+  useCounties
 } from 'src/data';
 
 import { greenIcon, blueIcon } from './icons';
@@ -43,6 +44,23 @@ const Map = () => {
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
+  const { data: user, loading: useLoading, error: userError } = useUser();
+
+  if (userError) {
+    // enqueueSnackbar(
+    //   'You are using the application as a general user. Log in to access more features',
+    //   {
+    //     variant: 'info'
+    //   }
+    // );
+    console.log(userError);
+  }
+
+  let userAreas = [];
+  if (user) {
+    userAreas = user.attributes.areas;
+  }
+
   let printControl = null;
   const mapRef = useRef(null);
   const areaRef = useRef(null);
@@ -61,6 +79,12 @@ const Map = () => {
     type: 'FeatureCollection',
     features: []
   };
+
+  let {
+    counties,
+    loading: countiesLoading,
+    error: countyError
+  } = useCounties();
 
   let {
     projects,

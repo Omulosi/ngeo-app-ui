@@ -13,52 +13,77 @@ import {
   TextField,
   makeStyles
 } from '@material-ui/core';
-import { terms as termsDict } from 'src/config';
-import { useIsioloProjects, useProjects } from 'src/data';
+// import { terms as termsDict } from 'src/config';
+import useUser, { useUserProjects } from 'src/data';
+import { assignProjectToAgent } from 'src/redux/actions/projectActions';
+import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
   root: {}
 }));
 
 /* eslint-disable */
-const AssignProject = ({ agentDetails, agentData }) => {
-  const { terms } = agentDetails;
+const AssignProject = ({ agentDetails }) => {
+  const { agentId } = agentDetails;
 
-  const defaultTerm = termsDict[terms];
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
-  const { data: projects } = useProjects();
+  const { data: user, loading: useLoading, error: userError } = useUser();
+
+  if (userError) {
+    // enqueueSnackbar(
+    //   'You are using the application as a general user. Log in to access more features',
+    //   {
+    //     variant: 'info'
+    //   }
+    // );
+    console.log(userError);
+  }
+
+  let userPk = null;
+  if (user) {
+    userPk = user.attributes.pk;
+  }
+
+  // get projects for currently logged in field officer/user
   const {
-    data: isioloProjects,
-    loading: isioloLoading,
-    error: isioloErr
-  } = useIsioloProjects();
+    data: projects,
+    loading: projectsLoading,
+    error: projectsError
+  } = useUserProjects(userPk);
 
   let projectList = [];
   if (projects) {
     projectList = projects.map((project) => {
-      return { id: project.id, name: project.attributes.name };
+      return {
+        id: project.id,
+        name: project.attributes.name,
+        assignedTo: project.relationships.agent.data
+      };
     });
   }
 
-  if (isioloProjects) {
-    projectList = [
-      ...projectList,
-      (projectList = projects.map((project) => {
-        return { id: project.id, name: project.attributes.name };
-      }))
-    ];
-  }
+  projectList = projectList.filter((project) => !project.assignedTo);
 
   const classes = useStyles();
 
   const formik = useFormik({
     initialValues: {
-      projectName: ''
+      projectId: ''
     },
     onSubmit: (values, { setSubmitting }) => {
-      // dispatch(login(values, navigate, enqueueSnackbar, setSubmitting));
-      console.log(values);
-      setSubmitting(false);
+      dispatch(
+        assignProjectToAgent(
+          { ...values, agentId },
+          navigate,
+          enqueueSnackbar,
+          setSubmitting
+        )
+      );
     }
   });
 
@@ -78,13 +103,13 @@ const AssignProject = ({ agentDetails, agentData }) => {
               <TextField
                 fullWidth
                 label="Project"
-                name="project"
+                name="projectId"
                 select
                 SelectProps={{ native: true }}
                 variant="outlined"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value=""
+                value={formik.values.projectId}
               >
                 <option key="#" value="" />
                 {projectList.map((project) => (

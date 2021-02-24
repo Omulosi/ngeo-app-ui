@@ -95,3 +95,23 @@ export const useProjects = () => {
     error
   };
 };
+
+export const useUserProjects = (userPk) => {
+  const { data, error } = useSWR(`users/${userPk}/projects`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useUserAgents = (userPk) => {
+  const { data, error } = useSWR(`users/${userPk}/agents`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};

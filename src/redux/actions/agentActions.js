@@ -6,13 +6,13 @@ import { SET_ERRORS } from '../types';
 
 /* eslint-ignore */
 export const createAgent = (
-  { firstName, lastName, phoneNumber, idNumber, email, terms },
+  { firstName, lastName, phoneNumber, idNumber, email, terms, userPk },
   navigate,
   enqueueSnackbar,
   setSubmitting
 ) => (dispatch) => {
   axiosWithAuth()
-    .post(`${BASE_URL}/agents`, {
+    .post(`${BASE_URL}/users/${userPk}/agents/create`, {
       first_name: firstName,
       last_name: lastName,
       phone_number: phoneNumber,

@@ -11,7 +11,7 @@ import { ArrowRight, Edit } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { useAgents } from 'src/data';
+import useUser, { useUserAgents } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
 import CustomDialog from 'src/components/CustomDialog';
 import { terms } from 'src/config';
@@ -67,7 +67,19 @@ const Agents = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data, loading, error } = useAgents();
+  // get currently logged in user pk
+  const { data: user, loading: userLoading, error: userError } = useUser();
+
+  if (userError) {
+    console.log(userError);
+  }
+
+  let userPk = null;
+  if (user) {
+    userPk = user.attributes.pk;
+  }
+
+  const { data, loading, error } = useUserAgents(userPk);
 
   const agentDetails = {};
 

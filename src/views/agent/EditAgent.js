@@ -172,7 +172,7 @@ const EditAgent = () => {
                     <TextField
                       fullWidth
                       label="Phone Number"
-                      name="phone"
+                      name="phoneNumber"
                       variant="outlined"
                       value={formik.values.phoneNumber}
                       onBlur={formik.handleBlur}

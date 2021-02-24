@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { terms as termsDict } from 'src/config';
 import Page from 'src/components/Page';
 import { createAgent } from 'src/redux/actions/agentActions';
+import useUser from 'src/data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,6 +56,18 @@ const AddAgent = () => {
     dispatch({ type: 'CLEAR_ERRORS' });
   }, [dispatch]);
 
+  // get currently logged in user pk
+  const { data: user, error: userError } = useUser();
+
+  if (userError) {
+    console.log(userError);
+  }
+
+  let userPk = null;
+  if (user) {
+    userPk = user.attributes.pk;
+  }
+
   const error = useSelector((state) => state.agent.agentError, shallowEqual);
 
   const formik = useFormik({
@@ -75,7 +88,14 @@ const AddAgent = () => {
       idNumber: Yup.string()
     }),
     onSubmit: (values, { setSubmitting }) => {
-      dispatch(createAgent(values, navigate, enqueueSnackbar, setSubmitting));
+      dispatch(
+        createAgent(
+          { ...values, userPk },
+          navigate,
+          enqueueSnackbar,
+          setSubmitting
+        )
+      );
     }
   });
 
