@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const EditAgent = () => {
+const EditFieldOfficer = () => {
   const { id } = useParams();
   const classes = useStyles();
 
@@ -61,9 +61,9 @@ const EditAgent = () => {
     enqueueSnackbar('Error loading agent info', { variant: 'error' });
   }
 
-  let agentDetails = {};
+  let fieldOfficerDetails = {};
   if (data) {
-    agentDetails = data.attributes;
+    fieldOfficerDetails = data.attributes;
   }
 
   const {
@@ -73,7 +73,7 @@ const EditAgent = () => {
     phone_number,
     terms,
     email
-  } = agentDetails;
+  } = fieldOfficerDetails;
 
   const defaultTerm = termsDict[terms];
 
@@ -257,8 +257,8 @@ const EditAgent = () => {
   );
 };
 
-EditAgent.propTypes = {
-  agentDetails: PropTypes.object
+EditFieldOfficer.propTypes = {
+  fieldOfficerDetails: PropTypes.object
 };
 
-export default EditAgent;
+export default EditFieldOfficer;

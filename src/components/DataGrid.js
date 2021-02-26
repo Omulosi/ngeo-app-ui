@@ -68,8 +68,8 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(3)
   },
   gridToolbar: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2)
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3)
   }
 }));
 

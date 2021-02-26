@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { useAxios } from 'src/utils/axios';
 import fetcher from './fetchers';
 
 const useUser = () => {
@@ -13,24 +14,53 @@ const useUser = () => {
 
 export default useUser;
 
-export const useJurisdiction = (subLocationName) => {
-  const { data, error } = useSWR(
-    `/sublocations?locname=${subLocationName}`,
-    fetcher
-  );
+export const useSublocations = (areaName) => {
+  const { data, error } = useSWR(`/sublocations?search=${areaName}`, fetcher);
 
   return {
-    area: data ? data.data.results : data,
+    data: data ? data.data.results : data,
     loading: !error && !data,
     error
   };
 };
 
-export const useCounties = () => {
-  const { data, error } = useSWR('/counties', fetcher);
+export const useCounties = (countyName) => {
+  const { data, error } = useSWR(`/counties?search=${countyName}`, fetcher);
 
   return {
-    counties: data ? data.data.results : data,
+    data: data ? data.data.results : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useInstallations = (areaName) => {
+  const { data, error } = useSWR(`/installtions?search=${areaName}`, fetcher);
+
+  return {
+    data: data ? data.data.results : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useCounty = (countyName) => {
+  const [
+    { data, loading, error }
+  ] = useAxios()(`/counties?search=${countyName}`, { useCache: false });
+
+  return {
+    data: data ? data.data.results : data,
+    loading,
+    error
+  };
+};
+
+export const useRegions = (areaName) => {
+  const { data, error } = useSWR(`/regions?search=${areaName}`, fetcher);
+
+  return {
+    data: data ? data.data.results : data,
     loading: !error && !data,
     error
   };
@@ -50,7 +80,7 @@ export const useIsioloProjects = () => {
   const { data, error } = useSWR('/isiolo_projects', fetcher);
 
   return {
-    projects: data ? data.data : data,
+    data: data ? data.data.results : data,
     loading: !error && !data,
     error
   };
@@ -86,6 +116,16 @@ export const useAgent = (id) => {
   };
 };
 
+export const useFieldOfficer = (id) => {
+  const { data, error } = useSWR(`/field_officers/${id}`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};
+
 export const useProjects = () => {
   const { data, error } = useSWR('/projects', fetcher);
 
@@ -108,6 +148,26 @@ export const useUserProjects = (userPk) => {
 
 export const useUserAgents = (userPk) => {
   const { data, error } = useSWR(`users/${userPk}/agents`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useUserArea = (userPk) => {
+  const { data, error } = useSWR(`users/${userPk}/areas`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useUserResource = (pk, endpoint) => {
+  const { data, error } = useSWR(`users/${pk}/${endpoint}`, fetcher);
 
   return {
     data: data ? data.data : data,

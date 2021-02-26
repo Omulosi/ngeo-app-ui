@@ -56,7 +56,12 @@ const NotFoundView = () => {
           </Box>
           <Box textAlign="center" className={classes.btn}>
             <Button variant="outlined" color="primary">
-              <Link component={RouterLink} to="/" variant="h6" underline="none">
+              <Link
+                component={RouterLink}
+                to="/app/map"
+                variant="h6"
+                underline="none"
+              >
                 Back to Home
               </Link>
             </Button>

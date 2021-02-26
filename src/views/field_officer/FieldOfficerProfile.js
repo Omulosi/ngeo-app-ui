@@ -7,16 +7,18 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import Page from 'src/components/Page';
-import { useAgent } from 'src/data';
+import { useFieldOfficer } from 'src/data';
 
 import LineProgress from 'src/components/LineProgress';
 import TabPanel from '../../components/TabPanel';
-// import AgentDetails from './AgentDetails';
-import AgentInfo from './AgentInfo';
+import PageToolbar from 'src/components/PageToolbar';
+import FieldOfficerInfo from './FieldOfficerInfo';
 import AssignProject from './AssignProject';
-// import AssignRating from './AssignRating';
 import AgentProjects from './AgentProjects';
 import Returns from './Returns';
+import DetailsDisplay from '../agent/DetailsDisplay';
+import DisplayAgents from 'src/components/DisplayAgents';
+import DisplayProjects from 'src/components/DisplayProjects';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,25 +46,25 @@ const a11yProps = (index) => {
   };
 };
 
-const AgentProfile = () => {
+const FieldOfficerProfile = () => {
   const classes = useStyles();
 
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
 
-  const { data, loading, error } = useAgent(id);
+  const { data, loading, error } = useFieldOfficer(id);
 
   if (error) {
     console.log(`Error => ${error}`);
-    enqueueSnackbar('Unable to fetch agent profile data', {
-      variant: 'info'
+    enqueueSnackbar('Unable to fetch field officer profile data', {
+      variant: 'error'
     });
   }
 
-  let agentDetails = {};
+  let details = {};
   if (data) {
-    agentDetails = { ...data.attributes, agentId: data.id };
+    details = { ...data.attributes.user, foId: data.id };
   }
 
   const [value, setValue] = React.useState(0);
@@ -72,23 +74,10 @@ const AgentProfile = () => {
   };
 
   return (
-    <Page title="Agent Profile" className={classes.root}>
+    <Page title="Field Officer Profile" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <Grid container>
-          <Grid item xs={12} md={12} lg={12}>
-            <Box display="flex" justifyContent="flex-start">
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => navigate(`/app/agents/edit/${id}`)}
-              >
-                Edit Agent
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
-
+        <PageToolbar title="Field Officers" />
         <Grid container className={classes.content}>
           <Tabs
             value={value}
@@ -99,17 +88,17 @@ const AgentProfile = () => {
           >
             <Tab label="Details" {...a11yProps(0)} />
             <Tab label="Projects" {...a11yProps(1)} />
-            <Tab label="Returns" {...a11yProps(1)} />
+            <Tab label="Agents" {...a11yProps(1)} />
           </Tabs>
         </Grid>
 
         <TabPanel value={value} index={0}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item xl={6} lg={6} md={6} xs={12}>
-              <AgentInfo agentDetails={agentDetails} />
+              <FieldOfficerInfo details={details} />
             </Grid>
             <Grid item xl={6} lg={6} md={6} xs={12}>
-              <AssignProject agentDetails={agentDetails} />
+              <AssignProject agentDetails={details} />
             </Grid>
           </Grid>
         </TabPanel>
@@ -117,7 +106,9 @@ const AgentProfile = () => {
         <TabPanel value={value} index={1}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <AgentProjects agentDetails={agentDetails} />
+              <DisplayProjects
+                projects={data ? data.attributes.projects.features : []}
+              />
             </Grid>
           </Grid>
         </TabPanel>
@@ -125,7 +116,7 @@ const AgentProfile = () => {
         <TabPanel value={value} index={2}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <Returns agentDetails={agentDetails} />
+              <DisplayAgents agents={data ? data.attributes.agents : []} />
             </Grid>
           </Grid>
         </TabPanel>
@@ -134,4 +125,4 @@ const AgentProfile = () => {
   );
 };
 
-export default AgentProfile;
+export default FieldOfficerProfile;

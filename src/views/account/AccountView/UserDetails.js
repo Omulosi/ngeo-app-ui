@@ -17,16 +17,16 @@ import { roleNames } from 'src/config';
 
 const counties = [
   {
-    value: 'nairobi',
-    label: 'Nairobi'
+    value: '',
+    label: ''
   },
   {
-    value: 'bungoma',
-    label: 'Bungoma'
+    value: '',
+    label: ''
   },
   {
-    value: 'narok',
-    label: 'Narok'
+    value: '',
+    label: ''
   }
 ];
 
@@ -181,7 +181,7 @@ const ProfileDetails = ({ className, profileDetails = {}, ...rest }) => {
             <Grid item md={6} xs={12}>
               <TextField
                 fullWidth
-                label="Select County"
+                label="County"
                 name="county"
                 onChange={handleChange}
                 required

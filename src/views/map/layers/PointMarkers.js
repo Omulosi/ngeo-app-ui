@@ -4,19 +4,19 @@ import uuid from 'react-uuid';
 import { Marker } from 'react-leaflet';
 import CustomPopup from '../CustomPopup';
 
-const LocationMarkers = ({ markers, icon }) => {
+/* eslint-disable */
+const PointMarkers = ({ markers, icon }) => {
   let features = [];
   if (markers.features) {
     features = markers.features;
   }
 
   const iconMarkers = features.map((property) => {
-    let latLng = property.geometry.coordinates;
-    if (property.geometry.type === 'MultiPoint') {
-      [latLng] = property.geometry.coordinates;
-    }
-    const [lng, lat] = latLng; // first elem is longitude
-
+    // point type geometry has no nested array, unlike multipoint -
+    // so no array destructring
+    const latLng = property.geometry.coordinates;
+    const lng = latLng[0];
+    const lat = latLng[1];
     return (
       <Marker key={uuid()} position={[lat, lng]} icon={icon}>
         <CustomPopup property={property} latLng={[lat, lng]} />
@@ -27,9 +27,9 @@ const LocationMarkers = ({ markers, icon }) => {
   return <>{iconMarkers}</>;
 };
 
-LocationMarkers.propTypes = {
+PointMarkers.propTypes = {
   markers: PropTypes.object,
   icon: PropTypes.any
 };
 
-export default LocationMarkers;
+export default PointMarkers;

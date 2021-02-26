@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { mutate } from 'swr';
 import BASE_URL from 'src/config';
 /* eslint-disable */
 import { SIGNIN, LOGOUT, LOADING_USER, SET_ERRORS } from '../types';
@@ -57,7 +58,7 @@ export const login = (
       const { user } = data;
       const { token } = user;
       localStorage.setItem('token', `${token}`);
-      navigate('/app/map', { replace: true });
+      navigate('/app/dashboard', { replace: true });
       enqueueSnackbar(data.message, { variant: 'success' });
       setSubmitting(false);
       dispatch({ type: SIGNIN });
@@ -86,6 +87,9 @@ export const login = (
 export const logout = (navigate) => (dispatch) => {
   localStorage.removeItem('token');
   localStorage.setItem('reduxState', null);
+  mutate(`${BASE_URL}/regions`);
+  mutate(`${BASE_URL}/counties`);
+  mutate(`${BASE_URL}/sublocations`);
   dispatch({ type: LOGOUT });
   navigate('/login');
 };

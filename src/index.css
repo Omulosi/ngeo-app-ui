@@ -44,3 +44,20 @@ body {
 .property-value {
   font-style: italic;
 }
+
+/* customize material UI styles */
+.MuiDataGrid-root {
+  border: none !important;
+}
+
+.MuiDataGrid-toolbar,
+.MuiDataGrid-main,
+.MuiDataGrid-footer {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
+.MuiButton-containedPrimary {
+  color: #fff;
+  background-color: #376fd0;
+}

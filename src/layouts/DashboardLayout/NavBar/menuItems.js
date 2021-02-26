@@ -9,23 +9,18 @@ import {
 } from 'react-feather';
 import { roles } from 'src/config';
 
+/* eslint-disable */
 // Side menu items as a map of their links and components
 const getMenuItems = (user) => {
   // check if a user object not empty.
   // Presence of this object shows user is authorized to use the app.
   const isAuthorized = user && Object.entries(user).length !== 0;
   const isFieldOfficer = user && user.role && user.role === roles.FOO;
-  // const isRegionalManager = !!user.role && user.role === 'Regional Manager';
-  // const isCountyManager = !!user.role && user.role === 'County Manager';
+  const isRegionalManager = user && user.role && user.role === roles.RM;
+  const isCountyManager = user && user.role && user.role === roles.CM;
   // const isCEO = !!user.role && user.role === 'CEO';
 
   const items = [
-    {
-      href: '/app/map',
-      icon: MapIcon,
-      title: 'Map',
-      visible: true
-    },
     {
       href: '/app/dashboard',
       icon: DashboardIcon,
@@ -33,10 +28,16 @@ const getMenuItems = (user) => {
       visible: isAuthorized
     },
     {
+      href: '/app/map',
+      icon: MapIcon,
+      title: 'Map',
+      visible: true
+    },
+    {
       href: '/app/agents',
       icon: PeopleIcon,
       title: 'Agents',
-      visible: isAuthorized && isFieldOfficer
+      visible: isAuthorized && (isFieldOfficer || isCountyManager)
       // items: [
       //   {
       //     href: '/app/agents',
@@ -51,6 +52,18 @@ const getMenuItems = (user) => {
       // ]
     },
     {
+      href: '/app/field_officers',
+      icon: PeopleIcon,
+      title: 'FOO',
+      visible: isAuthorized && isCountyManager
+    },
+    {
+      href: '/app/county_managers',
+      icon: PeopleIcon,
+      title: 'County Managers',
+      visible: isAuthorized && isRegionalManager
+    },
+    {
       href: '/app/projects',
       icon: FolderIcon,
       title: 'Projects',
@@ -59,7 +72,7 @@ const getMenuItems = (user) => {
     {
       icon: MapPin,
       title: 'Incidents',
-      visible: isAuthorized,
+      visible: isAuthorized && isFieldOfficer,
       items: [
         {
           href: '/app/incidents',

@@ -1,35 +1,40 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { Box, Button, makeStyles } from '@material-ui/core';
+/* eslint-disable */
+import { Box, Divider, makeStyles } from '@material-ui/core';
+import Button from './Button';
 import { useNavigate } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
-  importButton: {
-    marginRight: theme.spacing(1)
+  divider: {
+    marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4)
   },
-  exportButton: {
-    marginRight: theme.spacing(1)
+  btn: {
+    textTransform: 'none'
   }
 }));
 
-/* eslint-disable */
-const Toolbar = ({ className, title, navLink, ...rest }) => {
+const Toolbar = ({ className, title, navLink, btnIcon, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
   return (
     <div className={clsx(classes.root, className)} {...rest}>
-      <Box display="flex" justifyContent="flex-start">
+      <Box display="flex" justifyContent="flex-end">
         <Button
           color="primary"
           variant="contained"
+          className={classes.btn}
           onClick={() => navigate(`${navLink}`)}
         >
+          {btnIcon}
           {title}
         </Button>
       </Box>
+      <Divider className={classes.divider} />
     </div>
   );
 };

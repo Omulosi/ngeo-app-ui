@@ -22,12 +22,14 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from 'src/redux/actions/authActions';
 import { roleNames } from 'src/config';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex'
+    display: 'flex',
+    fontSize: '13px'
   },
   toolbar: {
     paddingRight: 24 // keep right padding when drawer closed
@@ -64,11 +66,22 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
+    fontSize: '13px',
+    color: 'rgb(238,238,238)',
+    backgroundColor: 'rgb(35, 48, 68)',
     width: drawerWidth,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
-    })
+    }),
+    '& .MuiSvgIcon-root': {
+      fill: 'rgb(238,238,238)',
+      opacity: 0.5
+    },
+    '& svg': {
+      fill: 'rgb(238,238,238)',
+      opacity: 0.5
+    }
   },
   drawerPaperClose: {
     overflowX: 'hidden',
@@ -130,6 +143,10 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'none',
       backgroundColor: 'rgba(0,0,0,0.04)'
     }
+  },
+  thumbVertical: {
+    backgroundColor: 'rgb(238,238,238)',
+    borderRadius: 6
   }
 }));
 
@@ -158,23 +175,13 @@ export default function DrawerComponent({ profileData = {}, children }) {
   const userBox = user.isAuthenticated ? (
     <div className={clsx(classes.profile)}>
       <Avatar>{user && user.name ? user.name.charAt(0) : 'A'}</Avatar>
-      <Typography
-        color="textSecondary"
-        variant="body2"
-        className={classes.gutter}
-      >
+      <Typography variant="body2" className={classes.gutter}>
         {user.name}
       </Typography>
-      <Typography
-        color="textSecondary"
-        variant="body2"
-        style={{ paddingBottom: '4px' }}
-      >
+      <Typography variant="body2" style={{ paddingBottom: '4px' }}>
         {user.email}
       </Typography>
-      <Typography color="textSecondary" variant="body2">
-        {user.role}
-      </Typography>
+      <Typography variant="body2">{user.role}</Typography>
       <Typography
         style={{ color: '#1a73e8', paddingTop: '0.3em' }}
         variant="body2"
@@ -213,7 +220,7 @@ export default function DrawerComponent({ profileData = {}, children }) {
     <div className={classes.toolbarIcon}>
       <div className={classes.logo}>Ngeo</div>
       <IconButton onClick={handleDrawerClose}>
-        <ChevronLeftIcon />
+        <ChevronLeftIcon style={{ fill: 'rgb(238,238,238)' }} />
       </IconButton>
     </div>
   );
@@ -231,8 +238,16 @@ export default function DrawerComponent({ profileData = {}, children }) {
         {open ? null : menuButton}
         {open ? menuToolbar : null}
         {open ? userBox : null}
-        {open ? <Divider /> : null}
-        {children}
+        {open ? (
+          <Divider style={{ backgroundColor: 'rgb(238,238,238)' }} />
+        ) : null}
+        <Scrollbars
+          renderThumbVertical={(props) => (
+            <div {...props} className={classes.thumbVertical} />
+          )}
+        >
+          {children}
+        </Scrollbars>
       </Drawer>
     </div>
   );

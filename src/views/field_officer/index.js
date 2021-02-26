@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
-/* eslint-disable */
+import React from 'react';
 import clsx from 'clsx';
+import moment from 'moment';
+/* eslint-disable */
 import { Avatar, Box, Container, makeStyles, Tooltip } from '@material-ui/core';
 import Page from 'src/components/Page';
 import DataGridToolbar from 'src/components/DataGridToolbar';
 import { ArrowRight, Edit } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import useUser, { useUserAgents } from 'src/data';
+import useUser, { useUserResource } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
-import { terms } from 'src/config';
 import DataGridDisplay from 'src/components/DataGridDisplay';
 import AddIcon from '@material-ui/icons/Add';
+import PageToolbar from 'src/components/PageToolbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,23 +45,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Agents = () => {
+const FieldOfficerList = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  const handleOpenEditDialog = () => {
-    setEditDialogOpen(true);
-  };
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-  };
-
   const { enqueueSnackbar } = useSnackbar();
 
-  // get currently logged in user pk
+  // get currently logged in user pk:
+  // Todo: Turn into a hook -> useUserPk -> returns pk.
   const { data: user, loading: userLoading, error: userError } = useUser();
 
   if (userError) {
@@ -72,41 +63,51 @@ const Agents = () => {
     userPk = user.attributes.pk;
   }
 
-  const { data, loading, error } = useUserAgents(userPk);
-
-  const agentDetails = {};
+  const { data, loading, error } = useUserResource(userPk, 'field_officers');
 
   if (error) {
     console.log(`Error => ${error}`);
-    enqueueSnackbar('Error fetching agents', {
+    enqueueSnackbar('Error fetching field officers', {
       variant: 'error'
     });
   }
 
-  let agents = [];
+  let fieldOfficers = [];
   if (data) {
-    agents = data;
+    fieldOfficers = data;
   }
-
-  /* eslint-disable */
-  const rows = agents
-    ? agents.map((agent) => {
+  const rows = fieldOfficers
+    ? fieldOfficers.map((fo) => {
         return {
-          id: agent.id,
-          ...agent.attributes,
-          terms: terms[agent.attributes.terms],
-          agent: { ...agent.attributes, id: agent.id }
+          id: fo.id,
+          ...fo.attributes.user,
+          is_active: fo.attributes.user.is_active ? 'Active' : 'Inactive',
+          date_joined: moment(fo.attributes.user.date_joined),
+          fieldOfficer: { id: fo.id }
         };
       })
     : [];
 
   const columns = [];
+  const displayFields = [
+    'id',
+    'first_name',
+    'last_name',
+    'email',
+    'date_joined',
+    'is_active'
+  ];
   if (rows.length > 0) {
     const fields = Object.keys(rows[0]);
     fields.forEach((field) => {
       let header = '';
 
-      if (field === 'agent') {
+      if (field === 'fieldOfficer') {
+        return;
+      }
+
+      // Display only allowable fields
+      if (!displayFields.includes(field)) {
         return;
       }
 
@@ -120,17 +121,14 @@ const Agents = () => {
         case 'last_name':
           header = 'Last Name';
           break;
-        case 'id_number':
-          header = 'ID Number';
-          break;
-        case 'phone_number':
-          header = 'Phone Number';
-          break;
         case 'email':
           header = 'Email';
           break;
-        case 'terms':
-          header = 'Terms';
+        case 'date_joined':
+          header = 'Date Joined';
+          break;
+        case 'is_active':
+          header = 'Status';
           break;
         default:
           header = field;
@@ -139,27 +137,22 @@ const Agents = () => {
         field,
         headerName: header,
         flex: 1,
-        hide: field == 'id' || field == 'projects' || field == 'returns'
+        hide: field === 'id' || field === 'created' || field === 'uuid'
       });
     });
 
-    const editField = {
-      field: 'agent',
+    const actionField = {
+      field: 'fieldOfficer',
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => (
         <Box className={classes.actionItem}>
-          <Tooltip title="Edit" placement="bottom">
-            <Avatar className={classes.dark}>
-              <Edit
-                onClick={() => navigate(`/app/agents/edit/${params.row.id}`)}
-              />
-            </Avatar>
-          </Tooltip>
           <Tooltip title="View" placement="bottom">
             <Avatar className={clsx(classes.dark, classes.viewAction)}>
               <ArrowRight
-                onClick={() => navigate(`/app/agents/${params.row.id}`)}
+                onClick={() =>
+                  navigate(`/app/field_officers/${params.value.id}`)
+                }
               />
             </Avatar>
           </Tooltip>
@@ -167,24 +160,20 @@ const Agents = () => {
       )
     };
 
-    columns.push(editField);
+    columns.push(actionField);
   }
 
-  const agentData = { columns, rows };
+  const fieldOfficerData = { columns, rows };
 
   return (
-    <Page title="Agents" className={classes.root}>
+    <Page title="Field Officers" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <DataGridToolbar
-          title="Add Agent"
-          navLink="/app/agents/add"
-          btnIcon={<AddIcon />}
-        />
-        <DataGridDisplay data={agentData} title="Agents" />
+        <PageToolbar title="Field Outreach Officers" />
+        <DataGridDisplay data={fieldOfficerData} title="Field Officers" />
       </Container>
     </Page>
   );
 };
 
-export default Agents;
+export default FieldOfficerList;

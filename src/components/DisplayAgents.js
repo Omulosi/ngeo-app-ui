@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Agents = () => {
+const DisplayAgents = ({ agents }) => {
   const classes = useStyles();
   const navigate = useNavigate();
 
@@ -60,42 +60,15 @@ const Agents = () => {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  // get currently logged in user pk
-  const { data: user, loading: userLoading, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
-  }
-
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-
-  const { data, loading, error } = useUserAgents(userPk);
-
   const agentDetails = {};
-
-  if (error) {
-    console.log(`Error => ${error}`);
-    enqueueSnackbar('Error fetching agents', {
-      variant: 'error'
-    });
-  }
-
-  let agents = [];
-  if (data) {
-    agents = data;
-  }
 
   /* eslint-disable */
   const rows = agents
     ? agents.map((agent) => {
         return {
-          id: agent.id,
-          ...agent.attributes,
-          terms: terms[agent.attributes.terms],
-          agent: { ...agent.attributes, id: agent.id }
+          ...agent,
+          terms: terms[agent.terms],
+          agent: { id: agent.id }
         };
       })
     : [];
@@ -106,7 +79,12 @@ const Agents = () => {
     fields.forEach((field) => {
       let header = '';
 
-      if (field === 'agent') {
+      if (
+        field === 'agent' ||
+        field === 'returns' ||
+        field == 'projects' ||
+        field == 'field_officer'
+      ) {
         return;
       }
 
@@ -174,17 +152,11 @@ const Agents = () => {
 
   return (
     <Page title="Agents" className={classes.root}>
-      <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <DataGridToolbar
-          title="Add Agent"
-          navLink="/app/agents/add"
-          btnIcon={<AddIcon />}
-        />
         <DataGridDisplay data={agentData} title="Agents" />
       </Container>
     </Page>
   );
 };
 
-export default Agents;
+export default DisplayAgents;

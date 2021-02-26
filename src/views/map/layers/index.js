@@ -3,6 +3,7 @@ import LocationMarkers from './LocationMarkers';
 // import EditControlComponent from './EditControlComponent';
 import GeneralLayer from './GeneralLayer';
 import ProjectLayer from './ProjectLayer';
+import PointMarkers from './PointMarkers';
 // import SeachBox from './SearchBox';
 // import DistaceMeasure from './DistanceMeasure';
 
@@ -12,7 +13,8 @@ export {
   GeneralLayer,
   LocationMarkers,
   OSMTileLayer,
-  ProjectLayer
+  ProjectLayer,
+  PointMarkers
   //   SeachBox,
   //   DistaceMeasure
 };

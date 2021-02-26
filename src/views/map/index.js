@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
 /* eslint-disable */
+import React, { useRef, useCallback, useState, useEffect } from 'react';
 import {
   Map as MapContainer,
   LayersControl,
@@ -8,6 +8,18 @@ import {
 } from 'react-leaflet';
 import L from 'leaflet';
 import { useSelector } from 'react-redux';
+
+import { CoordinatesControl } from 'react-leaflet-coordinates';
+import useUser, {
+  useIsioloInstallations,
+  useSublocations,
+  useUserArea,
+  useCounties,
+  // useCounty,
+  useRegions,
+  useUserProjects
+} from 'src/data';
+import { roles } from 'src/config';
 import { GeneralLayer, LocationMarkers } from './layers';
 import baseMaps from './layers/baseMap';
 import {
@@ -16,13 +28,7 @@ import {
   SearchControl,
   PrintControl
 } from './controls';
-import { CoordinatesControl } from 'react-leaflet-coordinates';
-import useUser, {
-  useIsioloProjects,
-  useIsioloInstallations,
-  useJurisdiction,
-  useCounties
-} from 'src/data';
+import { axiosWithAuth } from 'src/utils/axios';
 
 import { greenIcon, blueIcon } from './icons';
 
@@ -39,75 +45,34 @@ L.Icon.Default.mergeOptions({
   shadowSize: [41, 41]
 });
 
-const Map = () => {
-  const center = [0.69960492000038, 37.9210640870001];
-
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  const { data: user, loading: useLoading, error: userError } = useUser();
-
-  if (userError) {
-    // enqueueSnackbar(
-    //   'You are using the application as a general user. Log in to access more features',
-    //   {
-    //     variant: 'info'
-    //   }
-    // );
-    console.log(userError);
-  }
-
-  let userAreas = [];
-  if (user) {
-    userAreas = user.attributes.areas;
-  }
-
-  let printControl = null;
-  const mapRef = useRef(null);
-  const areaRef = useRef(null);
-
-  const [count, setCount] = React.useState(0);
-
-  function onClick() {
-    setCount(count + 1);
-  }
-
-  const print = () => {
-    printControl.printMap('A4Portrait', 'MyFileName');
+const regionStyles = () => {
+  return {
+    color: 'rgb(238, 153, 0)',
+    fillColor: 'rgb(238, 153, 0)',
+    opacity: '0.4'
   };
+};
 
+/* eslint-disable */
+const Map = () => {
   const defaultGeoJsonData = {
     type: 'FeatureCollection',
     features: []
   };
 
-  let {
-    counties,
-    loading: countiesLoading,
-    error: countyError
-  } = useCounties();
+  // const [county, setCounty] = useState(defaultGeoJsonData);
+  // const [regions, setRegions] = useState(defaultGeoJsonData);
+  // const [jurisdiction, setJurisdiction] = useState(defaultGeoJsonData);
+  // const [projects, setProjects] = useState(defaultGeoJsonData);
+  // const [installations, setInstallations] = useState(defaultGeoJsonData);
 
-  let {
-    projects,
-    loading: projectLoading,
-    error: projectError
-  } = useIsioloProjects();
+  let printControl = null;
+  const mapRef = useRef(null);
+  const areaRef = useRef(null);
 
-  let {
-    installations,
-    loading: installationLoading,
-    error: installationError
-  } = useIsioloInstallations();
-  const { area, loading, error } = useJurisdiction('ngare mara');
+  const center = [0.69960492000038, 37.9210640870001];
 
-  const regionStyles = (feature) => {
-    return {
-      color: 'rgb(238, 153, 0)',
-      fillColor: 'rgb(238, 153, 0)',
-      opacity: '0.4'
-    };
-  };
-
-  useEffect(() => {
+  const fitToArea = () => {
     try {
       if (mapRef.current && areaRef.current) {
         mapRef.current.leafletElement.fitBounds(
@@ -117,9 +82,132 @@ const Map = () => {
     } catch (err) {
       console.log(err);
     }
-    // Will force a rerender of the map to fit screen
-    setCount(count + 1);
-  });
+  };
+
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
+  const print = () => {
+    printControl.printMap('A4Portrait', 'MyFileName');
+  };
+
+  //
+  const { data: user, error: userError } = useUser();
+
+  if (userError) {
+    console.log(userError);
+  }
+
+  let userPk = null;
+  let userRole = null;
+  if (user) {
+    userPk = user.attributes.pk;
+    userRole = user.attributes.role;
+  }
+
+  const { data: areas, error: areaError } = useUserArea(userPk);
+
+  if (areaError) {
+    console.log(areaError);
+  }
+
+  let userAreas = [];
+  let regionName = '';
+  let countyName = '';
+  let subcountyName = '';
+  let locationName = '';
+  let sublocationName = '';
+  if (areas && areas.length > 0) {
+    regionName = areas[0].attributes.region;
+    countyName = areas[0].attributes.county;
+    subcountyName = areas[0].attributes.sub_county;
+    locationName = areas[0].attributes.location;
+    sublocationName = areas[0].attributes.sub_location;
+  }
+
+  // Fetch jurisdiction areas
+  // county manager areas
+  countyName = countyName || 'Isiolo';
+  let { data: county, loading: loadCounty, error: countyError } = useCounties(
+    countyName
+  );
+
+  // const fetchCounty = useCallback(() => {
+  //   axiosWithAuth()
+  //     .get(`/counties?search=${countyName}`)
+  //     .then(({ data }) => {
+  //       setCounty(data.data.results);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }, [setCounty]);
+
+  // useEffect(() => {
+  //   fetchCounty();
+  // }, []);
+
+  // region manager areas
+  regionName = regionName || 'Eastern';
+  let { data: region, loading: loadRegion, error: regionError } = useRegions(
+    regionName
+  );
+
+  // Field officer areas
+  sublocationName = sublocationName || 'ngare mara';
+  let { data: sublocation, error: sublocationError } = useSublocations(
+    sublocationName
+  );
+
+  // Geojson data for jurisdiction area
+  let jurisdiction;
+
+  switch (userRole) {
+    case roles.RM:
+      jurisdiction = region;
+      break;
+    case roles.CM:
+      jurisdiction = county;
+      break;
+    case roles.FOO:
+      jurisdiction = sublocation;
+      break;
+    default:
+      jurisdiction = defaultGeoJsonData;
+  }
+
+  // All regions
+  let { data: regions, loading: loadRegions, error: regionsError } = useRegions(
+    ''
+  );
+
+  // All counties
+  let {
+    data: counties,
+    loading: loadCounties,
+    error: countiesError
+  } = useCounties();
+
+  if (countiesError) {
+    console.log(countiesError);
+  }
+
+  if (regionsError) {
+    console.log(regionsError);
+  }
+
+  // user projects
+  let {
+    data: projects,
+    loading: projectLoading,
+    error: projectError
+  } = useUserProjects(userPk);
+
+  // installations in users area
+  let {
+    installations,
+    loading: installationLoading,
+    error: installationError
+  } = useIsioloInstallations();
 
   return (
     <MapContainer
@@ -129,9 +217,16 @@ const Map = () => {
       minZoom={5}
       className="map"
       ref={mapRef}
-      onClick={onClick}
+      onlayeradd={fitToArea}
     >
       <LayersControl position="topright">
+        <LayersControl.Overlay checked name="Jurisdiction">
+          <GeneralLayer
+            ref={areaRef}
+            styles={regionStyles}
+            data={jurisdiction}
+          />
+        </LayersControl.Overlay>
         {baseMaps.map(
           ({
             name,
@@ -150,8 +245,12 @@ const Map = () => {
           }
         )}
 
-        <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer data={area} styles={regionStyles} ref={areaRef} />
+        <LayersControl.Overlay name="Regions">
+          <GeneralLayer data={regions} />,
+        </LayersControl.Overlay>
+
+        <LayersControl.Overlay name="Counties">
+          <GeneralLayer data={counties} />,
         </LayersControl.Overlay>
 
         <LayersControl.Overlay name="Projects">
