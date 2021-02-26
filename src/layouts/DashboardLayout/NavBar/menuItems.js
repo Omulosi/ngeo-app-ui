@@ -37,7 +37,7 @@ const getMenuItems = (user) => {
       href: '/app/agents',
       icon: PeopleIcon,
       title: 'Agents',
-      visible: isAuthorized && (isFieldOfficer || isCountyManager)
+      visible: isAuthorized && isFieldOfficer
       // items: [
       //   {
       //     href: '/app/agents',

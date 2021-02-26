@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AddAgent = () => {
+const AddFieldOfficer = () => {
   const classes = useStyles();
 
   const navigate = useNavigate();
@@ -226,4 +226,4 @@ const AddAgent = () => {
   );
 };
 
-export default AddAgent;
+export default AddFieldOfficer;

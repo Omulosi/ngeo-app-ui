@@ -4,14 +4,14 @@ import moment from 'moment';
 /* eslint-disable */
 import { Avatar, Box, Container, makeStyles, Tooltip } from '@material-ui/core';
 import Page from 'src/components/Page';
-import DataGridToolbar from 'src/components/DataGridToolbar';
-import { ArrowRight, Edit } from 'react-feather';
+// import DataGridToolbar from 'src/components/DataGridToolbar';
+import { ArrowRight } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import useUser, { useUserResource } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
 import DataGridDisplay from 'src/components/DataGridDisplay';
-import AddIcon from '@material-ui/icons/Add';
+// import AddIcon from '@material-ui/icons/Add';
 import PageToolbar from 'src/components/PageToolbar';
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +51,6 @@ const FieldOfficerList = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   // get currently logged in user pk:
-  // Todo: Turn into a hook -> useUserPk -> returns pk.
   const { data: user, loading: userLoading, error: userError } = useUser();
 
   if (userError) {

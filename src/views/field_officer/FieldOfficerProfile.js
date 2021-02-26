@@ -1,24 +1,22 @@
 import React from 'react';
-/* eslint-disable */
-import { Button, Container, Grid, Box, makeStyles } from '@material-ui/core';
+import { Container, Grid, makeStyles } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-
 import Page from 'src/components/Page';
-import { useFieldOfficer } from 'src/data';
-
-import LineProgress from 'src/components/LineProgress';
-import TabPanel from '../../components/TabPanel';
 import PageToolbar from 'src/components/PageToolbar';
-import FieldOfficerInfo from './FieldOfficerInfo';
-import AssignProject from './AssignProject';
-import AgentProjects from './AgentProjects';
-import Returns from './Returns';
-import DetailsDisplay from '../agent/DetailsDisplay';
+import { useFieldOfficer } from 'src/data';
+import LineProgress from 'src/components/LineProgress';
+import TabPanel from 'src/components/TabPanel';
+// import AgentProjects from './AgentProjects';
+// import Returns from './Returns';
+// import DetailsDisplay from 'src/components/DetailsDisplay';
 import DisplayAgents from 'src/components/DisplayAgents';
 import DisplayProjects from 'src/components/DisplayProjects';
+import FieldOfficerInfo from './FieldOfficerInfo';
+import AssignProject from './AssignProject';
+import AssignArea from './AssignArea';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +47,7 @@ const a11yProps = (index) => {
 const FieldOfficerProfile = () => {
   const classes = useStyles();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
 
@@ -77,7 +75,9 @@ const FieldOfficerProfile = () => {
     <Page title="Field Officer Profile" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <PageToolbar title="Field Officers" />
+        <PageToolbar
+          title={details ? `${details.first_name} ${details.last_name}` : ''}
+        />
         <Grid container className={classes.content}>
           <Tabs
             value={value}
@@ -94,11 +94,14 @@ const FieldOfficerProfile = () => {
 
         <TabPanel value={value} index={0}>
           <Grid container spacing={3} className={classes.padTop}>
-            <Grid item xl={6} lg={6} md={6} xs={12}>
+            <Grid item xl={4} lg={6} md={6} xs={12}>
               <FieldOfficerInfo details={details} />
             </Grid>
-            <Grid item xl={6} lg={6} md={6} xs={12}>
-              <AssignProject agentDetails={details} />
+            <Grid item xl={4} lg={6} md={6} xs={12}>
+              <AssignProject fieldOfficerDetails={details} />
+            </Grid>
+            <Grid item xl={4} lg={6} md={6} xs={12}>
+              <AssignArea fieldOfficerDetails={details} />
             </Grid>
           </Grid>
         </TabPanel>
@@ -116,7 +119,10 @@ const FieldOfficerProfile = () => {
         <TabPanel value={value} index={2}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <DisplayAgents agents={data ? data.attributes.agents : []} />
+              <DisplayAgents
+                agents={data ? data.attributes.agents : []}
+                agentBaseUrl="/app/field_officers/agents"
+              />
             </Grid>
           </Grid>
         </TabPanel>

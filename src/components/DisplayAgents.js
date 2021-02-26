@@ -44,9 +44,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const DisplayAgents = ({ agents }) => {
+const DisplayAgents = ({ agents, agentBaseUrl }) => {
   const classes = useStyles();
   const navigate = useNavigate();
+
+  const baseUrl = agentBaseUrl ? agentBaseUrl : '/app/agents';
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
 
@@ -127,6 +129,7 @@ const DisplayAgents = ({ agents }) => {
       flex: 1,
       renderCell: (params) => (
         <Box className={classes.actionItem}>
+          {/* display only if user has field officer role */}
           <Tooltip title="Edit" placement="bottom">
             <Avatar className={classes.dark}>
               <Edit
@@ -134,10 +137,12 @@ const DisplayAgents = ({ agents }) => {
               />
             </Avatar>
           </Tooltip>
+          {/*  */}
+
           <Tooltip title="View" placement="bottom">
             <Avatar className={clsx(classes.dark, classes.viewAction)}>
               <ArrowRight
-                onClick={() => navigate(`/app/agents/${params.row.id}`)}
+                onClick={() => navigate(`${baseUrl}/${params.row.id}`)}
               />
             </Avatar>
           </Tooltip>

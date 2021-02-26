@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import DetailsDisplay from './DetailsDisplay';
+import DetailsDisplay from 'src/components/DetailsDisplay';
 
 const ReturnDetails = ({ returnDetails }) => {
   const {
