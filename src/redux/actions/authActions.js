@@ -60,7 +60,7 @@ export const login = (
       const { user } = data;
       const { token } = user;
       localStorage.setItem('token', `${token}`);
-      navigate('/app/dashboard', { replace: true });
+      navigate('/app/map', { replace: true });
       enqueueSnackbar(data.message, { variant: 'success' });
       setSubmitting(false);
       dispatch({ type: SIGNIN });
