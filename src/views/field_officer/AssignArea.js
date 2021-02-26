@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import useUser, { useUserProjects } from 'src/data';
+/* eslint-disable */
 import { assignProjectToAgent } from 'src/redux/actions/projectActions';
-import AssignResource from 'src/components/AssignResource';
+// import AssignResource from 'src/components/AssignResource';
+import AddArea from 'src/components/AddArea';
 
-const AssignProject = ({ fieldOfficerDetails = {} }) => {
+const AssignArea = ({ fieldOfficerDetails = {} }) => {
   const { fieldOfficerId } = fieldOfficerDetails;
   const { data: user, error: userError } = useUser();
 
@@ -41,19 +43,11 @@ const AssignProject = ({ fieldOfficerDetails = {} }) => {
 
   projectList = projectList.filter((project) => !project.assignedTo);
 
-  return (
-    <AssignResource
-      title="Assign Project"
-      fieldLabel="Project"
-      resourceList={projectList}
-      assigneeId={fieldOfficerId}
-      action={assignProjectToAgent}
-    />
-  );
+  return <AddArea />;
 };
 
-AssignProject.propTypes = {
+AssignArea.propTypes = {
   fieldOfficerDetails: PropTypes.object
 };
 
-export default AssignProject;
+export default AssignArea;

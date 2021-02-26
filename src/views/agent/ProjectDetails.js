@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { projectThemes } from 'src/config';
-import DetailsDisplay from './DetailsDisplay';
+import DetailsDisplay from 'src/components/DetailsDisplay';
 
 const ProjectDetails = ({ projectDetails }) => {
   const { name, description, theme } = projectDetails;

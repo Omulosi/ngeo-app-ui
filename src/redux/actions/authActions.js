@@ -25,21 +25,23 @@ export const signUp = (
       setSubmitting(false);
     })
     .catch((err) => {
-      let errorMsg = 'Error signing up.';
-
+      let errorMsg = 'Error signing up';
       // Get the first error message
-      if (err.response.status !== 404 && err.response && err.response.data) {
+      /* eslint-ignore */
+      if (
+        err.response &&
+        err.response.status !== 404 &&
+        err.response &&
+        err.response.data
+      ) {
         for (let k in err.response.data) {
           errorMsg = err.response.data[k];
           break;
         }
-        errorMsg = errorMsg[0].detail;
       }
-
-      errorMsg = errorMsg.toLocaleLowerCase();
       dispatch({ type: SET_ERRORS, payload: errorMsg });
+      console.log(`${err} => ${errorMsg}`);
       setSubmitting(false);
-      console.log(err);
     });
 };
 

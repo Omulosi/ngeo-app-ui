@@ -36,8 +36,9 @@ import ProductListView from 'src/views/product/ProductListView';
 // Field Officers
 import FieldOfficerListView from 'src/views/field_officer';
 import FieldOfficerProfile from 'src/views/field_officer/FieldOfficerProfile';
-import AddFieldOfficerView from 'src/views/field_officer/AddAgent';
+import AddFieldOfficerView from 'src/views/field_officer/AddFieldOfficer';
 import EditFieldOfficerView from 'src/views/field_officer/EditFieldOfficer';
+import FieldOfficerAgentView from 'src/views/field_officer/ManageAgents';
 
 const routes = [
   {
@@ -66,7 +67,8 @@ const routes = [
       { path: 'field_officers', element: <FieldOfficerListView /> },
       { path: 'field_officers/:id', element: <FieldOfficerProfile /> },
       { path: 'field_officers/add', element: <AddFieldOfficerView /> },
-      { path: 'field_officers/edit/:id', element: <EditFieldOfficerView /> }
+      { path: 'field_officers/edit/:id', element: <EditFieldOfficerView /> },
+      { path: 'field_officers/agents/:id', element: <FieldOfficerAgentView /> }
     ]
   },
   {
