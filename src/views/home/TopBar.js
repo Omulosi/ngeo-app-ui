@@ -38,6 +38,7 @@ const useStyles = makeStyles({
     cursor: 'pointer',
     padding: '12px 24px',
     fontSize: '1rem',
+    textTransform: 'capitalize',
     '&:hover': {
       backgroundColor: '#1A73E8',
       color: '#fff'

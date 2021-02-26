@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
+import { APP_NAME } from 'src/config';
 import Button from './Button';
 import Typography from './Typography';
 import HeroLayout from './HeroLayout';
@@ -38,6 +39,7 @@ const styles = (theme) => ({
     backgroundColor: 'transparent',
     border: '2px solid #fff',
     color: theme.palette.common.white,
+    textTransform: 'capitalize',
     '&:hover': {
       backgroundColor: theme.palette.common.white,
       color: '#1A73E8'
@@ -81,7 +83,7 @@ function Hero(props) {
 
       <section className={classes.actionCall}>
         <Typography color="inherit" align="left" className={classes.heroTitle}>
-          Ngeo
+          {APP_NAME}
         </Typography>
         <Typography
           color="inherit"
@@ -98,7 +100,7 @@ function Hero(props) {
           component="a"
           href="/app/map"
         >
-          Launch Ngeo
+          {`Launch ${APP_NAME}`}
         </Button>
       </section>
     </HeroLayout>
