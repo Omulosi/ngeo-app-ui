@@ -3,6 +3,8 @@
 
 const BASE_URL = process.env.REACT_APP_API_HOST;
 
+export const APP_NAME = 'N-Geo';
+
 export default BASE_URL;
 
 export const roles = {

@@ -18,16 +18,9 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
-  // const { enqueueSnackbar } = useSnackbar();
   const { data, loading, error } = useUser();
 
   if (error) {
-    // enqueueSnackbar(
-    //   'You are using the application as a general user. Log in to access more features',
-    //   {
-    //     variant: 'info'
-    //   }
-    // );
     console.log(error);
   }
 

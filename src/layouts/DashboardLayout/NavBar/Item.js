@@ -27,7 +27,13 @@ const useStyles = makeStyles(() => ({
   hide: {
     display: 'none'
   },
-  dropdown: {}
+  dropdown: {},
+  listItem: {
+    color: 'rgb(238,238,238)',
+    '& .MuiTypography-body1': {
+      fontSize: '0.85rem'
+    }
+  }
 }));
 
 /* eslint-disable */
@@ -67,7 +73,7 @@ const NavItem = ({ href, icon: Icon, title, items, className }) => {
           <ListItemIcon onClick={() => handleClick()}>
             {Icon && <Icon />}
           </ListItemIcon>
-          <ListItemText primary={title} />
+          <ListItemText primary={title} className={classes.listItem} />
           {/* Display the expand menu if the item has children */}
           {isExpandable && !open && <IconExpandMore />}
           {isExpandable && open && <IconExpandLess />}

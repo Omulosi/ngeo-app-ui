@@ -31,6 +31,7 @@ import {
 import { axiosWithAuth } from 'src/utils/axios';
 
 import { greenIcon, blueIcon } from './icons';
+import debounce from 'src/utils/debounce';
 
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 delete L.Icon.Default.prototype._getIconUrl;
@@ -65,6 +66,26 @@ const Map = () => {
   // const [jurisdiction, setJurisdiction] = useState(defaultGeoJsonData);
   // const [projects, setProjects] = useState(defaultGeoJsonData);
   // const [installations, setInstallations] = useState(defaultGeoJsonData);
+
+  // Re-render on window resize hence fit map to whatever screen size
+  const [dimensions, setDimensions] = useState({
+    height: window.innerHeight,
+    width: window.innerWidth
+  });
+  useEffect(() => {
+    const debouncedHandleResize = debounce(function handleResize() {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth
+      });
+    }, 1000);
+
+    window.addEventListener('resize', debouncedHandleResize);
+
+    return (_) => {
+      window.removeEventListener('resize', debouncedHandleResize);
+    };
+  });
 
   let printControl = null;
   const mapRef = useRef(null);
