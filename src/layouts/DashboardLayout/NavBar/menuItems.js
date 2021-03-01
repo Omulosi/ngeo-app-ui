@@ -22,16 +22,16 @@ const getMenuItems = (user) => {
 
   const items = [
     {
-      href: '/app/dashboard',
-      icon: DashboardIcon,
-      title: 'Dashboard',
-      visible: isAuthorized
-    },
-    {
       href: '/app/map',
       icon: MapIcon,
       title: 'Map',
       visible: true
+    },
+    {
+      href: '/app/dashboard',
+      icon: DashboardIcon,
+      title: 'Dashboard',
+      visible: isAuthorized
     },
     {
       href: '/app/agents',

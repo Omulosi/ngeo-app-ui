@@ -1,5 +1,6 @@
 /* eslint-disable */
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useQuery } from 'react-query';
 import {
   Map as MapContainer,
   LayersControl,
@@ -16,8 +17,7 @@ import useUser, {
   useUserArea,
   useCounties,
   useRegions,
-  useUserProjects,
-  useUserJurisdiction
+  useUserProjects
 } from 'src/data';
 import { roles } from 'src/config';
 import { GeneralLayer, LocationMarkers } from './layers';
@@ -65,8 +65,6 @@ const Map = () => {
   const mapRef = useRef(null);
   const areaRef = useRef(null);
   const center = [0.69960492000038, 37.9210640870001];
-
-  const [count, setCount] = useState(0);
 
   // Re-render on window resize hence fit map to whatever screen size
   const [dimensions, setDimensions] = useState({

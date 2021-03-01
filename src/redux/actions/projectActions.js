@@ -5,16 +5,14 @@ import BASE_URL from 'src/config';
 import { SET_ERRORS } from '../types';
 
 /* eslint-ignore */
-export const assignProjectToAgent = (
-  { projectId, agentId },
+export const assignProject = (
+  { projectId, data },
   navigate,
   enqueueSnackbar,
   setSubmitting
 ) => (dispatch) => {
   axiosWithAuth()
-    .patch(`${BASE_URL}/projects/${projectId}`, {
-      agent: agentId
-    })
+    .patch(`${BASE_URL}/projects/${projectId}`, data)
     .then(() => {
       enqueueSnackbar('Project assigned to agent successfully!', {
         variant: 'success'

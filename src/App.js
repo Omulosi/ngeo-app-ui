@@ -5,8 +5,11 @@ import { ThemeProvider, Button } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import GlobalStyles from 'src/components/GlobalStyles';
 import 'src/mixins/chartjs';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import theme from 'src/theme';
 import routes from 'src/routes';
+
+const queryClient = new QueryClient();
 
 const App = () => {
   const routing = useRoutes(routes);
@@ -17,14 +20,18 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider
-        ref={notistackRef}
-        action={(key) => <Button onClick={onClickDismiss(key)}>Dismiss</Button>}
-        maxSnack={3}
-      >
-        <GlobalStyles />
-        {routing}
-      </SnackbarProvider>
+      <QueryClientProvider client={queryClient}>
+        <SnackbarProvider
+          ref={notistackRef}
+          action={(key) => (
+            <Button onClick={onClickDismiss(key)}>Dismiss</Button>
+          )}
+          maxSnack={3}
+        >
+          <GlobalStyles />
+          {routing}
+        </SnackbarProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 };

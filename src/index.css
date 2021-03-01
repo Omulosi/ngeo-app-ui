@@ -61,3 +61,7 @@ body {
   color: #fff;
   background-color: #376fd0;
 }
+
+.mde-tabs button {
+  padding: 0.5em;
+}

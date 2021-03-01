@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import useUser, { useUserProjects } from 'src/data';
-import { assignProjectToAgent } from 'src/redux/actions/projectActions';
+import { assignProject } from 'src/redux/actions/projectActions';
 import AssignResource from 'src/components/AssignResource';
 
 const AssignProject = ({ fieldOfficerDetails = {} }) => {
@@ -47,7 +47,7 @@ const AssignProject = ({ fieldOfficerDetails = {} }) => {
       fieldLabel="Project"
       resourceList={projectList}
       assigneeId={foId}
-      action={assignProjectToAgent}
+      action={assignProject}
     />
   );
 };
