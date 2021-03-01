@@ -11,11 +11,12 @@ import { useSelector } from 'react-redux';
 
 import { CoordinatesControl } from 'react-leaflet-coordinates';
 import useUser, {
-  useIsioloInstallations,
+  useUserInstallations,
   useSublocations,
   useUserArea,
   useCounties,
-  // useCounty,
+  useCountiesWithoutAuth,
+  useRegionsWithoutAuth,
   useRegions,
   useUserProjects
 } from 'src/data';
@@ -63,7 +64,7 @@ const Map = () => {
 
   // const [county, setCounty] = useState(defaultGeoJsonData);
   // const [regions, setRegions] = useState(defaultGeoJsonData);
-  // const [jurisdiction, setJurisdiction] = useState(defaultGeoJsonData);
+  const [jurisdiction, setJurisdiction] = useState(defaultGeoJsonData);
   // const [projects, setProjects] = useState(defaultGeoJsonData);
   // const [installations, setInstallations] = useState(defaultGeoJsonData);
 
@@ -131,7 +132,13 @@ const Map = () => {
     console.log(areaError);
   }
 
-  let userAreas = [];
+  let userAreas = {
+    region: '',
+    county: '',
+    subcounty: '',
+    location: '',
+    sublocation: ''
+  };
   let regionName = '';
   let countyName = '';
   let subcountyName = '';
@@ -139,67 +146,48 @@ const Map = () => {
   let sublocationName = '';
   if (areas && areas.length > 0) {
     regionName = areas[0].attributes.region;
+    userAreas['region'] = regionName;
     countyName = areas[0].attributes.county;
+    userAreas['county'] = countyName;
     subcountyName = areas[0].attributes.sub_county;
+    userAreas['subcounty'] = subcountyName;
     locationName = areas[0].attributes.location;
+    userAreas['location'] = locationName;
     sublocationName = areas[0].attributes.sub_location;
+    userAreas['sublocation'] = sublocationName;
   }
 
-  // Fetch jurisdiction areas
-  // county manager areas
-  countyName = countyName || 'Isiolo';
-  let { data: county, loading: loadCounty, error: countyError } = useCounties(
-    countyName
-  );
+  let jurisdictionArea = '';
+  let areaMap = defaultGeoJsonData;
 
-  // const fetchCounty = useCallback(() => {
-  //   axiosWithAuth()
-  //     .get(`/counties?search=${countyName}`)
-  //     .then(({ data }) => {
-  //       setCounty(data.data.results);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // }, [setCounty]);
+  if (userRole == roles.RM) {
+    jurisdictionArea = userAreas.region;
+    let { data, loading, error } = useRegions(jurisdictionArea);
+    areaMap = data;
+    // setJurisdiction(areaMap);
+  }
 
-  // useEffect(() => {
-  //   fetchCounty();
-  // }, []);
+  if (userRole == roles.CM) {
+    jurisdictionArea = userAreas.county;
+    let { data, loading, error } = useCounties(jurisdictionArea);
+    areaMap = data;
+    // setJurisdiction(areaMap);
+  }
 
-  // region manager areas
-  regionName = regionName || 'Eastern';
-  let { data: region, loading: loadRegion, error: regionError } = useRegions(
-    regionName
-  );
-
-  // Field officer areas
-  sublocationName = sublocationName || 'ngare mara';
-  let { data: sublocation, error: sublocationError } = useSublocations(
-    sublocationName
-  );
-
-  // Geojson data for jurisdiction area
-  let jurisdiction;
-
-  switch (userRole) {
-    case roles.RM:
-      jurisdiction = region;
-      break;
-    case roles.CM:
-      jurisdiction = county;
-      break;
-    case roles.FOO:
-      jurisdiction = sublocation;
-      break;
-    default:
-      jurisdiction = defaultGeoJsonData;
+  if (userRole == roles.FOO) {
+    jurisdictionArea =
+      userAreas.sublocation || userAreas.location || userAreas.subcounty;
+    let { data, loading, error } = useSublocations(jurisdictionArea);
+    areaMap = data;
+    // setJurisdiction(areaMap);
   }
 
   // All regions
-  let { data: regions, loading: loadRegions, error: regionsError } = useRegions(
-    ''
-  );
+  let {
+    data: regions,
+    loading: loadRegions,
+    error: regionsError
+  } = useRegions();
 
   // All counties
   let {
@@ -216,7 +204,7 @@ const Map = () => {
     console.log(regionsError);
   }
 
-  // user projects
+  // user specific data
   let {
     data: projects,
     loading: projectLoading,
@@ -228,7 +216,7 @@ const Map = () => {
     installations,
     loading: installationLoading,
     error: installationError
-  } = useIsioloInstallations();
+  } = useUserInstallations(userPk);
 
   return (
     <MapContainer
@@ -242,11 +230,7 @@ const Map = () => {
     >
       <LayersControl position="topright">
         <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer
-            ref={areaRef}
-            styles={regionStyles}
-            data={jurisdiction}
-          />
+          <GeneralLayer ref={areaRef} styles={regionStyles} data={areaMap} />
         </LayersControl.Overlay>
         {baseMaps.map(
           ({

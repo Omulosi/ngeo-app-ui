@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { useAxios } from 'src/utils/axios';
-import fetcher from './fetchers';
+// import { useAxios } from 'src/utils/axios';
+import fetcher, { fetcherWithoutAuth } from './fetchers';
 
 const useUser = () => {
   const { data, error } = useSWR('/auth/me', fetcher);
@@ -24,9 +24,9 @@ export const useSublocations = (areaName) => {
   };
 };
 
+/* eslint-disable */
 export const useCounties = (countyName) => {
   const { data, error } = useSWR(`/counties?search=${countyName}`, fetcher);
-
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
@@ -34,30 +34,27 @@ export const useCounties = (countyName) => {
   };
 };
 
-export const useInstallations = (areaName) => {
-  const { data, error } = useSWR(`/installtions?search=${areaName}`, fetcher);
-
+export const useCountiesWithoutAuth = () => {
+  const { data, error } = useSWR(`/counties`, fetcherWithoutAuth);
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
-    error
-  };
-};
-
-export const useCounty = (countyName) => {
-  const [
-    { data, loading, error }
-  ] = useAxios()(`/counties?search=${countyName}`, { useCache: false });
-
-  return {
-    data: data ? data.data.results : data,
-    loading,
     error
   };
 };
 
 export const useRegions = (areaName) => {
   const { data, error } = useSWR(`/regions?search=${areaName}`, fetcher);
+
+  return {
+    data: data ? data.data.results : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useRegionsWithoutAuth = () => {
+  const { data, error } = useSWR(`/regions`, fetcherWithoutAuth);
 
   return {
     data: data ? data.data.results : data,
@@ -171,6 +168,16 @@ export const useUserResource = (pk, endpoint) => {
 
   return {
     data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useUserInstallations = (pk) => {
+  const { data, error } = useSWR(`/users/${pk}/installations`, fetcher);
+
+  return {
+    data: data ? data.data.results : data,
     loading: !error && !data,
     error
   };

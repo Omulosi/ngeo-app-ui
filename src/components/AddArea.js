@@ -18,7 +18,7 @@ import {
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import { createAgent } from 'src/redux/actions/agentActions';
+import { assignArea } from 'src/redux/actions/areaAction';
 import useUser from 'src/data';
 import ComboBox from './ComboBox';
 import adminData from 'src/data/adminData';
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AddArea = () => {
+const AddArea = ({ user }) => {
   const classes = useStyles();
 
   const navigate = useNavigate();
@@ -58,17 +58,17 @@ const AddArea = () => {
     dispatch({ type: 'CLEAR_ERRORS' });
   }, [dispatch]);
 
-  // get currently logged in user pk
-  const { data: user, error: userError } = useUser();
+  // // get currently logged in user pk
+  // const { data: user, error: userError } = useUser();
 
-  if (userError) {
-    console.log(userError);
-  }
+  // if (userError) {
+  //   console.log(userError);
+  // }
 
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
+  // let userPk = null;
+  // if (user) {
+  //   userPk = user.attributes.pk;
+  // }
 
   const error = useSelector((state) => state.agent.agentError, shallowEqual);
 
@@ -81,8 +81,8 @@ const AddArea = () => {
     onSubmit: (values, { setSubmitting }) => {
       debugger;
       dispatch(
-        createAgent(
-          { ...values, userPk },
+        assignArea(
+          { ...values, ...user },
           navigate,
           enqueueSnackbar,
           setSubmitting
