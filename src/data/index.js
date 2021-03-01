@@ -191,11 +191,11 @@ export const useUserJurisdiction = (user, area) => {
   };
   let loading, error;
 
-  const regionsResp = useRegions(area);
+  const { data: regionResp } = useRegions(area);
 
-  const countiesResp = useCounties(area);
+  const { data: countiesResp } = useCounties(area);
 
-  const sublocationsResp = useSublocations(area);
+  const { data: sublocationsResp } = useSublocations(area);
 
   if (user && user.attributes.role == roles.RM) {
     data = regionsResp;
@@ -209,8 +209,10 @@ export const useUserJurisdiction = (user, area) => {
     data = sublocationsResp;
   }
 
+  debugger;
+
   return {
-    data,
+    data: data ? data.data.results : data,
     loading,
     error
   };

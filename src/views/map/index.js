@@ -168,12 +168,36 @@ const Map = () => {
       userAreas.sublocation || userAreas.location || userAreas.subcounty;
   }
 
-  const {
-    data: jurisdiction,
-    loading: jurisdictionLoading,
-    error: errorLoading
-  } = useUserJurisdiction(user, jurisdictionArea);
+  // const {
+  //   data: jurisdiction,
+  //   loading: jurisdictionLoading,
+  //   error: errorLoading
+  // } = useUserJurisdiction(user, jurisdictionArea);
 
+  let data = {
+    type: 'FeatureCollection',
+    features: []
+  };
+
+  let loading, error;
+
+  const { data: regionResp } = useRegions(jurisdictionArea);
+
+  const { data: countiesResp } = useCounties(jurisdictionArea);
+
+  const { data: sublocationsResp } = useSublocations(jurisdictionArea);
+
+  if (user && user.attributes.role == roles.RM) {
+    data = regionsResp;
+  }
+
+  if (user && user.attributes.role == roles.CM) {
+    data = countiesResp;
+  }
+
+  if (user && user.attributes.role == roles.FOO) {
+    data = sublocationsResp;
+  }
   // All regions
   const {
     data: regions,
@@ -222,11 +246,7 @@ const Map = () => {
     >
       <LayersControl position="topright">
         <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer
-            ref={areaRef}
-            styles={regionStyles}
-            data={jurisdiction}
-          />
+          <GeneralLayer ref={areaRef} styles={regionStyles} data={data} />
         </LayersControl.Overlay>
         {baseMaps.map(
           ({
