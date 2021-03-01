@@ -1,3 +1,4 @@
+import { roles } from 'src/config';
 import useSWR from 'swr';
 // import { useAxios } from 'src/utils/axios';
 import fetcher, { fetcherWithoutAuth } from './fetchers';
@@ -15,7 +16,7 @@ const useUser = () => {
 export default useUser;
 
 export const useSublocations = (areaName) => {
-  const { data, error } = useSWR(`/sublocations?search=${areaName}`, fetcher);
+  const { data, error } = useSWR(`/sublocations?sub_name=${areaName}`, fetcher);
 
   return {
     data: data ? data.data.results : data,
@@ -26,7 +27,7 @@ export const useSublocations = (areaName) => {
 
 /* eslint-disable */
 export const useCounties = (countyName) => {
-  const { data, error } = useSWR(`/counties?search=${countyName}`, fetcher);
+  const { data, error } = useSWR(`/counties?counties=${countyName}`, fetcher);
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
@@ -174,11 +175,43 @@ export const useUserResource = (pk, endpoint) => {
 };
 
 export const useUserInstallations = (pk) => {
-  const { data, error } = useSWR(`/users/${pk}/installations`, fetcher);
+  const { data, error } = useSWR(`users/${pk}/installations`, fetcher);
 
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
+    error
+  };
+};
+
+export const useUserJurisdiction = (user, area) => {
+  let data = {
+    type: 'FeatureCollection',
+    features: []
+  };
+  let loading, error;
+
+  const regionsResp = useRegions(area);
+
+  const countiesResp = useCounties(area);
+
+  const sublocationsResp = useSublocations(area);
+
+  if (user && user.attributes.role == roles.RM) {
+    data = regionsResp;
+  }
+
+  if (user && user.attributes.role == roles.CM) {
+    data = countiesResp;
+  }
+
+  if (user && user.attributes.role == roles.FOO) {
+    data = sublocationsResp;
+  }
+
+  return {
+    data,
+    loading,
     error
   };
 };

@@ -54,19 +54,23 @@ const regionStyles = () => {
   };
 };
 
-const defaultGeoJsonData = {
-  type: 'FeatureCollection',
-  features: []
-};
+// const defaultGeoJsonData = {
+//   type: 'FeatureCollection',
+//   features: []
+// };
 
-const Map = () => {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+const Map = ({
+  isAuthenticated,
+  center = [0.69960492000038, 37.9210640870001],
+  jurisdiction,
+  counties,
+  regions,
+  projects,
+  installations
+}) => {
   let printControl = null;
   const mapRef = useRef(null);
   const areaRef = useRef(null);
-  const center = [0.69960492000038, 37.9210640870001];
-
-  const [count, setCount] = useState(0);
 
   // Re-render on window resize hence fit map to whatever screen size
   const [dimensions, setDimensions] = useState({
@@ -106,109 +110,109 @@ const Map = () => {
   };
 
   // Get current user
-  const { data: user, error: userError } = useUser();
+  //   const { data: user, error: userError } = useUser();
 
-  if (userError) {
-    console.log(userError);
-  }
+  //   if (userError) {
+  //     console.log(userError);
+  //   }
 
-  let userPk = null;
-  let userRole = null;
-  if (user) {
-    userPk = user.attributes.pk;
-    userRole = user.attributes.role;
-  }
+  //   let userPk = null;
+  //   let userRole = null;
+  //   if (user) {
+  //     userPk = user.attributes.pk;
+  //     userRole = user.attributes.role;
+  //   }
 
-  const { data: areas, error: areaError } = useUserArea(userPk);
+  //   const { data: areas, error: areaError } = useUserArea(userPk);
 
-  if (areaError) {
-    console.log(areaError);
-  }
+  //   if (areaError) {
+  //     console.log(areaError);
+  //   }
 
-  const userAreas = {
-    region: '',
-    county: '',
-    subcounty: '',
-    location: '',
-    sublocation: ''
-  };
-  let regionName = '';
-  let countyName = '';
-  let subcountyName = '';
-  let locationName = '';
-  let sublocationName = '';
-  if (areas && areas.length > 0) {
-    regionName = areas[0].attributes.region;
-    userAreas.region = regionName;
-    countyName = areas[0].attributes.county;
-    userAreas.county = countyName;
-    subcountyName = areas[0].attributes.sub_county;
-    userAreas.subcounty = subcountyName;
-    locationName = areas[0].attributes.location;
-    userAreas.location = locationName;
-    sublocationName = areas[0].attributes.sub_location;
-    userAreas.sublocation = sublocationName;
-  }
+  //   const userAreas = {
+  //     region: '',
+  //     county: '',
+  //     subcounty: '',
+  //     location: '',
+  //     sublocation: ''
+  //   };
+  //   let regionName = '';
+  //   let countyName = '';
+  //   let subcountyName = '';
+  //   let locationName = '';
+  //   let sublocationName = '';
+  //   if (areas && areas.length > 0) {
+  //     regionName = areas[0].attributes.region;
+  //     userAreas.region = regionName;
+  //     countyName = areas[0].attributes.county;
+  //     userAreas.county = countyName;
+  //     subcountyName = areas[0].attributes.sub_county;
+  //     userAreas.subcounty = subcountyName;
+  //     locationName = areas[0].attributes.location;
+  //     userAreas.location = locationName;
+  //     sublocationName = areas[0].attributes.sub_location;
+  //     userAreas.sublocation = sublocationName;
+  //   }
 
-  let jurisdictionArea = '';
+  //   let jurisdictionArea = '';
 
-  if (userRole === roles.RM && userAreas.region) {
-    jurisdictionArea = userAreas.region;
-  }
+  //   if (userRole === roles.RM && userAreas.region) {
+  //     jurisdictionArea = userAreas.region;
+  //   }
 
-  if (userRole === roles.CM && userAreas.county) {
-    jurisdictionArea = userAreas.county;
-  }
+  //   if (userRole === roles.CM && userAreas.county) {
+  //     jurisdictionArea = userAreas.county;
+  //   }
 
-  if (
-    userRole === roles.FOO &&
-    (userAreas.sublocation || userAreas.location || userAreas.subcounty)
-  ) {
-    jurisdictionArea =
-      userAreas.sublocation || userAreas.location || userAreas.subcounty;
-  }
+  //   if (
+  //     userRole === roles.FOO &&
+  //     (userAreas.sublocation || userAreas.location || userAreas.subcounty)
+  //   ) {
+  //     jurisdictionArea =
+  //       userAreas.sublocation || userAreas.location || userAreas.subcounty;
+  //   }
 
-  const {
-    data: jurisdiction,
-    loading: jurisdictionLoading,
-    error: errorLoading
-  } = useUserJurisdiction(user, jurisdictionArea);
+  //   const {
+  //     data: jurisdiction,
+  //     loading: jurisdictionLoading,
+  //     error: errorLoading
+  //   } = useUserJurisdiction(user, jurisdictionArea);
 
-  // All regions
-  const {
-    data: regions,
-    loading: loadRegions,
-    error: regionsError
-  } = useRegions();
+  //   // All regions
+  //   const {
+  //     data: regions,
+  //     loading: loadRegions,
+  //     error: regionsError
+  //   } = useRegions();
 
-  // All counties
-  const {
-    data: counties,
-    loading: loadCounties,
-    error: countiesError
-  } = useCounties();
+  //   // All counties
+  //   const {
+  //     data: counties,
+  //     loading: loadCounties,
+  //     error: countiesError
+  //   } = useCounties();
 
-  if (countiesError) {
-    console.log(countiesError);
-  }
+  //   if (countiesError) {
+  //     console.log(countiesError);
+  //   }
 
-  if (regionsError) {
-    console.log(regionsError);
-  }
+  //   if (regionsError) {
+  //     console.log(regionsError);
+  //   }
 
-  // user specific data
-  const {
-    data: projects,
-    loading: projectLoading,
-    error: projectError
-  } = useUserProjects(userPk);
+  //   // user's projects
+  //   const {
+  //     data: projects,
+  //     loading: projectLoading,
+  //     error: projectError
+  //   } = useUserProjects(userPk);
 
-  // installations in users area
-  const {
-    installations,
-    loading: installationLoading,
-    error: installationError
-  } = useUserInstallations(userPk);
+  //   // installations in user's area
+  //   const {
+  //     installations,
+  //     loading: installationLoading,
+  //     error: installationError
+  //   } = useUserInstallations(userPk);
 
   return (
     <MapContainer

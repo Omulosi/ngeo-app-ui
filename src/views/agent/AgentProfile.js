@@ -16,7 +16,7 @@ import AgentInfo from './AgentInfo';
 import AssignProject from './AssignProject';
 // import AssignRating from './AssignRating';
 import AgentProjects from './AgentProjects';
-import Returns from './Returns';
+import ReturnList from './ReturnList';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,7 +125,7 @@ const AgentProfile = () => {
         <TabPanel value={value} index={2}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <Returns agentDetails={agentDetails} />
+              <ReturnList returns={agentDetails ? agentDetails.returns : []} />
             </Grid>
           </Grid>
         </TabPanel>

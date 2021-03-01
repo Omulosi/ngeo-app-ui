@@ -37,19 +37,19 @@ const getMenuItems = (user) => {
       href: '/app/agents',
       icon: PeopleIcon,
       title: 'Agents',
-      visible: isAuthorized && isFieldOfficer
-      // items: [
-      //   {
-      //     href: '/app/agents',
-      //     title: 'Agents',
-      //     visible: isAuthorized
-      //   },
-      //   {
-      //     href: '/app/agents/1',
-      //     title: 'Agent Profile',
-      //     visible: isAuthorized
-      //   }
-      // ]
+      visible: isAuthorized && isFieldOfficer,
+      items: [
+        {
+          href: '/app/agents',
+          title: 'Agents',
+          visible: isAuthorized
+        },
+        {
+          href: '/app/returns',
+          title: 'Returns',
+          visible: isAuthorized
+        }
+      ]
     },
     {
       href: '/app/field_officers',
@@ -70,21 +70,10 @@ const getMenuItems = (user) => {
       visible: isAuthorized
     },
     {
+      href: '/app/incidents',
       icon: MapPin,
       title: 'Incidents',
-      visible: isAuthorized && isFieldOfficer,
-      items: [
-        {
-          href: '/app/incidents',
-          title: 'Incidents List',
-          visible: isAuthorized
-        },
-        {
-          href: '/app/incidents/1',
-          title: 'IncidentDetail',
-          visible: isAuthorized
-        }
-      ]
+      visible: isAuthorized && isFieldOfficer
     },
     {
       href: '/app/account',

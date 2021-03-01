@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Returns = ({ agentDetails }) => {
+const ReturnList = ({ returns = [] }) => {
   const classes = useStyles();
 
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -51,8 +51,6 @@ const Returns = ({ agentDetails }) => {
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
   };
-
-  const { returns } = agentDetails;
 
   /* eslint-disable */
   const rows = returns
@@ -127,8 +125,8 @@ const Returns = ({ agentDetails }) => {
   return <DataGridDisplay data={returnData} />;
 };
 
-Returns.propTypes = {
-  agentDetails: PropTypes.object
+ReturnList.propTypes = {
+  returns: PropTypes.array
 };
 
-export default Returns;
+export default ReturnList;

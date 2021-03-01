@@ -5,7 +5,7 @@ import { assignProjectToAgent } from 'src/redux/actions/projectActions';
 import AssignResource from 'src/components/AssignResource';
 
 const AssignProject = ({ fieldOfficerDetails = {} }) => {
-  const { fieldOfficerId } = fieldOfficerDetails;
+  const { foId } = fieldOfficerDetails;
   const { data: user, error: userError } = useUser();
 
   if (userError) {
@@ -46,7 +46,7 @@ const AssignProject = ({ fieldOfficerDetails = {} }) => {
       title="Assign Project"
       fieldLabel="Project"
       resourceList={projectList}
-      assigneeId={fieldOfficerId}
+      assigneeId={foId}
       action={assignProjectToAgent}
     />
   );

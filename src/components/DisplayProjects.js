@@ -13,6 +13,7 @@ import useUser, { useUserProjects } from 'src/data';
 import DataGridDisplay from 'src/components/DataGridDisplay';
 // import { Scrollbars } from 'react-custom-scrollbars';
 import PageToolbar from './PageToolbar';
+import { terms } from 'src/config';
 
 const useStyles = makeStyles((theme) => ({
   root: {},

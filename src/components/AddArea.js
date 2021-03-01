@@ -79,7 +79,6 @@ const AddArea = ({ user }) => {
       ward: ''
     },
     onSubmit: (values, { setSubmitting }) => {
-      debugger;
       dispatch(
         assignArea(
           { ...values, ...user },

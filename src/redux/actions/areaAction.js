@@ -8,7 +8,6 @@ import { SET_ERRORS } from '../types';
 export const assignArea = (data, navigate, enqueueSnackbar, setSubmitting) => (
   dispatch
 ) => {
-  debugger;
   axiosWithAuth()
     .post(`${BASE_URL}/areas`, data)
     .then(() => {

@@ -40,6 +40,12 @@ import AddFieldOfficerView from 'src/views/field_officer/AddFieldOfficer';
 import EditFieldOfficerView from 'src/views/field_officer/EditFieldOfficer';
 import FieldOfficerAgentView from 'src/views/field_officer/ManageAgents';
 
+// Returns
+import AllAgentReturns from 'src/views/agent/AllAgentsReturns';
+import AddReturnView from 'src/views/agent/AddReturn';
+import EditReturnView from 'src/views/agent/EditReturn';
+import ReturnDetailView from 'src/views/agent/ReturnDetails';
+
 const routes = [
   {
     path: 'app',
@@ -55,6 +61,12 @@ const routes = [
       { path: 'agents/:id', element: <AgentProfile /> },
       { path: 'agents/add', element: <AddAgentView /> },
       { path: 'agents/edit/:id', element: <EditAgentView /> },
+      // Agent Returns
+      { path: 'returns', element: <AllAgentReturns /> },
+      { path: 'returns/add', element: <AddReturnView /> },
+      { path: 'returns/edit/:id', element: <EditReturnView /> },
+      { path: 'returns/:id', element: <ReturnDetailView /> },
+
       // projects views
       { path: 'projects', element: <ProjectsView /> },
       // incidents views

@@ -10,7 +10,6 @@ import {
   CardHeader,
   Divider,
   Grid,
-  TextField,
   makeStyles,
   FormHelperText
 } from '@material-ui/core';
@@ -87,26 +86,6 @@ const AssignResource = ({
                   handleChange(e, value);
                 }}
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label={fieldLabel}
-                name="resourceId"
-                select
-                SelectProps={{ native: true }}
-                variant="outlined"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                value={formik.values.resourceId}
-              >
-                <option key="#" value="" />
-                {resourceList.map((resource) => (
-                  <option key={resource.id} value={resource.id}>
-                    {resource.name}
-                  </option>
-                ))}
-              </TextField>
             </Grid>
           </Grid>
         </CardContent>
