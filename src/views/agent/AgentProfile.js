@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Container, Grid, Box, makeStyles } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import { Edit } from 'react-feather';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
@@ -17,6 +18,7 @@ import AssignProject from './AssignProject';
 // import AssignRating from './AssignRating';
 import AgentProjects from './AgentProjects';
 import ReturnList from './ReturnList';
+import DataGridToolbar from 'src/components/DataGridToolbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,19 +77,15 @@ const AgentProfile = () => {
     <Page title="Agent Profile" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <Grid container>
-          <Grid item xs={12} md={12} lg={12}>
-            <Box display="flex" justifyContent="flex-start">
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => navigate(`/app/agents/edit/${id}`)}
-              >
-                Edit Agent
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
+        <DataGridToolbar
+          pageTitle={
+            agentDetails &&
+            `Agent: ${agentDetails.first_name} ${agentDetails.last_name}`
+          }
+          navLink={`/app/agents/edit/${id}`}
+          btnIcon={<Edit />}
+          btnTitle="Edit Agent"
+        />
 
         <Grid container className={classes.content}>
           <Tabs

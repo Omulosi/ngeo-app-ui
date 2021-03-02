@@ -14,8 +14,7 @@ import {
   TextField,
   makeStyles,
   FormHelperText,
-  Container,
-  Typography
+  Container
 } from '@material-ui/core';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useSnackbar } from 'notistack';
@@ -24,6 +23,7 @@ import { terms as termsDict } from 'src/config';
 import { useAgent } from 'src/data';
 import { editAgent } from 'src/redux/actions/agentActions';
 import Page from 'src/components/Page';
+import DataGridToolbar from 'src/components/DataGridToolbar';
 
 /* eslint-disable */
 const useStyles = makeStyles((theme) => ({
@@ -128,10 +128,8 @@ const EditAgent = () => {
 
   return (
     <Page className={classes.root} title="Edit Agent">
-      <Container maxWidth="lg">
-        <Typography variant="h1" component="h1" className={classes.header}>
-          Edit agent
-        </Typography>
+      <Container maxWidth={false}>
+        <DataGridToolbar pageTitle="Edit Agent" />
         <Box>
           <form
             autoComplete="off"

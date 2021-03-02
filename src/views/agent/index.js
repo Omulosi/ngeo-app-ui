@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 /* eslint-disable */
 import clsx from 'clsx';
 import { Avatar, Box, Container, makeStyles, Tooltip } from '@material-ui/core';
@@ -48,16 +48,6 @@ const Agents = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  const handleOpenEditDialog = () => {
-    setEditDialogOpen(true);
-  };
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-  };
-
   const { enqueueSnackbar } = useSnackbar();
 
   // get currently logged in user pk
@@ -73,8 +63,6 @@ const Agents = () => {
   }
 
   const { data, loading, error } = useUserAgents(userPk);
-
-  const agentDetails = {};
 
   if (error) {
     console.log(`Error => ${error}`);
@@ -177,9 +165,10 @@ const Agents = () => {
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
         <DataGridToolbar
-          title="Add Agent"
+          pageTitle="Agents"
           navLink="/app/agents/add"
           btnIcon={<AddIcon />}
+          btnTitle="New Agent"
         />
         <DataGridDisplay data={agentData} title="Agents" />
       </Container>

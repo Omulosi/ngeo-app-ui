@@ -1,16 +1,5 @@
+import React, { useState, useEffect, useCallback } from 'react';
 /* eslint-disable */
-import React, { useRef, useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
-import {
-  Map as MapContainer,
-  LayersControl,
-  LayerGroup,
-  TileLayer
-} from 'react-leaflet';
-import L from 'leaflet';
-import { useSelector } from 'react-redux';
-
-import { CoordinatesControl } from 'react-leaflet-coordinates';
 import useUser, {
   useUserInstallations,
   useSublocations,
@@ -20,88 +9,18 @@ import useUser, {
   useUserProjects
 } from 'src/data';
 import { roles } from 'src/config';
-import { GeneralLayer, LocationMarkers } from './layers';
-import baseMaps from './layers/baseMap';
-import {
-  EditControlComponent,
-  MeasureControlComponent,
-  SearchControl,
-  PrintControl
-} from './controls';
-// import { axiosWithAuth } from 'src/utils/axios';
-
-import { greenIcon, blueIcon } from './icons';
-import debounce from 'src/utils/debounce';
-
-// work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconUrl:
-    'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-  shadowUrl:
-    'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
-const regionStyles = () => {
-  return {
-    color: 'rgb(238, 153, 0)',
-    fillColor: 'rgb(238, 153, 0)',
-    opacity: '0.4'
-  };
-};
+import { axiosWithAuth } from 'src/utils/axios';
+import Map from './Map';
 
 const defaultGeoJsonData = {
   type: 'FeatureCollection',
   features: []
 };
 
-const Map = () => {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  let printControl = null;
-  const mapRef = useRef(null);
-  const areaRef = useRef(null);
-  const center = [0.69960492000038, 37.9210640870001];
-
-  // Re-render on window resize hence fit map to whatever screen size
-  const [dimensions, setDimensions] = useState({
-    height: window.innerHeight,
-    width: window.innerWidth
-  });
-
-  useEffect(() => {
-    const debouncedHandleResize = debounce(function handleResize() {
-      setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth
-      });
-    }, 1000);
-
-    window.addEventListener('resize', debouncedHandleResize);
-
-    return (_) => {
-      window.removeEventListener('resize', debouncedHandleResize);
-    };
-  });
-
-  const fitToArea = () => {
-    try {
-      if (mapRef.current && areaRef.current) {
-        mapRef.current.leafletElement.fitBounds(
-          areaRef.current.leafletElement.getBounds()
-        );
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const print = () => {
-    printControl.printMap('A4Portrait', 'MyFileName');
-  };
+const MapView = () => {
+  const [region, setUserRegion] = useState(defaultGeoJsonData);
+  const [county, setUserCounty] = useState(defaultGeoJsonData);
+  const [sublocation, setUserSublocation] = useState(defaultGeoJsonData);
 
   // Get current user
   const { data: user, error: userError } = useUser();
@@ -117,6 +36,7 @@ const Map = () => {
     userRole = user.attributes.role;
   }
 
+  // get user's area
   const { data: areas, error: areaError } = useUserArea(userPk);
 
   if (areaError) {
@@ -166,35 +86,78 @@ const Map = () => {
       userAreas.sublocation || userAreas.location || userAreas.subcounty;
   }
 
-  // const {
-  //   data: jurisdiction,
-  //   loading: jurisdictionLoading,
-  //   error: errorLoading
-  // } = useUserJurisdiction(user, jurisdictionArea);
-
   let data = {
     type: 'FeatureCollection',
     features: []
   };
 
-  let loading, error;
+  const fetchUserRegion = useCallback(() => {
+    axiosWithAuth()
+      .get(`/regions?search=${jurisdictionArea}`)
+      .then(({ data }) => {
+        const res = data ? data.data.results : defaultGeoJsonData;
+        setUserRegion(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [setUserRegion]);
 
-  const { data: regionResp } = useRegions(jurisdictionArea);
+  const fetchUserCounty = useCallback(() => {
+    axiosWithAuth()
+      .get(`/counties?counties=${jurisdictionArea}`)
+      .then(({ data }) => {
+        const res = data ? data.data.results : defaultGeoJsonData;
+        setUserCounty(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [setUserCounty]);
 
-  const { data: countiesResp } = useCounties(jurisdictionArea);
+  const fetchUserSublocation = useCallback(() => {
+    axiosWithAuth()
+      .get(`/sublocations?sub_name=${jurisdictionArea}`)
+      .then(({ data }) => {
+        const res = data ? data.data.results : defaultGeoJsonData;
+        setUserSublocation(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [setUserSublocation]);
 
-  const { data: sublocationsResp } = useSublocations(jurisdictionArea);
+  useEffect(() => {
+    fetchUserCounty();
+    fetchUserRegion();
+    fetchUserSublocation();
+  }, [fetchUserCounty, fetchUserRegion, fetchUserSublocation]);
 
-  if (user && user.attributes.role == roles.RM) {
-    data = regionsResp;
+  //   const { data: regionsResp, mutate: mutateRegions } = useRegions(
+  //     jurisdictionArea
+  //   );
+
+  //   const { data: countiesResp, mutate: mutateArea } = useCounties(
+  //     jurisdictionArea
+  //   );
+
+  //   const { data: sublocationsResp, mutate: mutateSublocation } = useSublocations(
+  //     jurisdictionArea
+  //   );
+
+  if (user && user.attributes.role === roles.RM) {
+    // data = regionsResp;
+    data = region;
   }
 
-  if (user && user.attributes.role == roles.CM) {
-    data = countiesResp;
+  if (user && user.attributes.role === roles.CM) {
+    // data = countiesResp ? countiesResp.data.results : defaultGeoJsonData;
+    data = county;
   }
 
-  if (user && user.attributes.role == roles.FOO) {
-    data = sublocationsResp;
+  if (user && user.attributes.role === roles.FOO) {
+    // data = sublocationsResp;
+    data = sublocation;
   }
   // All regions
   const {
@@ -204,7 +167,7 @@ const Map = () => {
   } = useRegions();
 
   // All counties
-  const {
+  let {
     data: counties,
     loading: loadCounties,
     error: countiesError
@@ -213,6 +176,8 @@ const Map = () => {
   if (countiesError) {
     console.log(countiesError);
   }
+
+  counties = counties ? counties.data.results : defaultGeoJsonData;
 
   if (regionsError) {
     console.log(regionsError);
@@ -233,89 +198,14 @@ const Map = () => {
   } = useUserInstallations(userPk);
 
   return (
-    <MapContainer
-      center={center}
-      zoom={7}
-      maxZoom={20}
-      minZoom={5}
-      className="map"
-      ref={mapRef}
-      onlayeradd={fitToArea}
-    >
-      <LayersControl position="topright">
-        <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer ref={areaRef} styles={regionStyles} data={data} />
-        </LayersControl.Overlay>
-        {baseMaps.map(
-          ({
-            name,
-            url,
-            attribution,
-            type,
-            layer,
-            format,
-            checked = false
-          }) => {
-            return (
-              <LayersControl.BaseLayer key={name} name={name} checked={checked}>
-                <TileLayer attribution={attribution} url={url} />
-              </LayersControl.BaseLayer>
-            );
-          }
-        )}
-
-        <LayersControl.Overlay name="Regions">
-          <GeneralLayer data={regions} />,
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Counties">
-          <GeneralLayer data={counties} />,
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Projects">
-          <LayerGroup>
-            {projects ? (
-              <LocationMarkers markers={projects} icon={greenIcon} />
-            ) : null}
-          </LayerGroup>
-        </LayersControl.Overlay>
-
-        <LayersControl.Overlay name="Installations">
-          <LayerGroup>
-            {installations ? (
-              <LocationMarkers markers={installations} icon={blueIcon} />
-            ) : null}
-          </LayerGroup>
-        </LayersControl.Overlay>
-      </LayersControl>
-
-      <EditControlComponent />
-      <MeasureControlComponent />
-      <SearchControl />
-      {!isAuthenticated && (
-        <PrintControl
-          ref={(ref) => {
-            printControl = ref;
-          }}
-          position="topleft"
-          sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
-          hideControlContainer={false}
-        />
-      )}
-
-      {!isAuthenticated && (
-        <PrintControl
-          position="topleft"
-          sizeModes={['Current', 'A4Portrait', 'A4Landscape']}
-          hideControlContainer={false}
-          title="Export as PNG"
-          exportOnly
-        />
-      )}
-
-      <CoordinatesControl coordinates="decimal" position="bottomleft" />
-    </MapContainer>
+    <Map
+      area={data}
+      counties={counties}
+      regions={regions}
+      projects={projects}
+      installations={installations}
+    />
   );
 };
 
-export default Map;
+export default MapView;

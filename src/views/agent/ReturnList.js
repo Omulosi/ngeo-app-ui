@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 /* eslint-disable */
 import { makeStyles, Box, Tooltip, Avatar } from '@material-ui/core';
 import { ArrowRight } from 'react-feather';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
-import CustomDialog from 'src/components/CustomDialog';
 import DataGridDisplay from 'src/components/DataGridDisplay';
-import ReturnDetails from './ReturnDetails';
+import { useNavigate } from 'react-router';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -42,26 +42,16 @@ const useStyles = makeStyles((theme) => ({
 const ReturnList = ({ returns = [] }) => {
   const classes = useStyles();
 
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  const handleOpenEditDialog = () => {
-    setEditDialogOpen(true);
-  };
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-  };
+  const navigate = useNavigate();
 
   /* eslint-disable */
   const rows = returns
     ? returns.map((p) => {
         return {
+          ...p.attributes,
           id: p.id,
-          project: p.project,
-          dateSubmitted: p.date_submitted,
-          rating: p.rating,
-          progress: p.progress_report,
-          return: p
+          date_submitted: moment(p.attributes.date_submitted).format('lll'),
+          return: p.id
         };
       })
     : [];
@@ -71,29 +61,37 @@ const ReturnList = ({ returns = [] }) => {
     const fields = Object.keys(rows[0]);
     fields.forEach((field) => {
       let header = '';
-      if (field === 'return') {
+      if (field === 'return' || field == 'project' || field == 'agent') {
         return;
       }
       switch (field) {
         case 'id':
           header = 'ID';
           break;
-        case 'projet':
+        case 'project':
           header = 'Project';
           break;
-        case 'dateSubmitted':
+        case 'date_submitted':
           header = 'Date Submitted';
           break;
         case 'rating':
-          header = 'Rating';
+          header = '% Rating';
           break;
-        case 'progress':
-          header = 'Progress Report';
+        case 'remarks':
+          header = 'Remarks';
+          break;
+        case 'date_submitted':
+          header = 'Date Submitted';
           break;
         default:
           header = field;
       }
-      columns.push({ field, headerName: header, flex: 1 });
+      columns.push({
+        field,
+        headerName: header,
+        flex: 1,
+        hide: field === 'id'
+      });
     });
 
     const returnInfoField = {
@@ -104,13 +102,9 @@ const ReturnList = ({ returns = [] }) => {
         <Box className={classes.actionItem}>
           <Tooltip title="View return" placement="bottom">
             <Avatar className={clsx(classes.dark, classes.viewAction)}>
-              <ArrowRight onClick={handleOpenEditDialog} />
-              <CustomDialog
-                open={editDialogOpen}
-                handleClose={handleCloseEditDialog}
-              >
-                <ReturnDetails returnDetails={params.value} />
-              </CustomDialog>
+              <ArrowRight
+                onClick={() => navigate(`/app/returns/${params.row.id}`)}
+              />
             </Avatar>
           </Tooltip>
         </Box>

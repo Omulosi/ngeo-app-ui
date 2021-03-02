@@ -16,7 +16,10 @@ import SettingsView from 'src/views/settings/SettingsView';
 // Projects
 import ProjectsView from 'src/views/project';
 import HomeView from 'src/views/home';
-import MapView from 'src/views/map';
+
+// Map
+import MapView from 'src/views/map/Map';
+
 // Agents
 import AgentsView from 'src/views/agent';
 import AgentProfile from 'src/views/agent/AgentProfile';
@@ -41,7 +44,7 @@ import EditFieldOfficerView from 'src/views/field_officer/EditFieldOfficer';
 import FieldOfficerAgentView from 'src/views/field_officer/ManageAgents';
 
 // Returns
-import AllAgentReturns from 'src/views/agent/AllAgentsReturns';
+import AllAgentReturns from 'src/views/agent/AllAgentReturns';
 import AddReturnView from 'src/views/agent/AddReturn';
 import EditReturnView from 'src/views/agent/EditReturn';
 import ReturnDetailView from 'src/views/agent/ReturnDetails';

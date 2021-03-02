@@ -16,22 +16,32 @@ const useUser = () => {
 export default useUser;
 
 export const useSublocations = (areaName) => {
-  const { data, error } = useSWR(`/sublocations?sub_name=${areaName}`, fetcher);
+  const { data, error, mutate } = useSWR(
+    `/sublocations?sub_name=${areaName}`,
+    fetcher
+  );
 
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };
 
 /* eslint-disable */
 export const useCounties = (countyName) => {
-  const { data, error } = useSWR(`/counties?counties=${countyName}`, fetcher);
+  const { data, error, mutate } = useSWR(
+    `/counties?counties=${countyName}`,
+    fetcher,
+    { refreshInterval: 0 }
+  );
+
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };
 
@@ -45,12 +55,16 @@ export const useCountiesWithoutAuth = () => {
 };
 
 export const useRegions = (areaName) => {
-  const { data, error } = useSWR(`/regions?search=${areaName}`, fetcher);
+  const { data, error, mutate } = useSWR(
+    `/regions?search=${areaName}`,
+    fetcher
+  );
 
   return {
     data: data ? data.data.results : data,
     loading: !error && !data,
-    error
+    error,
+    mutate
   };
 };
 
@@ -106,6 +120,16 @@ export const useAgents = () => {
 
 export const useAgent = (id) => {
   const { data, error } = useSWR(`/agents/${id}`, fetcher);
+
+  return {
+    data: data ? data.data : data,
+    loading: !error && !data,
+    error
+  };
+};
+
+export const useReturn = (id) => {
+  const { data, error } = useSWR(`/returns/${id}`, fetcher);
 
   return {
     data: data ? data.data : data,

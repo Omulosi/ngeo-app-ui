@@ -14,18 +14,21 @@ import {
   TextField,
   makeStyles,
   Container,
-  Typography,
   FormHelperText
 } from '@material-ui/core';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 // import { terms as termsDict } from 'src/config';
+import ReactMde from 'react-mde';
+import ReactMarkdown from 'react-markdown';
+import 'react-mde/lib/styles/css/react-mde-all.css';
+
 import Page from 'src/components/Page';
-import { createAgent } from 'src/redux/actions/agentActions';
-import useUser from 'src/data';
-import MarkdownEditor from 'src/components/MarkDownEditor';
+import { createReturn } from 'src/redux/actions/returnsAction';
+import useUser, { useUserAgents, useUserProjects } from 'src/data';
 import ComboBox from 'src/components/ComboBox';
+import DataGridToolbar from 'src/components/DataGridToolbar';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,11 +53,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+/* eslint-disable */
 const AddReturn = () => {
   const classes = useStyles();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+
+  const [selectedTab, setSelectedTab] = React.useState('write');
+  const [remarks, setRemarks] = React.useState('## Add remarks');
 
   useEffect(() => {
     dispatch({ type: 'CLEAR_ERRORS' });
@@ -75,17 +82,47 @@ const AddReturn = () => {
   }
 
   // Get list of agents and projects for this user:
-  const projectList = [];
-  const agentList = [];
+  let projectList = [];
+  let agentList = [];
+
+  const {
+    data: projects,
+    loading: projectsLoading,
+    error: projectsError
+  } = useUserProjects(userPk);
+
+  if (projects) {
+    projectList = projects.features.map((ft) => {
+      return {
+        name: ft.properties.name,
+        id: ft.id
+      };
+    });
+  }
+
+  const {
+    data: agents,
+    loading: agentsLoading,
+    error: agentsError
+  } = useUserAgents(userPk);
+
+  if (agents) {
+    agentList = agents.map((agent) => {
+      return {
+        name: `${agent.attributes.first_name} ${agent.attributes.last_name}`,
+        id: agent.id
+      };
+    });
+  }
+
+  // debugger;
 
   const formik = useFormik({
     initialValues: {
       date_submitted: '',
       project: '',
       agent: '',
-      rating: '',
-      progress_report: '',
-      remarks: '**Add remarks**'
+      rating: ''
     },
     validationSchema: Yup.object().shape({
       date_submitted: Yup.string(),
@@ -95,13 +132,17 @@ const AddReturn = () => {
       //   progress_report: Yup.string(),
     }),
     onSubmit: (values, { setSubmitting }) => {
+      debugger;
+      const { date_submitted, project, agent, rating } = values;
+      const data = {
+        date_submitted,
+        agent: agent.id,
+        project: project.id,
+        rating,
+        remarks
+      };
       dispatch(
-        createAgent(
-          { ...values, userPk },
-          navigate,
-          enqueueSnackbar,
-          setSubmitting
-        )
+        createReturn({ ...data }, navigate, enqueueSnackbar, setSubmitting)
       );
     }
   });
@@ -120,12 +161,14 @@ const AddReturn = () => {
     );
   };
 
+  const handleMarkdownChange = (value) => {
+    setRemarks(value);
+  };
+
   return (
     <Page className={classes.root} title="Add new Return">
-      <Container maxWidth="lg">
-        <Typography variant="h1" component="h1" className={classes.header}>
-          Add a new return
-        </Typography>
+      <Container maxWidth={false}>
+        <DataGridToolbar pageTitle="New Return" />
         <Box className={classes.content}>
           <form
             autoComplete="off"
@@ -189,13 +232,19 @@ const AddReturn = () => {
                     />
                   </Grid>
                   <Grid item md={12} xs={12}>
-                    <MarkdownEditor
-                      fullWidth
-                      label="Remarks"
-                      name="remarks"
-                      value={formik.values.remarks}
-                      onBlur={formik.handleBlur}
-                      onChange={formik.handleChange}
+                    <ReactMde
+                      value={remarks}
+                      onChange={handleMarkdownChange}
+                      selectedTab={selectedTab}
+                      onTabChange={setSelectedTab}
+                      generateMarkdownPreview={(markdown) =>
+                        Promise.resolve(<ReactMarkdown source={markdown} />)
+                      }
+                      childProps={{
+                        writeButton: {
+                          tabIndex: -1
+                        }
+                      }}
                     />
                   </Grid>
                 </Grid>
@@ -211,12 +260,11 @@ const AddReturn = () => {
                   Cancel
                 </Button>
                 <Button color="primary" variant="contained" type="submit">
-                  Add Agent
+                  Add Return
                 </Button>
               </Box>
               <FormHelperText className={classes.error} error>
                 {' '}
-                {error && error}
               </FormHelperText>
             </Card>
           </form>

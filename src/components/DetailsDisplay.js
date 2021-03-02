@@ -26,7 +26,7 @@ const useStyles = makeStyles({
 });
 
 /*eslint-disable */
-const DetailsDisplay = ({ data, title }) => {
+const DetailsDisplay = ({ data = [], title }) => {
   const classes = useStyles();
 
   return (
@@ -62,6 +62,7 @@ const DetailsDisplay = ({ data, title }) => {
 };
 
 DetailsDisplay.propTypes = {
+  /** array with {name: 'name',  value: 'value'}  objects*/
   data: PropTypes.array
 };
 
