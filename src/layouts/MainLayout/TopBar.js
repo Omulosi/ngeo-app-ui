@@ -6,6 +6,7 @@ import MuiAppBar from '@material-ui/core/AppBar';
 import { Toolbar, makeStyles, Button } from '@material-ui/core';
 import Logo from 'src/components/Logo';
 // import Button from 'src/components/Button';
+import { APP_NAME } from 'src/config';
 
 const useStyles = makeStyles({
   root: {
@@ -65,7 +66,8 @@ const TopBar = ({ className, ...rest }) => {
           component="a"
           href="/app/map"
         >
-          Launch Ngeo
+          Launch
+          {`${APP_NAME}`}
         </Button>
       </Toolbar>
     </MuiAppBar>
