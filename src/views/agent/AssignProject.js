@@ -1,33 +1,17 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import useUser, { useUserProjects } from 'src/data';
+import { useProjects } from 'src/hooks/projects';
 import { assignProject } from 'src/redux/actions/projectActions';
 import AssignResource from 'src/components/AssignResource';
 
 /* eslint-disable */
 const AssignProject = ({ agentDetails }) => {
   const { agentId } = agentDetails;
-
-  const { data: user, loading: userLoading, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
-  }
-
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-  // get projects for currently logged in field officer/user
-  const {
-    data: projects,
-    loading: projectsLoading,
-    error: projectsError
-  } = useUserProjects(userPk);
+  const { data, isLoading: loading, error } = useProjects();
 
   let projectList = [];
-  if (projects) {
-    projectList = projects.features;
+  if (data) {
+    projectList = data.results.features;
   }
 
   if (projectList) {

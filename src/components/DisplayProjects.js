@@ -2,18 +2,13 @@ import React from 'react';
 /* eslint-disable */
 import clsx from 'clsx';
 import { ArrowRight } from 'react-feather';
-import { Container, makeStyles, Box, Tooltip, Avatar } from '@material-ui/core';
-import Page from 'src/components/Page';
-import { DataGrid, GridToolbar } from '@material-ui/data-grid';
-import { useSnackbar } from 'notistack';
+import { makeStyles, Box, Tooltip, Avatar } from '@material-ui/core';
 import { useNavigate } from 'react-router';
-// import { useAxios } from 'src/utils/axios';
 import LineProgress from 'src/components/LineProgress';
 import useUser, { useUserProjects } from 'src/data';
 import DataGridDisplay from 'src/components/DataGridDisplay';
 // import { Scrollbars } from 'react-custom-scrollbars';
-import PageToolbar from './PageToolbar';
-import { terms } from 'src/config';
+import { projectThemes } from 'src/config';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -48,13 +43,17 @@ const useStyles = makeStyles((theme) => ({
 
 const DisplayProjects = ({ projects = [] }) => {
   const classes = useStyles();
-
   const navigate = useNavigate();
 
   /* eslint-disable */
   const rows = projects
     ? projects.map((p) => {
-        return { id: p.id, ...p.properties, project: { id: p.id } };
+        return {
+          id: p.id,
+          ...p.properties,
+          theme: projectThemes[p.properties.theme],
+          project: { id: p.id }
+        };
       })
     : [];
 

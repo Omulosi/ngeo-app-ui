@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 
 import Page from 'src/components/Page';
-import { useAgent } from 'src/data';
+import { useAgent } from 'src/hooks/agents';
 
 import LineProgress from 'src/components/LineProgress';
 import TabPanel from '../../components/TabPanel';
@@ -19,6 +19,7 @@ import AssignProject from './AssignProject';
 import AgentProjects from './AgentProjects';
 import ReturnList from './ReturnList';
 import DataGridToolbar from 'src/components/DataGridToolbar';
+import AgentPerformance from './AgentPerformance';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,11 +50,12 @@ const a11yProps = (index) => {
 const AgentProfile = () => {
   const classes = useStyles();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
 
-  const { data, loading, error } = useAgent(id);
+  // const { data, loading, error } = useAgent(id);
+  const { data, isLoading: loading, error } = useAgent(id);
 
   if (error) {
     console.log(`Error => ${error}`);
@@ -97,7 +99,8 @@ const AgentProfile = () => {
           >
             <Tab label="Details" {...a11yProps(0)} />
             <Tab label="Projects" {...a11yProps(1)} />
-            <Tab label="Returns" {...a11yProps(1)} />
+            <Tab label="Returns" {...a11yProps(2)} />
+            <Tab label="Performance" {...a11yProps(3)} />
           </Tabs>
         </Grid>
 
@@ -124,6 +127,14 @@ const AgentProfile = () => {
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
               <ReturnList returns={agentDetails ? agentDetails.returns : []} />
+            </Grid>
+          </Grid>
+        </TabPanel>
+
+        <TabPanel value={value} index={3}>
+          <Grid container spacing={3} className={classes.padTop}>
+            <Grid item lg={12} md={12} xs={12}>
+              <AgentPerformance />
             </Grid>
           </Grid>
         </TabPanel>

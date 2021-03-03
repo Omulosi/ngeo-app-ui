@@ -46,14 +46,23 @@ const ReturnList = ({ returns = [] }) => {
 
   /* eslint-disable */
   const rows = returns
-    ? returns.map((p) => {
-        return {
-          ...p.attributes,
-          id: p.id,
-          date_submitted: moment(p.attributes.date_submitted).format('lll'),
-          return: p.id
-        };
-      })
+    ? returns
+        .map((r) => {
+          if (r.agent && r.project) {
+            return {
+              ...r.attributes,
+              id: r.id,
+              date_submitted:
+                r.date_submitted && moment(r.date_submitted).format('lll'),
+              agent: r.agent && `${r.agent.first_name} ${r.agent.last_name}`,
+              project: r.project && `${r.project.name}`,
+              rating: r.rating,
+              return: r.id
+            };
+          }
+          return null;
+        })
+        .filter((elem) => elem !== null)
     : [];
 
   const columns = [];
@@ -61,12 +70,18 @@ const ReturnList = ({ returns = [] }) => {
     const fields = Object.keys(rows[0]);
     fields.forEach((field) => {
       let header = '';
-      if (field === 'return' || field == 'project' || field == 'agent') {
+      if (field === 'return') {
         return;
       }
       switch (field) {
         case 'id':
           header = 'ID';
+          break;
+        case 'project':
+          header = 'Project';
+          break;
+        case 'agent':
+          header = 'Agent';
           break;
         case 'project':
           header = 'Project';

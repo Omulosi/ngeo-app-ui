@@ -1,13 +1,13 @@
 import React from 'react';
-/* eslint-disable */
 import clsx from 'clsx';
+/* eslint-disable-next-line */
 import { Avatar, Box, Container, makeStyles, Tooltip } from '@material-ui/core';
 import Page from 'src/components/Page';
 import DataGridToolbar from 'src/components/DataGridToolbar';
 import { ArrowRight, Edit } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import useUser, { useUserAgents } from 'src/data';
+import { useAgents } from 'src/hooks/agents';
 import LineProgress from 'src/components/LineProgress';
 import { terms } from 'src/config';
 import DataGridDisplay from 'src/components/DataGridDisplay';
@@ -47,33 +47,14 @@ const useStyles = makeStyles((theme) => ({
 const Agents = () => {
   const classes = useStyles();
   const navigate = useNavigate();
-
   const { enqueueSnackbar } = useSnackbar();
-
-  // get currently logged in user pk
-  const { data: user, loading: userLoading, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
-  }
-
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-
-  const { data, loading, error } = useUserAgents(userPk);
+  const { data: agents, isLoading: loading, error } = useAgents();
 
   if (error) {
     console.log(`Error => ${error}`);
     enqueueSnackbar('Error fetching agents', {
       variant: 'error'
     });
-  }
-
-  let agents = [];
-  if (data) {
-    agents = data;
   }
 
   /* eslint-disable */

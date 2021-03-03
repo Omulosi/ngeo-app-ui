@@ -3,10 +3,11 @@ import React from 'react';
 import { Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import DataGridToolbar from 'src/components/DataGridToolbar';
-import useUser, { useUserResource } from 'src/data';
+import { useReturns } from 'src/hooks/returns';
 import LineProgress from 'src/components/LineProgress';
 import AddIcon from '@material-ui/icons/Add';
 import ReturnList from './ReturnList';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,30 +40,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Agents = () => {
+const AgentReturns = () => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+  const { data, isLoading, error } = useReturns();
 
-  // get currently logged in user pk
-  const { data: user, loading: userLoading, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
+  if (error) {
+    enqueueSnackbar('Error fetching returns', { variant: 'error' });
   }
 
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-
-  const { data, loading, error } = useUserResource(userPk, 'returns');
   let returns = [];
   if (data) {
-    returns = data;
+    returns = data.map((r) => ({ ...r.attributes, id: r.id }));
   }
 
   return (
     <Page title="Returns" className={classes.root}>
-      <div className={classes.progress}>{loading && <LineProgress />}</div>
+      <div className={classes.progress}>{isLoading && <LineProgress />}</div>
       <Container maxWidth={false}>
         <DataGridToolbar
           navLink="/app/returns/add"
@@ -76,4 +70,4 @@ const Agents = () => {
   );
 };
 
-export default Agents;
+export default AgentReturns;

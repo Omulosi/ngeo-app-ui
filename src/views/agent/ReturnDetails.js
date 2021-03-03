@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { Edit } from 'react-feather';
 import moment from 'moment';
-import { useReturn } from 'src/data';
+import { useReturn } from 'src/hooks/returns';
 import DetailsDisplay from 'src/components/DetailsDisplay';
 import Page from 'src/components/Page';
 import DataGridToolbar from 'src/components/DataGridToolbar';
@@ -47,7 +47,7 @@ const ReturnDetails = () => {
   const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
 
-  const { data, loading, error } = useReturn(id);
+  const { data, isLoading, error } = useReturn(id);
 
   if (error) {
     console.log(`Error => ${error}`);
