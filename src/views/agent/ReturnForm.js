@@ -74,8 +74,6 @@ const ReturnForm = ({
   const [remarks, setRemarks] = React.useState(remarksPrompt);
   const error = useSelector((state) => state.agent.agentError, shallowEqual);
 
-  debugger;
-
   const formik = useFormik({
     initialValues: {
       date_submitted,
@@ -159,7 +157,6 @@ const ReturnForm = ({
                     <ComboBox
                       label="Project"
                       name="project"
-                      value={formik.initialValues.project}
                       data={projectList}
                       onChange={(e, value) => {
                         handleProjectChange(e, value);
@@ -170,7 +167,6 @@ const ReturnForm = ({
                     <ComboBox
                       label="Agent"
                       name="agent"
-                      value={agent}
                       data={agentList}
                       onChange={(e, value) => {
                         handleAgentChange(e, value);

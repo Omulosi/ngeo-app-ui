@@ -19,6 +19,7 @@ export const createReturn = (
       setSubmitting(false);
     })
     .catch((err) => {
+      debugger;
       let errorMsg = 'Error adding return';
 
       // Get the first error message
@@ -37,5 +38,6 @@ export const createReturn = (
       dispatch({ type: SET_ERRORS, payload: errorMsg });
       console.log(`${err} => ${errorMsg}`);
       setSubmitting(false);
+      enqueueSnackbar('Error adding return!', { variant: 'error' });
     });
 };
