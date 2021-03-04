@@ -77,13 +77,15 @@ const routes = [
       { path: 'incidents/:id', element: <IncidentDetail /> },
       // map view
       { path: 'map', element: <MapView /> },
-      { path: '*', element: <Navigate to="/404" /> },
+
       // field officers views
       { path: 'field_officers', element: <FieldOfficerListView /> },
       { path: 'field_officers/:id', element: <FieldOfficerProfile /> },
       { path: 'field_officers/add', element: <AddFieldOfficerView /> },
       { path: 'field_officers/edit/:id', element: <EditFieldOfficerView /> },
-      { path: 'field_officers/agents/:id', element: <FieldOfficerAgentView /> }
+      { path: 'field_officers/agents/:id', element: <FieldOfficerAgentView /> },
+      //
+      { path: '*', element: <Navigate to="/404" /> }
     ]
   },
   {

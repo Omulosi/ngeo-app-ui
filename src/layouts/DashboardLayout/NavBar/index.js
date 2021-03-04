@@ -3,8 +3,7 @@ import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { List, makeStyles } from '@material-ui/core';
 // import { useSnackbar } from 'notistack';
-import useUser from 'src/data';
-import LineProgress from 'src/components/LineProgress';
+import useUser from 'src/hooks/user';
 import NavItem from './Item';
 import DrawerComponent from './Drawer';
 import getMenuItems from './menuItems';
@@ -15,10 +14,11 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
+/* eslint-disable */
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
-  const { data, loading, error } = useUser();
+  const { data, error } = useUser();
 
   if (error) {
     console.log(error);
@@ -26,7 +26,7 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   let profileData = null;
   if (data) {
-    profileData = data.attributes;
+    profileData = { ...data.attributes, isAuthenticated: data.isAuthenticated };
   }
 
   useEffect(() => {
@@ -57,7 +57,6 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 
   return (
     <>
-      {loading && <LineProgress />}
       <DrawerComponent profileData={profileData}>{content}</DrawerComponent>
     </>
   );

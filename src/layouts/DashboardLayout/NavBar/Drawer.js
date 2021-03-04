@@ -12,7 +12,7 @@ import {
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 // import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
+// import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -23,6 +23,11 @@ import { useDispatch } from 'react-redux';
 import { logout } from 'src/redux/actions/authActions';
 import { roleNames } from 'src/config';
 import { Scrollbars } from 'react-custom-scrollbars';
+import capitalize from 'src/utils/capitalize';
+import { roles } from 'src/config';
+import useFieldOfficer from 'src/hooks/field_officers';
+import useCountyManager from 'src/hooks/county_managers';
+import getArea from 'src/utils/getArea';
 
 const drawerWidth = 240;
 
@@ -166,11 +171,13 @@ export default function DrawerComponent({ profileData = {}, children }) {
   if (profileData) {
     user = {
       ...profileData,
-      name: `${profileData.first_name} ${profileData.last_name}`,
-      role: roleNames[profileData.role],
-      isAuthenticated: !!profileData.pk
+      name: capitalize(`${profileData.first_name} ${profileData.last_name}`)
     };
   }
+
+  let { data: fieldOfficer, error: fooError } = useFieldOfficer();
+  let { data: countyManager, error: cmError } = useCountyManager();
+  const areas = getArea({ user, roles, countyManager, fieldOfficer });
 
   const userBox = user.isAuthenticated ? (
     <div className={clsx(classes.profile)}>
@@ -181,7 +188,15 @@ export default function DrawerComponent({ profileData = {}, children }) {
       <Typography variant="body2" style={{ paddingBottom: '4px' }}>
         {user.email}
       </Typography>
-      <Typography variant="body2">{user.role}</Typography>
+      <Typography variant="body2" style={{ paddingBottom: '4px' }}>
+        {roleNames[user.role]}
+      </Typography>
+
+      {areas &&
+        areas.map((area) => (
+          <Typography variant="body2">{`${area.name} ${area.type}`}</Typography>
+        ))}
+
       <Typography
         style={{ color: '#1a73e8', paddingTop: '0.3em' }}
         variant="body2"

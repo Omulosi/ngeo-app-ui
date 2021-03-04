@@ -1,6 +1,4 @@
-/* eslint-disable */
 import React, { useRef, useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
 import {
   Map as MapContainer,
   LayersControl,
@@ -8,18 +6,17 @@ import {
   TileLayer
 } from 'react-leaflet';
 import L from 'leaflet';
-import { useSelector } from 'react-redux';
-
 import { CoordinatesControl } from 'react-leaflet-coordinates';
-import useUser, {
-  useUserInstallations,
-  useSublocations,
-  useUserArea,
-  useCounties,
-  useRegions,
-  useUserProjects
-} from 'src/data';
 import { roles } from 'src/config';
+import debounce from 'src/utils/debounce';
+import getArea, { getProjects, getInstallations } from 'src/utils/getArea';
+import useFieldOfficer from 'src/hooks/field_officers';
+import useCountyManager from 'src/hooks/county_managers';
+import useUser from 'src/hooks/user';
+import { useRegion, useRegions } from 'src/hooks/regions';
+import { useCounty, useCounties } from 'src/hooks/counties';
+import { useSublocation } from 'src/hooks/sub_locations';
+import getFieldOfficerAreas from 'src/utils/getFieldOfficerAreas';
 import { GeneralLayer, LocationMarkers } from './layers';
 import baseMaps from './layers/baseMap';
 import {
@@ -28,10 +25,7 @@ import {
   SearchControl,
   PrintControl
 } from './controls';
-// import { axiosWithAuth } from 'src/utils/axios';
-
 import { greenIcon, blueIcon } from './icons';
-import debounce from 'src/utils/debounce';
 
 // work around broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 delete L.Icon.Default.prototype._getIconUrl;
@@ -46,7 +40,7 @@ L.Icon.Default.mergeOptions({
   shadowSize: [41, 41]
 });
 
-const regionStyles = () => {
+const jurisdictionStyles = () => {
   return {
     color: 'rgb(238, 153, 0)',
     fillColor: 'rgb(238, 153, 0)',
@@ -59,8 +53,8 @@ const defaultGeoJsonData = {
   features: []
 };
 
+/* eslint-disable */
 const Map = () => {
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   let printControl = null;
   const mapRef = useRef(null);
   const areaRef = useRef(null);
@@ -103,112 +97,157 @@ const Map = () => {
     printControl.printMap('A4Portrait', 'MyFileName');
   };
 
-  // Get current user
-  const { data: user, error: userError } = useUser();
+  const { data: user, error: userError, isSuccess: userSuccess } = useUser();
+  const {
+    data: fieldOfficer,
+    isLoading: loadingFOO,
+    error: fooError
+  } = useFieldOfficer();
+  const {
+    data: countyManager,
+    isLoading: loadingCM,
+    error: cmError,
+    isSuccess: countyManagerSuccess
+  } = useCountyManager();
 
-  if (userError) {
-    console.log(userError);
+  let fooAreasFilterString = '';
+  if (countyManagerSuccess) {
+    fooAreasFilterString = getFieldOfficerAreas(countyManager);
   }
 
-  let userPk = null;
-  let userRole = null;
-  if (user) {
-    userPk = user.attributes.pk;
-    userRole = user.attributes.role;
+  const isAuthenticated = user && user.isAuthenticated;
+
+  // get FOOs or CMs area
+  const areas = getArea({
+    user: { role: (user && user.attributes.role) || null },
+    roles,
+    countyManager,
+    fieldOfficer
+  });
+
+  let projects;
+  let installations;
+
+  if (userSuccess) {
+    if (user.attributes.role === roles.FOO) {
+      projects = getProjects({ data: fieldOfficer });
+    }
+
+    if (user.attributes.role === roles.CM) {
+      projects = getProjects({ data: countyManager });
+    }
+
+    if (user.attributes.role === roles.FOO) {
+      installations = getInstallations({ data: fieldOfficer });
+    }
+
+    if (user.attributes.role === roles.CM) {
+      installations = getInstallations({ data: countyManager });
+    }
   }
 
-  const { data: areas, error: areaError } = useUserArea(userPk);
-
-  if (areaError) {
-    console.log(areaError);
-  }
-
-  const userAreas = {
-    region: '',
-    county: '',
-    subcounty: '',
-    location: '',
-    sublocation: ''
-  };
   let regionName = '';
   let countyName = '';
-  let subcountyName = '';
-  let locationName = '';
-  let sublocationName = '';
-  if (areas && areas.length > 0) {
-    regionName = areas[0].attributes.region;
-    userAreas.region = regionName;
-    countyName = areas[0].attributes.county;
-    userAreas.county = countyName;
-    subcountyName = areas[0].attributes.sub_county;
-    userAreas.subcounty = subcountyName;
-    locationName = areas[0].attributes.location;
-    userAreas.location = locationName;
-    sublocationName = areas[0].attributes.sub_location;
-    userAreas.sublocation = sublocationName;
+  let filterString = '';
+  if (areas) {
+    areas.forEach((area) => {
+      if (area.type === 'Region') {
+        regionName = area.name;
+      }
+      if (area.type === 'County') {
+        countyName = area.name;
+      }
+      // Nuild search string for the rest
+      if (area.type === 'Sub-County') {
+        // searchString += `subname=${area.name}&`
+      }
+      if (area.type === 'District') {
+        filterString += `distname=${area.name}&`;
+      }
+      if (area.type === 'Division') {
+        filterString += `divname=${area.name}&`;
+      }
+      if (area.type === 'Location') {
+        filterString += `locname=${area.name}&`;
+      }
+      if (area.type === 'Sub-Location') {
+        filterString += `sub_name=${area.name}&`;
+      }
+    });
   }
 
-  let jurisdictionArea = '';
+  const {
+    data: region,
+    isLoading: regionLoading,
+    error: regionError,
+    isSuccess: regionSuccess
+  } = useRegion(regionName);
 
-  if (userRole === roles.RM && userAreas.region) {
-    jurisdictionArea = userAreas.region;
+  const {
+    data: county,
+    isLoading: countyLoading,
+    error: countyError,
+    isSuccess: countySuccess
+  } = useCounty(countyName);
+
+  const {
+    data: fooArea,
+    isLoading: fooAreaLoading,
+    error: fooAreaError,
+    isSuccess: fooSuccess
+  } = useSublocation(filterString);
+
+  const {
+    data: fooAreas,
+    isLoading: fooAreasLoading,
+    error: fooAreasError,
+    isSuccess: fooAreasSuccess
+  } = useSublocation(fooAreasFilterString);
+
+  let data = defaultGeoJsonData;
+  let fieldOfficerAreas = null;
+
+  if (regionSuccess && userSuccess && user.attributes.role === roles.RM) {
+    data = region.results;
   }
 
-  if (userRole === roles.CM && userAreas.county) {
-    jurisdictionArea = userAreas.county;
+  if (countySuccess && userSuccess && user.attributes.role === roles.CM) {
+    data = county.results;
   }
 
-  if (
-    userRole === roles.FOO &&
-    (userAreas.sublocation || userAreas.location || userAreas.subcounty)
-  ) {
-    jurisdictionArea =
-      userAreas.sublocation || userAreas.location || userAreas.subcounty;
+  if (fooSuccess && user && user.attributes.role === roles.FOO) {
+    data = fooArea.results;
   }
 
-  // const {
-  //   data: jurisdiction,
-  //   loading: jurisdictionLoading,
-  //   error: errorLoading
-  // } = useUserJurisdiction(user, jurisdictionArea);
-
-  let data = {
-    type: 'FeatureCollection',
-    features: []
-  };
-
-  let loading, error;
-
-  const { data: regionsResp } = useRegions(jurisdictionArea);
-
-  const { data: countiesResp } = useCounties(jurisdictionArea);
-
-  const { data: sublocationsResp } = useSublocations(jurisdictionArea);
-
-  if (user && user.attributes.role == roles.RM) {
-    data = regionsResp;
+  if (fooAreasSuccess) {
+    fieldOfficerAreas = fooAreas.results;
   }
 
-  if (user && user.attributes.role == roles.CM) {
-    data = countiesResp;
-  }
-
-  if (user && user.attributes.role == roles.FOO) {
-    data = sublocationsResp;
-  }
+  let counties = defaultGeoJsonData;
+  let regions = defaultGeoJsonData;
   // All regions
   const {
-    data: regions,
-    loading: loadRegions,
-    error: regionsError
+    data: regionsResponse,
+    isLoading: loadRegions,
+    error: regionsError,
+    isSuccess: regionsSuccess
   } = useRegions();
+
+  if (regionsSuccess) {
+    regions = regionsResponse.results;
+  }
 
   // All counties
   const {
-    data: counties,
-    loading: loadCounties,
-    error: countiesError
+    data: countiesResponse,
+    isLoading: loadCounties,
+    error: countiesError,
+    isSuccess: countiesSuccess
   } = useCounties();
+
+  if (countiesSuccess) {
+    counties = countiesResponse.results;
+  }
 
   if (countiesError) {
     console.log(countiesError);
@@ -217,20 +256,6 @@ const Map = () => {
   if (regionsError) {
     console.log(regionsError);
   }
-
-  // user specific data
-  const {
-    data: projects,
-    loading: projectLoading,
-    error: projectError
-  } = useUserProjects(userPk);
-
-  // installations in users area
-  const {
-    installations,
-    loading: installationLoading,
-    error: installationError
-  } = useUserInstallations(userPk);
 
   return (
     <MapContainer
@@ -243,9 +268,16 @@ const Map = () => {
       onlayeradd={fitToArea}
     >
       <LayersControl position="topright">
-        <LayersControl.Overlay checked name="Jurisdiction">
-          <GeneralLayer ref={areaRef} styles={regionStyles} data={data} />
-        </LayersControl.Overlay>
+        {isAuthenticated && (
+          <LayersControl.Overlay checked name="Jurisdiction">
+            <GeneralLayer
+              ref={areaRef}
+              styles={jurisdictionStyles}
+              data={data}
+            />
+          </LayersControl.Overlay>
+        )}
+
         {baseMaps.map(
           ({
             name,
@@ -264,6 +296,12 @@ const Map = () => {
           }
         )}
 
+        {fieldOfficerAreas && (
+          <LayersControl.Overlay checked name="My FOO Areas">
+            <GeneralLayer data={fieldOfficerAreas} />
+          </LayersControl.Overlay>
+        )}
+
         <LayersControl.Overlay name="Regions">
           <GeneralLayer data={regions} />,
         </LayersControl.Overlay>
@@ -272,21 +310,25 @@ const Map = () => {
           <GeneralLayer data={counties} />,
         </LayersControl.Overlay>
 
-        <LayersControl.Overlay name="Projects">
-          <LayerGroup>
-            {projects ? (
-              <LocationMarkers markers={projects} icon={greenIcon} />
-            ) : null}
-          </LayerGroup>
-        </LayersControl.Overlay>
+        {isAuthenticated && (
+          <LayersControl.Overlay name="Projects">
+            <LayerGroup>
+              {projects ? (
+                <LocationMarkers markers={projects} icon={greenIcon} />
+              ) : null}
+            </LayerGroup>
+          </LayersControl.Overlay>
+        )}
 
-        <LayersControl.Overlay name="Installations">
-          <LayerGroup>
-            {installations ? (
-              <LocationMarkers markers={installations} icon={blueIcon} />
-            ) : null}
-          </LayerGroup>
-        </LayersControl.Overlay>
+        {isAuthenticated && (
+          <LayersControl.Overlay name="Installations">
+            <LayerGroup>
+              {installations ? (
+                <LocationMarkers markers={installations} icon={blueIcon} />
+              ) : null}
+            </LayerGroup>
+          </LayersControl.Overlay>
+        )}
       </LayersControl>
 
       <EditControlComponent />
