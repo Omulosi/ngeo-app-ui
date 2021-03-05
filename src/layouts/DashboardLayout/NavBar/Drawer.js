@@ -152,6 +152,11 @@ const useStyles = makeStyles((theme) => ({
   thumbVertical: {
     backgroundColor: 'rgb(238,238,238)',
     borderRadius: 6
+  },
+  area: {
+    color: '#4caf50',
+    backgroundColor: 'rgba(76, 175, 80, 0.08)',
+    padding: '0.2em 0.5em'
   }
 }));
 
@@ -194,7 +199,9 @@ export default function DrawerComponent({ profileData = {}, children }) {
 
       {areas &&
         areas.map((area) => (
-          <Typography variant="body2">{`${area.name} ${area.type}`}</Typography>
+          <Typography variant="body2">
+            <span className={classes.area}>{`${area.name} ${area.type}`}</span>
+          </Typography>
         ))}
 
       <Typography

@@ -20,6 +20,9 @@ import ProjectDetailView from 'src/views/project/ProjectDetail';
 // Home page
 import HomeView from 'src/views/home';
 
+// Welcome Page
+import WelcomeView from 'src/views/welcome';
+
 // Map
 import MapView from 'src/views/map/Map';
 
@@ -58,16 +61,25 @@ const routes = [
     path: 'app',
     element: <DashboardLayout />,
     children: [
+      // Welcome view
+      { path: '/welcome', element: <WelcomeView /> },
+
+      // Account + settings
       { path: 'account', element: <AccountView /> },
+
+      // Dashboard
       { path: 'dashboard', element: <DashboardView /> },
+
       // Todo: use this product view to create a new projects display
       { path: 'products', element: <ProductListView /> },
       { path: 'settings', element: <SettingsView /> },
+
       // Agents views
       { path: 'agents', element: <AgentsView /> },
       { path: 'agents/:id', element: <AgentProfile /> },
       { path: 'agents/add', element: <AddAgentView /> },
       { path: 'agents/edit/:id', element: <EditAgentView /> },
+
       // Agent Returns
       { path: 'returns', element: <AllAgentReturns /> },
       { path: 'returns/add', element: <AddReturnView /> },
@@ -77,10 +89,12 @@ const routes = [
       // projects views
       { path: 'projects', element: <ProjectsView /> },
       { path: 'projects/:id', element: <ProjectDetailView /> },
+
       // incidents views
       { path: 'incidents', element: <IncidentsView /> },
       { path: 'incidents/add', element: <AddIncidentsView /> },
       { path: 'incidents/:id', element: <IncidentDetail /> },
+
       // map view
       { path: 'map', element: <MapView /> },
 
@@ -90,7 +104,8 @@ const routes = [
       { path: 'field_officers/add', element: <AddFieldOfficerView /> },
       { path: 'field_officers/edit/:id', element: <EditFieldOfficerView /> },
       { path: 'field_officers/agents/:id', element: <FieldOfficerAgentView /> },
-      //
+
+      // Not Found Page
       { path: '*', element: <Navigate to="/404" /> }
     ]
   },

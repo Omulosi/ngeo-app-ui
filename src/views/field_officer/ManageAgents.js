@@ -18,6 +18,7 @@ import {
 import DataGridToolbar from 'src/components/DataGridToolbar';
 import Page from 'src/components/Page';
 import ReturnChart from 'src/components/ReturnChart';
+import AgentPerformanceSummary from '../agent/AgentPerformanceSummary';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,6 +42,7 @@ const ManageAgents = ({ className, ...rest }) => {
         <DataGridToolbar pageTitle="Manage Agents" />
         <div>
           <ReturnChart />
+          <AgentPerformanceSummary />
         </div>
         <form className={clsx(classes.root, className)} {...rest}>
           <Card>

@@ -297,7 +297,7 @@ const Map = () => {
         )}
 
         {fieldOfficerAreas && (
-          <LayersControl.Overlay checked name="My FOO Areas">
+          <LayersControl.Overlay name="My FOO Areas">
             <GeneralLayer data={fieldOfficerAreas} />
           </LayersControl.Overlay>
         )}
