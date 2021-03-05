@@ -6,14 +6,12 @@ import { useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import Page from 'src/components/Page';
 import PageToolbar from 'src/components/PageToolbar';
-import { useFieldOfficer } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
 import TabPanel from 'src/components/TabPanel';
-// import AgentProjects from './AgentProjects';
-// import Returns from './Returns';
-// import DetailsDisplay from 'src/components/DetailsDisplay';
 import DisplayAgents from 'src/components/DisplayAgents';
 import DisplayProjects from 'src/components/DisplayProjects';
+import capitalize from 'src/utils/capitalize';
+import { useFieldOfficerById } from 'src/hooks/field_officers';
 import FieldOfficerInfo from './FieldOfficerInfo';
 import AssignProject from './AssignProject';
 import AssignArea from './AssignArea';
@@ -44,14 +42,17 @@ const a11yProps = (index) => {
   };
 };
 
+/* eslint-disable */
 const FieldOfficerProfile = () => {
   const classes = useStyles();
-
-  // const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { id } = useParams();
-
-  const { data, loading, error } = useFieldOfficer(id);
+  const {
+    data: fieldOfficer,
+    isLoading,
+    error,
+    isSuccess
+  } = useFieldOfficerById(id);
 
   if (error) {
     console.log(`Error => ${error}`);
@@ -61,8 +62,12 @@ const FieldOfficerProfile = () => {
   }
 
   let details = {};
-  if (data) {
-    details = { ...data.attributes.user, foId: data.id };
+  let fieldOfficerProjects = [];
+  let fieldOfficerAgents = [];
+  if (isSuccess) {
+    details = fieldOfficer.attributes.user;
+    fieldOfficerProjects = fieldOfficer.attributes.projects.features;
+    fieldOfficerAgents = fieldOfficer.attributes.agents;
   }
 
   const [value, setValue] = React.useState(0);
@@ -73,10 +78,17 @@ const FieldOfficerProfile = () => {
 
   return (
     <Page title="Field Officer Profile" className={classes.root}>
-      <div className={classes.progress}>{loading && <LineProgress />}</div>
+      <div className={classes.progress}>{isLoading && <LineProgress />}</div>
       <Container maxWidth={false}>
         <PageToolbar
-          title={details ? `${details.first_name} ${details.last_name}` : ''}
+          title={
+            /* eslint-disable */
+            details
+              ? `Field Officer: ${capitalize(details.first_name)} ${capitalize(
+                  details.last_name
+                )}`
+              : ''
+          }
         />
         <Grid container className={classes.content}>
           <Tabs
@@ -109,9 +121,7 @@ const FieldOfficerProfile = () => {
         <TabPanel value={value} index={1}>
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
-              <DisplayProjects
-                projects={data ? data.attributes.projects.features : []}
-              />
+              <DisplayProjects projects={fieldOfficerProjects} />
             </Grid>
           </Grid>
         </TabPanel>
@@ -120,7 +130,7 @@ const FieldOfficerProfile = () => {
           <Grid container spacing={3} className={classes.padTop}>
             <Grid item lg={12} md={12} xs={12}>
               <DisplayAgents
-                agents={data ? data.attributes.agents : []}
+                agents={fieldOfficerAgents}
                 agentBaseUrl="/app/field_officers/agents"
               />
             </Grid>

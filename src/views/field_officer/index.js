@@ -8,11 +8,13 @@ import Page from 'src/components/Page';
 import { ArrowRight } from 'react-feather';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import useUser, { useUserResource } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
 import DataGridDisplay from 'src/components/DataGridDisplay';
 // import AddIcon from '@material-ui/icons/Add';
 import PageToolbar from 'src/components/PageToolbar';
+import useCountyManager from 'src/hooks/county_managers';
+import FailureChip from 'src/components/FailureChip';
+import SuccessChip from 'src/components/SuccessChip';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,19 +52,13 @@ const FieldOfficerList = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  // get currently logged in user pk:
-  const { data: user, loading: userLoading, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
-  }
-
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-
-  const { data, loading, error } = useUserResource(userPk, 'field_officers');
+  // Get logged in countyManager data
+  const {
+    data: countyManager,
+    isLoading,
+    error,
+    isSuccess
+  } = useCountyManager();
 
   if (error) {
     console.log(`Error => ${error}`);
@@ -72,16 +68,16 @@ const FieldOfficerList = () => {
   }
 
   let fieldOfficers = [];
-  if (data) {
-    fieldOfficers = data;
+  if (isSuccess) {
+    fieldOfficers = countyManager.attributes.field_officers;
   }
   const rows = fieldOfficers
     ? fieldOfficers.map((fo) => {
         return {
           id: fo.id,
-          ...fo.attributes.user,
-          is_active: fo.attributes.user.is_active ? 'Active' : 'Inactive',
-          date_joined: moment(fo.attributes.user.date_joined),
+          ...fo.user,
+          is_active: { isActive: fo.user.is_active },
+          date_joined: moment(fo.user.date_joined),
           fieldOfficer: { id: fo.id }
         };
       })
@@ -102,6 +98,10 @@ const FieldOfficerList = () => {
       let header = '';
 
       if (field === 'fieldOfficer') {
+        return;
+      }
+
+      if (field === 'is_active') {
         return;
       }
 
@@ -140,6 +140,18 @@ const FieldOfficerList = () => {
       });
     });
 
+    const statusField = {
+      field: 'is_active',
+      headerName: 'Status',
+      flex: 1,
+      renderCell: (params) => {
+        if (params.value.isActive) {
+          return <SuccessChip label="Active" />;
+        }
+        return <FailureChip label="Inactive" />;
+      }
+    };
+
     const actionField = {
       field: 'fieldOfficer',
       headerName: 'Actions',
@@ -159,6 +171,7 @@ const FieldOfficerList = () => {
       )
     };
 
+    columns.push(statusField);
     columns.push(actionField);
   }
 
@@ -166,7 +179,7 @@ const FieldOfficerList = () => {
 
   return (
     <Page title="Field Officers" className={classes.root}>
-      <div className={classes.progress}>{loading && <LineProgress />}</div>
+      <div className={classes.progress}>{isLoading && <LineProgress />}</div>
       <Container maxWidth={false}>
         <PageToolbar title="Field Outreach Officers" />
         <DataGridDisplay data={fieldOfficerData} title="Field Officers" />

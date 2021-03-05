@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { GeoJSON } from 'react-leaflet';
+// import Tooltip from '@material-ui/core/Tooltip';
 
 const GeneralLayer = React.forwardRef(({ data, styles }, ref) => {
   return <GeoJSON data={data} style={styles} ref={ref} />;

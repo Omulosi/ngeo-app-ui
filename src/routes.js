@@ -15,6 +15,9 @@ import SettingsView from 'src/views/settings/SettingsView';
 
 // Projects
 import ProjectsView from 'src/views/project';
+import ProjectDetailView from 'src/views/project/ProjectDetail';
+
+// Home page
 import HomeView from 'src/views/home';
 
 // Map
@@ -27,6 +30,7 @@ import AddAgentView from 'src/views/agent/AddAgent';
 import EditAgentView from 'src/views/agent/EditAgent';
 // Incidents
 import IncidentsView from 'src/views/incident';
+import AddIncidentsView from 'src/views/incident/AddIncident';
 import IncidentDetail from 'src/views/incident/IncidentDetail';
 
 // Dashboard
@@ -72,8 +76,10 @@ const routes = [
 
       // projects views
       { path: 'projects', element: <ProjectsView /> },
+      { path: 'projects/:id', element: <ProjectDetailView /> },
       // incidents views
       { path: 'incidents', element: <IncidentsView /> },
+      { path: 'incidents/add', element: <AddIncidentsView /> },
       { path: 'incidents/:id', element: <IncidentDetail /> },
       // map view
       { path: 'map', element: <MapView /> },

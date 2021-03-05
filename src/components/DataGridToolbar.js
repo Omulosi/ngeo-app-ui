@@ -30,6 +30,7 @@ const Toolbar = ({
   pageTitle,
   navLink,
   btnIcon,
+  btnDisabled,
   ...rest
 }) => {
   const classes = useStyles();
@@ -46,6 +47,7 @@ const Toolbar = ({
             color="primary"
             variant="contained"
             className={classes.btn}
+            disabled={btnDisabled}
             onClick={() => navigate(`${navLink}`)}
           >
             {btnIcon} {btnTitle}

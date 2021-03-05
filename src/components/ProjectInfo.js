@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { projectThemes } from 'src/config';
 import DetailsDisplay from 'src/components/DetailsDisplay';
+// import SuccesChip from 'src/components/SuccessChip';
+import PendingChip from 'src/components/PendingChip';
+// import FailureChip from 'src/components/FailureChip';
 
-const ProjectDetails = ({ projectDetails }) => {
+/* eslint-disable */
+const ProjectInfo = ({ projectDetails }) => {
   const { name, description, theme } = projectDetails;
 
   const rows = [
@@ -21,23 +26,23 @@ const ProjectDetails = ({ projectDetails }) => {
     },
     {
       name: 'Status',
-      value: 'In Progress'
+      value: <PendingChip label="In Progress" />
     },
     {
       name: 'Date assigned',
-      value: '23/02/2020'
+      value: moment(new Date()).format('ll')
     },
     {
-      name: 'report',
-      value: 'submitted'
+      name: 'Return',
+      value: 'Submitted'
     }
   ];
 
   return <DetailsDisplay data={rows} title="Project Info" />;
 };
 
-ProjectDetails.propTypes = {
+ProjectInfo.propTypes = {
   projectDetails: PropTypes.object
 };
 
-export default ProjectDetails;
+export default ProjectInfo;

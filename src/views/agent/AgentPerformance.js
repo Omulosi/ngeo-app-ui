@@ -1,7 +1,12 @@
 import React from 'react';
+import ReturnChart from 'src/components/ReturnChart';
 
 const AgentPerformance = () => {
-  return <div>agent performance - graphs and what not</div>;
+  return (
+    <div>
+      <ReturnChart />
+    </div>
+  );
 };
 
 export default AgentPerformance;

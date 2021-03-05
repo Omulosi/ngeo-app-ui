@@ -4,7 +4,8 @@ import { Container, makeStyles } from '@material-ui/core';
 import Page from 'src/components/Page';
 import { useSnackbar } from 'notistack';
 import LineProgress from 'src/components/LineProgress';
-import useUser, { useUserProjects } from 'src/data';
+import useUser from 'src/hooks/user';
+import { useProjects } from 'src/hooks/projects';
 import DisplayProjects from 'src/components/DisplayProjects';
 import PageToolbar from 'src/components/PageToolbar';
 
@@ -26,19 +27,8 @@ const Projects = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data: user, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
-  }
-
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-
   // get projects for currently logged in user
-  const { data, loading, error } = useUserProjects(userPk);
+  const { data, isLoading, error, isSuccess } = useProjects();
 
   if (error) {
     console.log(`Error => ${error}`);
@@ -48,13 +38,13 @@ const Projects = () => {
   }
 
   let projectData = [];
-  if (data) {
-    projectData = data.features;
+  if (isSuccess) {
+    projectData = data.results.features;
   }
 
   return (
     <Page title="Projects" className={classes.root}>
-      <div className={classes.progress}>{loading && <LineProgress />}</div>
+      <div className={classes.progress}>{isLoading && <LineProgress />}</div>
       <Container maxWidth={false}>
         <PageToolbar title="Projects" />
         <DisplayProjects projects={projectData ? projectData : []} />

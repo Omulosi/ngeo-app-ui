@@ -19,20 +19,21 @@ export default function getFieldOfficerAreas(countyManager) {
           // searchString += `subname=${area.name}&`
         }
         if (area.type === 'District') {
-          filterString += `distname=${area.name}&`;
+          filterString += `(distname=${area.name})|`;
         }
         if (area.type === 'Division') {
-          filterString += `divname=${area.name}&`;
+          filterString += `(divname=${area.name})|`;
         }
         if (area.type === 'Location') {
-          filterString += `locname=${area.name}&`;
+          filterString += `(locname=${area.name})|`;
         }
         if (area.type === 'Sub-Location') {
-          filterString += `sub_name=${area.name}&`;
+          filterString += `(sub_name=${area.name})|`;
         }
       });
     }
   });
 
-  return filterString;
+  // Remore the last symbol
+  return filterString.slice(0, filterString.length - 1);
 }

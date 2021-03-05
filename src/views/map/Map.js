@@ -202,7 +202,7 @@ const Map = () => {
     isLoading: fooAreasLoading,
     error: fooAreasError,
     isSuccess: fooAreasSuccess
-  } = useSublocation(fooAreasFilterString);
+  } = useSublocation(`filters=${fooAreasFilterString}`);
 
   let data = defaultGeoJsonData;
   let fieldOfficerAreas = null;

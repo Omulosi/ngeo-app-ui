@@ -5,6 +5,7 @@ import { DataGrid, GridToolbar } from '@material-ui/data-grid';
 import DataGridToolbar from 'src/components/DataGridToolbar';
 import { ArrowRight } from 'react-feather';
 import { useSnackbar } from 'notistack';
+import AddIcon from '@material-ui/icons/Add';
 import { useIncidents } from 'src/data';
 import LineProgress from 'src/components/LineProgress';
 // import { Scrollbars } from 'react-custom-scrollbars';
@@ -82,7 +83,12 @@ const Incidents = () => {
     <Page title="Incidents" className={classes.root}>
       <div className={classes.progress}>{loading && <LineProgress />}</div>
       <Container maxWidth={false}>
-        <DataGridToolbar title="Add Incident" />
+        <DataGridToolbar
+          pageTitle="Add Incident"
+          navLink="/app/incidents/add"
+          btnIcon={<AddIcon />}
+          btnTitle="New Incident"
+        />
         <div className={classes.gridWrapper}>
           <DataGrid
             {...incidentData}
