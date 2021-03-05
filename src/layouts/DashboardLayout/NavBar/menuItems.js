@@ -28,6 +28,12 @@ const getMenuItems = (user) => {
       visible: true
     },
     {
+      href: '/app/map',
+      icon: MapIcon,
+      title: 'Map',
+      visible: true
+    },
+    {
       href: '/app/dashboard',
       icon: DashboardIcon,
       title: 'Dashboard',
