@@ -25,6 +25,7 @@ import WelcomeView from 'src/views/welcome';
 
 // Map
 import MapView from 'src/views/map/Map';
+import MapIframeView from 'src/views/map';
 
 // Agents
 import AgentsView from 'src/views/agent';
@@ -97,6 +98,7 @@ const routes = [
 
       // map view
       { path: 'map', element: <MapView /> },
+      { path: 'map/iframe', element: <MapIframeView /> },
 
       // field officers views
       { path: 'field_officers', element: <FieldOfficerListView /> },

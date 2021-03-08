@@ -23,7 +23,7 @@ const getMenuItems = (user) => {
 
   const items = [
     {
-      href: '/app/map',
+      href: '/app/map/iframe',
       icon: HomeIcon,
       title: 'Home',
       visible: isAuthorized
