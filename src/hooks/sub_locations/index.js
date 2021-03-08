@@ -12,7 +12,7 @@ const filterSublocations = async (filterString) => {
 };
 
 export function useSublocations() {
-  return useQuery('agents', getSublocations);
+  return useQuery('sublocations', getSublocations);
 }
 
 export function useSublocation(filterString) {

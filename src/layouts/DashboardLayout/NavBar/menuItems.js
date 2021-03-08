@@ -1,6 +1,7 @@
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import FolderIcon from '@material-ui/icons/Folder';
 import MapIcon from '@material-ui/icons/Map';
+import HomeIcon from '@material-ui/icons/Home';
 import PeopleIcon from '@material-ui/icons/People';
 import {
   User as UserIcon,
@@ -23,9 +24,9 @@ const getMenuItems = (user) => {
   const items = [
     {
       href: '/app/map',
-      icon: MapIcon,
-      title: 'Map',
-      visible: true
+      icon: HomeIcon,
+      title: 'Home',
+      visible: isAuthorized
     },
     {
       href: '/app/map',

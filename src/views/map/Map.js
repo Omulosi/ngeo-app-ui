@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import {
   Map as MapContainer,
   LayersControl,
@@ -6,6 +6,8 @@ import {
   TileLayer
 } from 'react-leaflet';
 import L from 'leaflet';
+/* eslint-disable */
+import { useQuery, useQueryClient } from 'react-query';
 import { CoordinatesControl } from 'react-leaflet-coordinates';
 import { roles } from 'src/config';
 import debounce from 'src/utils/debounce';
@@ -61,25 +63,25 @@ const Map = () => {
   const center = [0.69960492000038, 37.9210640870001];
 
   // Re-render on window resize hence fit map to whatever screen size
-  const [dimensions, setDimensions] = useState({
-    height: window.innerHeight,
-    width: window.innerWidth
-  });
+  // const [dimensions, setDimensions] = useState({
+  //   height: window.innerHeight,
+  //   width: window.innerWidth
+  // });
 
-  useEffect(() => {
-    const debouncedHandleResize = debounce(function handleResize() {
-      setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth
-      });
-    }, 1000);
+  // useEffect(() => {
+  //   const debouncedHandleResize = debounce(function handleResize() {
+  //     setDimensions({
+  //       height: window.innerHeight,
+  //       width: window.innerWidth
+  //     });
+  //   }, 1000);
 
-    window.addEventListener('resize', debouncedHandleResize);
+  //   window.addEventListener('resize', debouncedHandleResize);
 
-    return (_) => {
-      window.removeEventListener('resize', debouncedHandleResize);
-    };
-  });
+  //   return (_) => {
+  //     window.removeEventListener('resize', debouncedHandleResize);
+  //   };
+  // });
 
   const fitToArea = () => {
     try {
