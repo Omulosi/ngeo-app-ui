@@ -1,8 +1,12 @@
 import axios from 'axios';
-import { mutate } from 'swr';
-import BASE_URL from 'src/config';
 /* eslint-disable */
+import { axiosWithAuth } from 'src/utils/axios';
+import BASE_URL, { HOST, BACKEND_HOST } from 'src/config';
 import { SIGNIN, LOGOUT, LOADING_USER, SET_ERRORS } from '../types';
+
+console.log('====================================');
+console.log(BACKEND_HOST);
+console.log(BASE_URL);
 
 /* eslint-ignore */
 export const signUp = (
@@ -52,18 +56,17 @@ export const login = (
   setSubmitting
 ) => (dispatch) => {
   axios
-    .post(`${BASE_URL}/auth/login`, {
-      email,
+    .post(`http://127.0.0.1:8000/auth/login/`, {
+      username: email,
       password
     })
     .then(({ data }) => {
-      const { user } = data;
-      const { token } = user;
+      const token = data.data.token;
       localStorage.setItem('token', `${token}`);
-      navigate('/app/dashboard', { replace: true });
-      enqueueSnackbar(data.message, { variant: 'success' });
+      enqueueSnackbar('Successfuly logged in!', { variant: 'success' });
       setSubmitting(false);
       dispatch({ type: SIGNIN });
+      navigate('/app/activity');
     })
     .catch((err) => {
       let errorMsg = 'Error logging in';
@@ -88,10 +91,15 @@ export const login = (
 
 export const logout = (navigate) => (dispatch) => {
   localStorage.removeItem('token');
-  localStorage.setItem('reduxState', null);
-  mutate(`${BASE_URL}/regions`);
-  mutate(`${BASE_URL}/counties`);
-  mutate(`${BASE_URL}/sublocations`);
+  console.log(BACKEND_HOST);
+  axiosWithAuth()
+    .post('http://127.0.0.1:8000/rest-auth/logout/')
+    .then((data) => {
+      console.log('Logged out');
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   dispatch({ type: LOGOUT });
   navigate('/login');
 };

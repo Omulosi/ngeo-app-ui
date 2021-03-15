@@ -10,6 +10,7 @@ import L from 'leaflet';
 import { useQuery, useQueryClient } from 'react-query';
 import { CoordinatesControl } from 'react-leaflet-coordinates';
 import { roles } from 'src/config';
+import { useProjects } from 'src/hooks/projects';
 import debounce from 'src/utils/debounce';
 import getArea, { getProjects, getInstallations } from 'src/utils/getArea';
 import useFieldOfficer from 'src/hooks/field_officers';
@@ -129,22 +130,24 @@ const Map = () => {
 
   let projects;
   let installations;
+  const {
+    data: projectData,
+    isLoading: loading,
+    error,
+    isSuccess
+  } = useProjects();
+
+  if (isSuccess) {
+    projects = projectData.results;
+  }
 
   if (userSuccess) {
-    if (user.attributes.role === roles.FOO) {
-      projects = getProjects({ data: fieldOfficer });
-    }
-
-    if (user.attributes.role === roles.CM) {
-      projects = getProjects({ data: countyManager });
-    }
-
     if (user.attributes.role === roles.FOO) {
       installations = getInstallations({ data: fieldOfficer });
     }
 
     if (user.attributes.role === roles.CM) {
-      installations = getInstallations({ data: countyManager });
+      installations = getInstallations({ data: fieldOfficer });
     }
   }
 

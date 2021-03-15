@@ -5,7 +5,7 @@ import { assignProject } from 'src/redux/actions/projectActions';
 import AssignResource from 'src/components/AssignResource';
 
 /* eslint-disable */
-const AssignProject = ({ agentDetails }) => {
+const AssignProjectToAgent = ({ agentDetails }) => {
   const { agentId } = agentDetails;
   const { data, isLoading: loading, error } = useProjects();
 
@@ -19,7 +19,7 @@ const AssignProject = ({ agentDetails }) => {
       return {
         id: project.id,
         name: project.properties.name,
-        assignedTo: !!project.properties.agent
+        assignedTo: false
       };
     });
   }
@@ -31,10 +31,10 @@ const AssignProject = ({ agentDetails }) => {
       title="Assign Project"
       fieldLabel="Project"
       resourceList={projectList}
-      assigneeId={agentId}
+      data={{ agent: [agentId] }}
       action={assignProject}
     />
   );
 };
 
-export default AssignProject;
+export default AssignProjectToAgent;

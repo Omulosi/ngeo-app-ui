@@ -18,15 +18,18 @@ const useStyles = makeStyles(() => ({
 const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
-  const { data, error } = useUser();
+  const { data, isLoading, isError } = useUser();
 
-  if (error) {
-    console.log(error);
+  if (isError) {
+    console.log(isError);
   }
 
   let profileData = null;
-  if (data) {
-    profileData = { ...data.attributes, isAuthenticated: data.isAuthenticated };
+  if (!isLoading && !isError && Boolean(data)) {
+    profileData = {
+      ...data.attributes,
+      isAuthenticated: data.isAuthenticated
+    };
   }
 
   useEffect(() => {

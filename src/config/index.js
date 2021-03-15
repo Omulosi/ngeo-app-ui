@@ -1,7 +1,9 @@
 // export const REMOTE_BASE_URL = 'https://ngeo-api.herokuapp.com/api/v1';
 // export const LOCAL_BASE_URL = 'http://127.0.0.1:8000/api/v1';
 
-const BASE_URL = process.env.REACT_APP_API_HOST;
+const BASE_URL = `${process.env.REACT_APP_API_HOST}/api/v1`;
+export const BACKEND_HOST = process.env.REACT_APP_API_HOST;
+export const HOST = 'http://127.0.0.1:8000';
 
 export const APP_NAME = 'N-Geo';
 

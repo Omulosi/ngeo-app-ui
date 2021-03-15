@@ -14,12 +14,11 @@ export const createReturn = (
   axiosWithAuth()
     .post(`${BASE_URL}/returns`, data)
     .then(() => {
-      //   navigate('/app/agents', { replace: true });
       enqueueSnackbar('Return successfully added!', { variant: 'success' });
       setSubmitting(false);
+      navigate('/app/returns', { replace: true });
     })
     .catch((err) => {
-      debugger;
       let errorMsg = 'Error adding return';
 
       // Get the first error message

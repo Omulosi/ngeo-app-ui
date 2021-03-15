@@ -20,6 +20,8 @@ import AgentProjects from './AgentProjects';
 import ReturnList from './ReturnList';
 import DataGridToolbar from 'src/components/DataGridToolbar';
 import AgentPerformance from './AgentPerformance';
+import RequestApproval from './RequestApproval';
+import capitalize from 'src/utils/capitalize';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,7 +84,9 @@ const AgentProfile = () => {
         <DataGridToolbar
           pageTitle={
             agentDetails &&
-            `Agent: ${agentDetails.first_name} ${agentDetails.last_name}`
+            `Agent: ${capitalize(agentDetails.first_name)} ${capitalize(
+              agentDetails.last_name
+            )}`
           }
           navLink={`/app/agents/edit/${id}`}
           btnIcon={<Edit />}
@@ -111,6 +115,9 @@ const AgentProfile = () => {
             </Grid>
             <Grid item xl={6} lg={6} md={6} xs={12}>
               <AssignProject agentDetails={agentDetails} />
+            </Grid>
+            <Grid item xl={6} lg={6} md={6} xs={12}>
+              <RequestApproval agentDetails={agentDetails} />
             </Grid>
           </Grid>
         </TabPanel>

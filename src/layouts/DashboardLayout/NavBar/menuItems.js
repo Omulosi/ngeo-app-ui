@@ -23,15 +23,21 @@ const getMenuItems = (user) => {
 
   const items = [
     {
-      href: '/app/map/iframe',
+      href: '/app/activity',
       icon: HomeIcon,
       title: 'Home',
       visible: isAuthorized
     },
+    // {
+    //   href: '/app/map',
+    //   icon: MapIcon,
+    //   title: 'Map',
+    //   visible: true
+    // },
     {
-      href: '/app/map',
+      href: '/app/ol/map',
       icon: MapIcon,
-      title: 'Map',
+      title: 'OLMap',
       visible: true
     },
     {

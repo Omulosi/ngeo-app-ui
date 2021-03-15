@@ -7,10 +7,12 @@ import { useSnackbar } from 'notistack';
 import Page from 'src/components/Page';
 import TabPanel from 'src/components/TabPanel';
 import LineProgress from 'src/components/LineProgress';
-import useUser from 'src/data';
+// import useUser from 'src/data';
+import useUser from 'src/hooks/user';
 import Password from './Password';
 import Profile from './Profile';
 
+/* eslint-disable */
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.dark,
@@ -34,7 +36,7 @@ const MyAccount = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
-  const { data, loading, error } = useUser();
+  const { data, isLoading: loading, isError: error, isSuccess } = useUser();
 
   if (error) {
     enqueueSnackbar('Error loading profile data', {
@@ -43,7 +45,7 @@ const MyAccount = () => {
   }
 
   let user = {};
-  if (data) {
+  if (isSuccess) {
     user = data.attributes;
   }
 

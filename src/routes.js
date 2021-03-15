@@ -21,10 +21,11 @@ import ProjectDetailView from 'src/views/project/ProjectDetail';
 import HomeView from 'src/views/home';
 
 // Welcome Page
-import WelcomeView from 'src/views/welcome';
+import WelcomeView from 'src/views/activity';
 
 // Map
 import MapView from 'src/views/map/Map';
+import NgeoMapView from 'src/views/ngeoMap';
 import MapIframeView from 'src/views/map';
 
 // Agents
@@ -57,13 +58,13 @@ import AddReturnView from 'src/views/agent/AddReturn';
 import EditReturnView from 'src/views/agent/EditReturn';
 import ReturnDetailView from 'src/views/agent/ReturnDetails';
 
-const routes = [
+const routes = () => [
   {
     path: 'app',
     element: <DashboardLayout />,
     children: [
       // Welcome view
-      { path: '/welcome', element: <WelcomeView /> },
+      { path: '/activity', element: <WelcomeView /> },
 
       // Account + settings
       { path: 'account', element: <AccountView /> },
@@ -98,6 +99,7 @@ const routes = [
 
       // map view
       { path: 'map', element: <MapView /> },
+      { path: 'ol/map', element: <NgeoMapView /> },
       { path: 'map/iframe', element: <MapIframeView /> },
 
       // field officers views
@@ -117,6 +119,8 @@ const routes = [
     children: [
       { path: 'login', element: <LoginView /> },
       { path: 'register', element: <RegisterView /> },
+      { path: 'map', element: <MapView /> },
+      { path: 'ol/map', element: <NgeoMapView /> },
       { path: '404', element: <NotFoundView /> },
       { path: '/', element: <HomeView /> },
       { path: '*', element: <Navigate to="/404" /> }

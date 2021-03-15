@@ -1,4 +1,5 @@
 import React from 'react';
+import { createReturn } from 'src/redux/actions/returnsAction';
 import { useAgents } from 'src/hooks/agents';
 import { useProjects } from 'src/hooks/projects';
 import ReturnForm from './ReturnForm';
@@ -39,7 +40,15 @@ const AddReturn = () => {
     });
   }
 
-  return <ReturnForm projectList={projectList} agentList={agentList} />;
+  return (
+    <ReturnForm
+      projectList={projectList}
+      agentList={agentList}
+      title="Add new Return"
+      subTitle="Add Return"
+      action={createReturn}
+    />
+  );
 };
 
 export default AddReturn;

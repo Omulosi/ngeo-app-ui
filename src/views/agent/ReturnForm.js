@@ -23,7 +23,6 @@ import ReactMde from 'react-mde';
 import ReactMarkdown from 'react-markdown';
 import 'react-mde/lib/styles/css/react-mde-all.css';
 import Page from 'src/components/Page';
-import { createReturn } from 'src/redux/actions/returnsAction';
 import ComboBox from 'src/components/ComboBox';
 import DataGridToolbar from 'src/components/DataGridToolbar';
 
@@ -59,7 +58,10 @@ const ReturnForm = ({
   agent = '',
   rating = '',
   projectList,
-  agentList
+  agentList,
+  title,
+  subTitle,
+  action
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -87,7 +89,6 @@ const ReturnForm = ({
       rating: Yup.number()
     }),
     onSubmit: (values, { setSubmitting }) => {
-      debugger;
       const { date_submitted, project, agent, rating } = values;
       const data = {
         date_submitted,
@@ -96,9 +97,7 @@ const ReturnForm = ({
         rating,
         remarks
       };
-      dispatch(
-        createReturn({ ...data }, navigate, enqueueSnackbar, setSubmitting)
-      );
+      dispatch(action({ ...data }, navigate, enqueueSnackbar, setSubmitting));
     }
   });
 
@@ -121,9 +120,9 @@ const ReturnForm = ({
   };
 
   return (
-    <Page className={classes.root} title="Add new Return">
+    <Page className={classes.root} title={title}>
       <Container maxWidth={false}>
-        <DataGridToolbar pageTitle="New Return" />
+        <DataGridToolbar pageTitle={title} />
         <Box className={classes.content}>
           <form
             autoComplete="off"
@@ -132,7 +131,7 @@ const ReturnForm = ({
             onSubmit={formik.handleSubmit}
           >
             <Card>
-              <CardHeader title="Add Return" />
+              <CardHeader title={subTitle} />
               <Divider />
               <CardContent>
                 <Grid container spacing={3}>
@@ -237,7 +236,8 @@ ReturnForm.propTypes = {
   agent: PropTypes.string,
   rating: PropTypes.number,
   projectList: PropTypes.array,
-  agentList: PropTypes.array
+  agentList: PropTypes.array,
+  action: PropTypes.any
 };
 
 export default ReturnForm;

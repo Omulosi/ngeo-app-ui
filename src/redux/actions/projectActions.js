@@ -6,22 +6,22 @@ import { SET_ERRORS } from '../types';
 
 /* eslint-ignore */
 export const assignProject = (
-  { projectId, data },
+  { resourceId, data },
   navigate,
   enqueueSnackbar,
   setSubmitting
 ) => (dispatch) => {
   axiosWithAuth()
-    .patch(`${BASE_URL}/projects/${projectId}`, data)
+    .patch(`${BASE_URL}/projects/${resourceId}`, data)
     .then(() => {
       enqueueSnackbar('Project assigned to agent successfully!', {
         variant: 'success'
       });
       setSubmitting(false);
-      navigate(`/app/agents/${agentId}`, { replace: true });
     })
     .catch((err) => {
       let errorMsg = 'Error assigning project to agent';
+      debugger;
 
       // Get the first error message
       if (err.response.status !== 404 && err.response && err.response.data) {
@@ -33,6 +33,11 @@ export const assignProject = (
       }
 
       errorMsg = errorMsg.toLocaleLowerCase();
+
+      enqueueSnackbar('Error assigning project', {
+        variant: 'error'
+      });
+
       dispatch({ type: SET_ERRORS, payload: errorMsg });
       setSubmitting(false);
       console.log(err);

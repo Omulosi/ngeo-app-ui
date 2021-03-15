@@ -1,32 +1,21 @@
 import React from 'react';
+/* eslint-disable */
 import PropTypes from 'prop-types';
-import useUser, { useUserProjects } from 'src/data';
+import { useParams } from 'react-router';
+import { useProjects } from 'src/hooks/projects';
+// import useUser, { useUserProjects } from 'src/data';
+import { useFieldOfficerById } from 'src/hooks/field_officers';
 import { assignProject } from 'src/redux/actions/projectActions';
 import AssignResource from 'src/components/AssignResource';
 
+/* eslint-disable */
 const AssignProject = ({ fieldOfficerDetails = {} }) => {
-  const { foId } = fieldOfficerDetails;
-  const { data: user, error: userError } = useUser();
-
-  if (userError) {
-    console.log(userError);
-  }
-
-  let userPk = null;
-  if (user) {
-    userPk = user.attributes.pk;
-  }
-
-  // get projects for currently logged in field user
-  const { data: projects, error: projectsError } = useUserProjects(userPk);
-
-  if (projectsError) {
-    console.log(projectsError);
-  }
+  const { id } = useParams();
+  const { data, isLoading: loading, error } = useProjects();
 
   let projectList = [];
-  if (projects) {
-    projectList = projects.features;
+  if (data) {
+    projectList = data.results.features;
   }
 
   if (projectList) {
@@ -34,7 +23,7 @@ const AssignProject = ({ fieldOfficerDetails = {} }) => {
       return {
         id: project.id,
         name: project.properties.name,
-        assignedTo: !!project.properties.field_officer
+        assignedTo: false
       };
     });
   }
@@ -46,7 +35,7 @@ const AssignProject = ({ fieldOfficerDetails = {} }) => {
       title="Assign Project"
       fieldLabel="Project"
       resourceList={projectList}
-      assigneeId={foId}
+      data={{ field_officer: id }}
       action={assignProject}
     />
   );

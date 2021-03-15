@@ -24,6 +24,14 @@ export const axiosWithoutAuth = () => {
   });
 };
 
+export const axiosGeneral = () => {
+  return axios.create({
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+};
+
 export const useAxios = () => {
   const token = localStorage.getItem('token');
 

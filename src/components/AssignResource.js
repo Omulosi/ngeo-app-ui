@@ -28,13 +28,7 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-const AssignResource = ({
-  title,
-  fieldLabel,
-  resourceList,
-  assigneeId,
-  action
-}) => {
+const AssignResource = ({ title, fieldLabel, resourceList, data, action }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
@@ -43,13 +37,12 @@ const AssignResource = ({
 
   const formik = useFormik({
     initialValues: {
-      resourceId: ''
+      resource: ''
     },
     onSubmit: (values, { setSubmitting }) => {
-      debugger;
       dispatch(
         action(
-          { ...values, assigneeId },
+          { resourceId: values.resource.id, data },
           navigate,
           enqueueSnackbar,
           setSubmitting
@@ -60,7 +53,7 @@ const AssignResource = ({
 
   const handleChange = (e, value) => {
     formik.setFieldValue(
-      'resourceId',
+      'resource',
       value !== null ? value : formik.initialValues.resourceId
     );
   };
@@ -80,7 +73,7 @@ const AssignResource = ({
             <Grid item md={6} xs={12}>
               <ComboBox
                 label={fieldLabel}
-                name="resourceId"
+                name="resource"
                 data={resourceList}
                 onChange={(e, value) => {
                   handleChange(e, value);

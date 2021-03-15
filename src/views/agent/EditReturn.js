@@ -3,21 +3,22 @@ import { useParams } from 'react-router';
 import { useAgents } from 'src/hooks/agents';
 import { useProjects } from 'src/hooks/projects';
 import { useReturn } from 'src/hooks/returns';
+import { createReturn } from 'src/redux/actions/returnsAction';
 import ReturnForm from './ReturnForm';
 
 /* eslint-disable */
 const EditReturn = () => {
   const { id } = useParams();
 
-  const { data: returnItem, isLoading, error } = useReturn(id);
+  const { data: returnItem, isLoading, error, isSuccess } = useReturn(id);
 
   let agent = '';
-  if (returnItem) {
+  if (isSuccess) {
     agent = `${returnItem.attributes.agent.first_name} ${returnItem.attributes.agent.last_name}`;
   }
 
   let project = '';
-  if (returnItem) {
+  if (isSuccess) {
     project = `${returnItem.attributes.project.name}`;
   }
 
@@ -55,13 +56,22 @@ const EditReturn = () => {
     });
   }
 
+  let data = { attributes: {} };
+  if (returnItem) {
+    data = returnItem;
+  }
+
   return (
     <ReturnForm
-      {...returnItem.attributes}
+      {...data.attributes}
       projectList={projectList}
       agentList={agentList}
       project={project}
       agent={agent}
+      title="Edit Return"
+      subTitle="Edit Return"
+      action={createReturn}
+      remarksPrompt={data.attributes ? data.attributes.remarks : ''}
     />
   );
 };

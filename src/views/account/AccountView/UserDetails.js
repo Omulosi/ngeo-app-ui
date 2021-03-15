@@ -15,21 +15,6 @@ import {
 } from '@material-ui/core';
 import { roleNames } from 'src/config';
 
-const counties = [
-  {
-    value: '',
-    label: ''
-  },
-  {
-    value: '',
-    label: ''
-  },
-  {
-    value: '',
-    label: ''
-  }
-];
-
 const useStyles = makeStyles(() => ({
   root: {}
 }));
@@ -155,17 +140,6 @@ const ProfileDetails = ({ className, profileDetails = {}, ...rest }) => {
                 variant="outlined"
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Region"
-                name="region"
-                onChange={handleChange}
-                required
-                value={values.region}
-                variant="outlined"
-              />
-            </Grid>
 
             <Grid item md={6} xs={12}>
               <TextField
@@ -177,25 +151,6 @@ const ProfileDetails = ({ className, profileDetails = {}, ...rest }) => {
                 value={values.role}
                 variant="outlined"
               />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="County"
-                name="county"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.county}
-                variant="outlined"
-              >
-                {counties.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
             </Grid>
           </Grid>
         </CardContent>

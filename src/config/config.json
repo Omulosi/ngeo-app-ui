@@ -1,0 +1,142 @@
+{
+  "headerLogoImageName": "logo.png",
+  "title": "Interactive Map - N-Geo (GIS)",
+  "originUrl": "https://opengis.simcoe.ca",
+  "feedbackUrl": "https://opengis.simcoe.ca/feedback",
+  "geoserverUrl": "http://localhost:8080/geoserver/",
+  "geoserverPath": "geoserver",
+  "printUrl": "https://opengis.simcoe.ca/print/",
+  "includeAppStats": false,
+  "htmlIdentify": false,
+  "leftClickIdentify": false,
+  "excludeIdentifyTitleName": false,
+  "showFeedbackMessageOnStartup": false,
+  "showWhatsNewOnStartup": false,
+  "googleAnalyticsID": "UA-3104541-53",
+  "appStatsUrl": "https://opengis.simcoe.ca/api/appStats/",
+  "apiUrl": "https://opengis.simcoe.ca/api/",
+  "apiUrlDev": "http://localhost:8085/",
+  "termsUrl": "https://maps.simcoe.ca/terms.html",
+  "whatsNewUrl": "https://county-of-simcoe-gis.github.io/SimcoeCountyWebViewer/",
+  "helpUrl": "https://maps.simcoe.ca/public_help",
+  "ieWarningUrl": "https://opengis.simcoe.ca/public/ieWarning.html",
+  "propertyReportUrl": "https://maps.simcoe.ca/giswebapi/api/propertyreport",
+  "weatherRadarApiUrl": "https://maps.simcoe.ca/giswebapi/api/Weather/getRadarImages/",
+  "parcelLayer": {
+    "url": "https://opengis.simcoe.ca/geoserver/wfs?service=wfs&version=2.0.0&request=GetFeature&typeNames=simcoe:Assessment%20Parcel&outputFormat=application/json",
+    "rollNumberFieldName": "ARN"
+  },
+  "centerCoords": [37.9210640870001, -0.09960492000038],
+  "defaultZoom": 6.3,
+  "maxZoom": 20,
+  "imageViewerUrl": "",
+  "controls": {
+    "rotate": true,
+    "fullScreen": true,
+    "zoomInOut": true,
+    "currentLocation": true,
+    "zoomExtent": true,
+    "scale": true,
+    "scaleLine": true,
+    "basemap": true
+  },
+  "mapTheme": "SIMCOE_COUNTY",
+  "showFloatingMenuHeader": false,
+  "showLoadingScreens": false,
+  "storageKeys": {
+    "SearchHistory": "searchHistory",
+    "Draw": "myMaps",
+    "URLDontShowAgain": "sc_dontshowagain"
+  },
+  "onlyStandardCursor": true,
+  "restrictOriginForUrlWindow": false,
+  "rightClickMenuVisibility": {
+    "sc-floating-menu-basic-mode": true,
+    "sc-floating-menu-property-click": true,
+    "sc-floating-menu-add-mymaps": true,
+    "sc-floating-menu-save-map-extent": true,
+    "sc-floating-menu-report-problem": true,
+    "sc-floating-menu-identify": true,
+    "sc-floating-menu-google-maps": false,
+    "sc-floating-menu-more": true
+  },
+  "tocType": "LIST",
+  "wmsGeoJsonTemplate": "https://maps.simcoe.ca/ESRIWMSTemplates/featureinfo_application_geojson.xsl",
+  "sidebarToolComponents": [
+    {
+      "id": 1,
+      "name": "Measure",
+      "componentName": "Measure",
+      "description": "This tool will allow for the measurement of distance and areas in various units.",
+      "imageName": "measure.png"
+    },
+    {
+      "id": 2,
+      "name": "Coordinates",
+      "componentName": "Coordinates",
+      "description": "Get coordinates throughout the map in a variety of different coordinate systems.",
+      "imageName": "coordinates.png"
+    },
+    {
+      "id": 3,
+      "name": "Print",
+      "componentName": "Print",
+      "description": "This tool allows users to print their map view in a variety of formats such as pdf and jpeg.",
+      "imageName": "print.png"
+    },
+    {
+      "id": 9,
+      "name": "Add Data",
+      "componentName": "AddLayer",
+      "description": "Add data to your map by importing layers for multiple sources.",
+      "imageName": "addlayer.png"
+    },
+    {
+      "id": 4,
+      "name": "Search Addresses",
+      "componentName": "SearchAddresses",
+      "description": "This tool allows you to search Addresses.",
+      "imageName": "searchAddresses.png"
+    },
+    {
+      "id": 5,
+      "name": "Search History",
+      "componentName": "SearchHistory",
+      "description": "This tool provides users with a list of their 25 most recent searches.",
+      "imageName": "searchHistory.png"
+    },
+    {
+      "id": 10,
+      "name": "Settings",
+      "componentName": "Settings",
+      "description": "Customize for your preferences",
+      "imageName": "settings.png"
+    }
+  ],
+
+  "sidebarThemeComponents": [
+    {
+      "id": 1,
+      "name": "Solid Waste Facilities",
+      "componentName": "SolidWasteFacilities",
+      "description": "Provides information about waste facilities, and information as to where to purchase bag tags.",
+      "imageName": "solidWasteFacilities.png",
+      "config": "./configSolidWasteFacilities.json"
+    },
+    {
+      "id": 2,
+      "name": "Forestry",
+      "componentName": "Forestry",
+      "description": "View County Forests and Recreation features, conservation, provincial and municipal parks.",
+      "imageName": "forestry.png",
+      "config": "./configForestry.json"
+    },
+    {
+      "id": 3,
+      "name": "Local Real Estate",
+      "componentName": "LocalRealEstate",
+      "description": "View listings by categories and view photos for the listing with the option to link to the Realtor.ca listing",
+      "imageName": "localrealestate.png"
+    }
+  ]
+}
